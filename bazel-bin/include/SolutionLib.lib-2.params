@@ -1,0 +1,7 @@
+/nologo
+/OUT:bazel-out/x64_windows-fastbuild/bin/include/SolutionLib.lib
+/MACHINE:X64
+bazel-out/x64_windows-fastbuild/bin/include/_objs/SolutionLib/Command.obj
+bazel-out/x64_windows-fastbuild/bin/include/_objs/SolutionLib/Door.obj
+bazel-out/x64_windows-fastbuild/bin/include/_objs/SolutionLib/InteractableObject.obj
+/ignore:4221
