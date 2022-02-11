@@ -333,7 +333,9 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
-bazel-bin/
-bazel-out/
-bazel-tbge/
-bazel-testlogs/
+.vscode/
+
+#bazel-bin/**/*
+#bazel-out/**/*
+#bazel-tbge/**/*
+#bazel-testlogs/**/*
