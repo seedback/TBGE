@@ -335,7 +335,7 @@ ASALocalRun/
 
 .vscode/
 
-#bazel-bin/**/*
-#bazel-out/**/*
-#bazel-tbge/**/*
-#bazel-testlogs/**/*
+bazel-bin/**/*
+bazel-out/**/*
+bazel-tbge/**/*
+bazel-testlogs/**/*
