@@ -1,4 +1,4 @@
-// Copyright 2022 Chr. Alexander B. Bøhler
+// NOLINT(legal/copyright)
 /*
 * _____________________________
 *    _____ ____   ____ _____   

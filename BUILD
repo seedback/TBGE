@@ -1,7 +1,7 @@
 cc_binary(
-	name = "main",
-	srcs = ["main.cc"],
+	name = "all",
 	deps = [
+    "//src:main",
     "//src/lib:lib",
     "//include:include",
     "@shf//:shf",

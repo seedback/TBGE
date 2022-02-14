@@ -2,10 +2,8 @@ cc_library(
     name = "lib",
     srcs = glob(["**/*.cc"]),
     hdrs = glob(["**/*.hh"]),
+    deps = [
+      "@shf//:shf",
+    ],
     visibility = ["//visibility:public"],
 )
-
-#cc_library(
-#	name = "InteractableObject",
-#	srcs = ["InteractableObject.cc"]
-#)
