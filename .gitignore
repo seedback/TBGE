@@ -339,3 +339,4 @@ bazel-bin/**/*
 bazel-out/**/*
 bazel-tbge/**/*
 bazel-testlogs/**/*
+graph.png

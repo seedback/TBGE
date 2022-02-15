@@ -40,6 +40,8 @@
 #include <string>
 #include <vector>
 
+#include "lib/command/command.hh"
+
 namespace tbge {
 class GameObject {
  public:
@@ -52,11 +54,11 @@ class GameObject {
   void id(const std::string id) {this->id_ = id;}
   std::string id() {return this->id_;}
   // commands
-  //NOLINT//void commands(std::vector<TBGE::Command>);
-  //NOLINT//std::vector<TBGE::Command> commands()
-  //NOLINT//void add_command(TBGE::Command);
-  //NOLINT//TBGE::Command get_command_by_action(std::string);
-  //NOLINT//TBGE::Command get_command_by_alias(std::string);
+  void commands(std::vector<Command>);
+  std::vector<Command> commands();
+  void add_command(Command);
+  Command get_command_by_action(std::string);
+  Command get_command_by_alias(std::string);
   // descriptors
   void descriptors(std::vector<std::string> descriptors) {
     this->descriptors_ = descriptors;
@@ -74,7 +76,7 @@ class GameObject {
 
  private:
   std::string id_ = "";
-  //NOLINT//std::vector<TBGE::Command> commands;
+  std::vector<Command> commands_;
   std::vector<std::string> descriptors_;
   std::string description_ = "";
   std::string script_;

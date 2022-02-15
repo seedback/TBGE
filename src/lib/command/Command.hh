@@ -22,13 +22,28 @@
 namespace tbge {
 enum class CommandAction{
   kInvalidAction = 0,
+
   kLook,
   kInspect,
-  kGrab,
+
+  kGo,
+
+  kTake,
+  kUse,
+
+  kOpen,
+  kClose,
 };
 
 class Command {
  public:
+  Command() {}
+  explicit Command(const std::string command_word) {
+    this->command_word_ = command_word;
+  }
+  Command(const Command& command) {*this = command;}
+  ~Command() {}
+
   // command_word
   void command_word(std::string command_word) {
     this->command_word_ = command_word;
@@ -36,7 +51,7 @@ class Command {
   std::string command_word() {return this->command_word_;}
   // action
   void action(std::string action_name) {
-    action_translate_str_to_command_action_(action_name);
+    this->action_ = action_translate_str_to_command_action_(action_name);
   }
   std::string action() {
     return action_translate_command_action_to_str_(this->action_);
@@ -46,7 +61,8 @@ class Command {
   // Saves the int-equivalent of `action_name` as defined in CommandActions
   // Eg. `action_name` == "LOOK" would return `CommandActions.kLook`
   // TODO(seedback): function undefined
-  void action_translate_str_to_command_action_(std::string action_name);
+  CommandAction action_translate_str_to_command_action_(
+      std::string action_name);
   // Returns the string-equivalent of `action` as defined in CommandActions.
   // Eg. `action` == `CommandActions.kLook` would return "LOOK"
   // TODO(seedback): function undefined
