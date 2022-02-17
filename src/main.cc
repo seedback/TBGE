@@ -8,7 +8,7 @@
 
 //#include "lib/gameObjects/game_object.hh"
 #include "src/lib/global/global_singleton.hh"
-#include "src/lib/temp/temp.hh"
+#include "src/lib/command/command.hh"
 
 int main() {
   tbge::global::GlobalSingleton& inst =
