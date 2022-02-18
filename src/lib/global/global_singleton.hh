@@ -20,6 +20,10 @@
 #include <vector>
 #include <utility>
 
+#include <iostream>
+
+#include "toupper_string/toupper_string.hh"
+
 namespace tbge {
 namespace global {
 
@@ -40,13 +44,23 @@ class GlobalSingleton {
   //       before deleted status
 
   /**
-  * @brief Setter for command word aliases.
+  * @brief Setter for command_word_aliases_. Ensures that all entries (both
+  *          command-words and command-actions) are all-upper-case.
   * @param command_word_aliases std::multimap containing command-word - alias
   *          pairs to replace the current command_word_aliases_ with.
   */
   void command_word_aliases(
       std::multimap<std::string, std::string> command_word_aliases) {
-    this->command_word_aliases_ = command_word_aliases;
+    std::multimap<std::string, std::string> new_multimap;
+    // Iterates through command_word_aliases with the iterator it
+    for (std::multimap<std::string, std::string>::iterator it =
+         command_word_aliases.begin();
+         it != command_word_aliases.end();
+         ++it) {
+      new_multimap.emplace(shf::toupper_string(it->first),
+                           shf::toupper_string(it->second));
+    }
+    this->command_word_aliases_ = new_multimap;
   }
 
   /**
@@ -64,8 +78,9 @@ class GlobalSingleton {
   * @param alias std::string defining the alias the command-word belongs to
   */
   void add_command_word_alias(std::string command_word, std::string alias) {
-    command_word_aliases_.insert(
-        std::pair<std::string, std::string>(command_word, alias));
+    command_word_aliases_.emplace(
+        shf::toupper_string(command_word),
+        shf::toupper_string(alias));
   }
 
   /**
@@ -75,22 +90,26 @@ class GlobalSingleton {
   *          to be returned.
   * @return A vector of all aliases of the given command-word.
   */
-  std::vector<std::string> get_aliases_by_command_word(
-      std::string command_word) {
+  std::vector<std::string> get_command_words_by_alias(
+      std::string alias) {
     int length;
     std::pair<std::multimap<std::string, std::string>::iterator,
               std::multimap<std::string, std::string>::iterator> range;
-    std::vector<std::string> aliases;
+    std::vector<std::string> command_words;
 
-    length = command_word_aliases_.count(command_word);
+    alias = shf::toupper_string(alias);
+
+    length = command_word_aliases_.count(alias);
+
     if (length) {
-      aliases.reserve(length);
-      range = command_word_aliases_.equal_range(command_word);
+      command_words.reserve(length);
+      range = command_word_aliases_.equal_range(alias);
       for (std::multimap<std::string, std::string>::iterator it = range.first;
            it != range.second; ++it) {
-        aliases.push_back(it->second);
+        command_words.push_back(it->second);
       }
     }
+    return command_words;
   }
 
  private:
@@ -99,8 +118,14 @@ class GlobalSingleton {
 
   // std::vector<Command> command_master_list;
 
+  /**
+   * @brief Holds command-word - command-action pairs of std::strings
+   *          all in all-upper-case
+   */
   std::multimap<std::string, std::string> command_word_aliases_;
 };
+
+// GlobalSingleton& test =  GlobalSingleton::getInstance();
 
 }  // namespace global
 }  // namespace tbge

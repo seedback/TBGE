@@ -5,9 +5,9 @@
 
 #include <iostream>
 
-//#include "src/lib/command/command.hh"
+#include "src/lib/command/command.hh"
 
-//#include "include/gtest/gtest.h"
+#include "include/gtest/gtest.h"
 
 
 
