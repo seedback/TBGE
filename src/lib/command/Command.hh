@@ -29,7 +29,6 @@ namespace tbge {
  *        If the player uses the given command-word on an object this command
  *        is attached to, then the given command-action will be run
  *        on that object.
- * 
  */
 class Command{
  public:
