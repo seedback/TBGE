@@ -340,3 +340,6 @@ bazel-out/**/*
 bazel-tbge/**/*
 bazel-testlogs/**/*
 graph.png
+
+# Documentation files, comment out when updating comments
+docs/**/*
