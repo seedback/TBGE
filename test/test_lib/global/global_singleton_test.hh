@@ -13,21 +13,29 @@
 #include "gtest/gtest.h"
 
 /**
- * @brief Sanity-check that GlobalSingleton is actually a singleton
+ * @test Sanity-check that GlobalSingleton is actually a singleton
+ *       This is achieved by running
+ *       tbge::global::GlobalSingleton::get_instance() twice and comparing the
+ *       returned pointers, checking that tehy're the same. @n @n
+ *       <b>See also:</b>
+ *       - tbge::global::GlobalSingleton::get_instance()
  */
 TEST(GlobalSingleton, isSingleton) {
   tbge::global::GlobalSingleton& inst =
-      tbge::global::GlobalSingleton::getInstance();
-  ASSERT_EQ(&inst, &tbge::global::GlobalSingleton::getInstance());
+      tbge::global::GlobalSingleton::get_instance();
+  ASSERT_EQ(&inst, &tbge::global::GlobalSingleton::get_instance());
 }
 
 /**
- * @brief Tests that GlobalSingleton::command_word_aliases works as both an
- *          accessor or a mutator depending on the number of input parameters.
+ * @test Tests that tbge::global::GlobalSingleton::command_word_aliases() works as both an
+ *       accessor or a mutator depending on the number of input arguments. @n @n
+ *       <b>See also:</b>
+ *       - tbge::global::GlobalSingleton::command_word_aliases()
+ *       - tbge::global::GlobalSingleton::command_word_aliases(std::multimap<std::string, std::string>)
  */
 TEST(GlobalSingleton, commandWordAliases) {
   tbge::global::GlobalSingleton& inst =
-      tbge::global::GlobalSingleton::getInstance();
+      tbge::global::GlobalSingleton::get_instance();
   std::multimap<std::string, std::string> valid_input;
   valid_input.emplace("LOOK", "LOOK");
   valid_input.emplace("GRAB", "TAKE");
@@ -57,12 +65,18 @@ TEST(GlobalSingleton, commandWordAliases) {
 }
 
 /**
- * @brief Testing the add_command_word_alias member function with both
- *          all-upper-case, all-lower-case and mixed-case.
+ * @test Testing that
+ *       tbge::global::GlobalSingleton::add_command_word_alias(std::string,
+ *       std::string) where the input arguments are either @b all-upper-case,
+ *       @b all-lower-case or @b all-mixed-case always adds @a command-words
+ *       @b all-upper-case. @n @n
+ *       <b>See also:</b>
+ *       - tbge::global::GlobalSingleton::add_command_word_alias(std::string,
+ *       std::string)
  */
 TEST(GlobalSingleton, addCommandWordAliases) {
   tbge::global::GlobalSingleton& inst =
-      tbge::global::GlobalSingleton::getInstance();
+      tbge::global::GlobalSingleton::get_instance();
   std::multimap<std::string, std::string> start_value;
   start_value.emplace("LOOK", "LOOK");
   start_value.emplace("GRAB", "TAKE");
@@ -85,12 +99,17 @@ TEST(GlobalSingleton, addCommandWordAliases) {
 }
 
 /**
- * @brief Testing the get_command_words_by_alias member function with both
- *          all-upper-case, all-lower-case and mixed-case.
+ * @test Testing that
+ *       tbge::global::GlobalSingleton::get_command_words_by_alias(std::string)
+ *       where the input arguments are either @b all-upper-case,
+ *       @b all-lower-case or @b all-mixed-case always returns the
+ *       @a command-word in @b all-upper-case. @n @n
+ *       <b>See also:</b>
+ *       - tbge::global::GlobalSingleton::get_command_words_by_alias(std::string)
  */
 TEST(GlobalSingleton, getCommandWordsByAlias) {
   tbge::global::GlobalSingleton& inst =
-      tbge::global::GlobalSingleton::getInstance();
+      tbge::global::GlobalSingleton::get_instance();
   std::vector<std::string> actual;
   std::vector<std::string> expected;
 
