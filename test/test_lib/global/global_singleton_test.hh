@@ -56,12 +56,12 @@ TEST(GlobalSingleton, commandWordAliases) {
   expected.emplace("GRAB", "TAKE");
   expected.emplace("INSPECT", "INSPECT");
 
-  inst.command_word_aliases(valid_input);
-  ASSERT_EQ(inst.command_word_aliases(), expected);
-  inst.command_word_aliases(valid_input_mixed_case);
-  ASSERT_EQ(inst.command_word_aliases(), expected);
-  inst.command_word_aliases(invalid_input);
-  ASSERT_NE(inst.command_word_aliases(), expected);
+  inst.set_command_word_aliases(valid_input);
+  ASSERT_EQ(inst.get_command_word_aliases(), expected);
+  inst.set_command_word_aliases(valid_input_mixed_case);
+  ASSERT_EQ(inst.get_command_word_aliases(), expected);
+  inst.set_command_word_aliases(invalid_input);
+  ASSERT_NE(inst.get_command_word_aliases(), expected);
 }
 
 /**
@@ -90,12 +90,12 @@ TEST(GlobalSingleton, addCommandWordAliases) {
   expected.emplace("CLOSE", "CLOSE");
   expected.emplace("GO", "GO");
 
-  inst.command_word_aliases(start_value);
+  inst.set_command_word_aliases(start_value);
   inst.add_command_word_alias("oPeN", "OpEn");
   inst.add_command_word_alias("close", "close");
   inst.add_command_word_alias("GO", "GO");
 
-  ASSERT_EQ(inst.command_word_aliases(), expected);
+  ASSERT_EQ(inst.get_command_word_aliases(), expected);
 }
 
 /**
@@ -114,7 +114,7 @@ TEST(GlobalSingleton, getCommandWordsByAlias) {
   std::vector<std::string> expected;
 
   // Resetting the singleton from from earlier tests
-  inst.command_word_aliases(std::multimap<std::string, std::string>());
+  inst.set_command_word_aliases(std::multimap<std::string, std::string>());
   // First entry is the alias, second entry is the command-word
   inst.add_command_word_alias("LOOK", "LOOK");
   inst.add_command_word_alias("SEE", "LOOK");
