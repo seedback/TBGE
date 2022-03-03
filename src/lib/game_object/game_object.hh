@@ -36,8 +36,8 @@
 // * Script:       A script to be run on this object, can be used to define
 //                   custom command effects among other things.
 
-#ifndef TBGE_LIB_GAMEOBJECTS_GAMEOBJECT_HH_  // NOLINT
-#define TBGE_LIB_GAMEOBJECTS_GAMEOBJECT_HH_
+#ifndef TBGE_LIB_GAMEOBJECT_GAMEOBJECT_HH_  // NOLINT
+#define TBGE_LIB_GAMEOBJECT_GAMEOBJECT_HH_
 
 #include <string>
 #include <vector>
@@ -254,4 +254,4 @@ class GameObject {
 };
 }  // namespace tbge
 
-#endif  // #ifndef TBGE_LIB_GAMEOBJECTS_GAMEOBJECT_HH_  // NOLINT
+#endif  // #ifndef TBGE_LIB_GAMEOBJECT_GAMEOBJECT_HH_  // NOLINT

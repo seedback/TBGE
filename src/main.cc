@@ -6,7 +6,7 @@
 
 #include "str_to_int/str_to_int.hh"  // from the shf library
 
-#include "lib/gameObjects/game_object.hh"
+#include "src/lib/game_object/game_object.hh"
 #include "src/lib/global/global_singleton.hh"
 #include "src/lib/command/command.hh"
 

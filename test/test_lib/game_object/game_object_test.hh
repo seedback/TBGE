@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "include/gtest/gtest.h"
-#include "src/lib/gameObjects/game_object.hh"
+#include "src/lib/game_object/game_object.hh"
 
 TEST(GameObject, defaultConstructor) {
   tbge::GameObject actual = tbge::GameObject();

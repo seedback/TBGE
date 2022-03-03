@@ -24,7 +24,7 @@
 
 #include "toupper_string/toupper_string.hh"
 
-#include "src\lib\gameObjects\game_object.hh"
+#include "src\lib\game_object\game_object.hh"
 
 // Forward declarations to fix cyclic references
 namespace tbge {

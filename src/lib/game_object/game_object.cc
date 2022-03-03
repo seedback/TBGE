@@ -9,7 +9,7 @@
 * _____________________________
 */
 
-#include "src/lib/gameObjects/game_object.hh"
+#include "src/lib/game_object/game_object.hh"
 
 #include <iostream>
 
