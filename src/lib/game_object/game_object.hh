@@ -9,32 +9,17 @@
 * _____________________________
 */
 
-// GameObject is the base class for all objects used in a game.
-// This class in itself is really simple, only containing a few properties,
-//   and can by default only be LOOKed at, but can still be scripted.
+// GameObject is the base class for all objects used in a engine
+// This class has base functionality allowing the user to access the
+// objects through names and IDs as well as linking the objects
+// hierarchically through a parent-child relationship-tree. @n @n
+// The class itself is not meant to be used directly, but every object in the
+// engine should be based on this vlass, allowing a master-list of all object
+// to be stored in the GlobalSingleton as pointers of type GameObject* allowi
+// for more safe destruction/construction between games in the same session.
 
-// List of properties:
-// * test
-// * id:           A unique string used to access the element. In case multiple
-//                   objects have the same id the parents id can be prefixed,
-//                   seperated with a dot (eg. parentObject.thisObject).
 
-// These parts are to be moved to interactable_game_object
-// * Commands:     A list of command objects defining command-word-aliases and
-//                   their associated command actions.
-// * Descriptors:  A list of descriptors used to decide which object is being
-//                   affected by any given command call, in case two or more
-//                   objects fulfill all descriptors a question will be posed to
-//                   the player asking them to choose.
-//                   Optionally: If too many objects fulfill the descriptors, a
-//                   message saying the program did not understand the command
-//                   may come up. This is dependent on the
-//                   options>max_described_objects property in the
-//                   game-declaration file.
-// * Description:  A string that is output when the LOOK command action is used
-//                   on this object
-// * Script:       A script to be run on this object, can be used to define
-//                   custom command effects among other things.
+
 
 #ifndef TBGE_LIB_GAMEOBJECT_GAMEOBJECT_HH_  // NOLINT
 #define TBGE_LIB_GAMEOBJECT_GAMEOBJECT_HH_
@@ -45,7 +30,7 @@
 #include "src/lib/global/global_singleton.hh"
 #include "src/lib/command/command.hh"
 
-// Forward declarations to fix cyclic references
+// Forward declarations to fix cyclic inclusion
 namespace tbge {
 namespace global {
 class GlobalSingleton;
@@ -54,16 +39,17 @@ class GlobalSingleton;
 
 namespace tbge {
 /**
- * @brief The base class for all objects in the game.
- * 
- * @details This class only conains an auto-assigned @ref id_ and a @ref name_
- *          that can be used to access the object through
- *          tbge::global::GlobalSingleton::get_object_by_name(std::string)
+ * @brief The base class for all objects in the engine.
+ * @details This class has base functionality allowing the user to access the
+ *          objects through names and IDs as well as linking the objects
+ *          hierarchically through a parent-child relationship-tree. @n @n
+ *          The class itself is not meant to be used directly, but every object
+ *          in the engine should be based on this vlass, allowing a master-list
+ *          of all objects to be stored in the GlobalSingleton as pointers of
+ *          type GameObject* allowing for more safe destruction/construction
+ *          between games in the same session.
  */
 
-/// @todo make test for tbge::GameObject
-/// @todo update accessors and mutators to set_some_var() and get_some_var()
-///       except when only an accessor exists
 class GameObject {
  public:
   /**
