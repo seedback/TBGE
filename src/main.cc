@@ -30,8 +30,6 @@ int main() {
 
   std::cout << std::endl;
 
-  //system("PAUSE");
-
   obj2->set_parent(*obj1);
   std::cout << "obj2 full_name: " << obj2->get_full_name() << std::endl;
   obj4->set_parent(*obj1);
@@ -40,36 +38,5 @@ int main() {
   std::cout << "obj2 full_name: " << obj2->get_full_name() << std::endl;
   std::cout << "test: " << obj1->get_children()[0]->get_name() << std::endl;
 
-  //tbge::GameObject obj = tbge::GameObject("Test");
-  //obj.description("This is a fine description, and it is many lines long!");
-
-  //tbge::Command com = tbge::Command("look", "look");
-  
-  //std::cout << com.command_word() << " : " << com.action() << std::endl;
-
-  //std::cout << obj.id() << " : " << obj.description() << std::endl;
-  //std::cout << s_p.str << std::endl;
-
-  //inst.command_word_aliases(std::multimap<std::string, std::string>());
-  //inst.add_command_word_alias("LOOK", "LOOK");
-  //inst.add_command_word_alias("SEE", "LOOK");
-  //inst.add_command_word_alias("INSPECT", "LOOK");
-  //inst.add_command_word_alias("GO", "GO");
-  //inst.add_command_word_alias("MOVE", "GO");
-  //inst.add_command_word_alias("ENTER", "GO");
-  //inst.add_command_word_alias("INSPECT", "INSPECT");
-  //inst.add_command_word_alias("TEST", "TEST");
-  //inst.add_command_word_alias("TEMP", "TEST");
-  //inst.add_command_word_alias("T", "TEST");
-
-  //std::cout << inst.command_word_aliases().count("INSPECT") << std::endl;
-
-  //auto list = inst.get_command_words_by_alias("INSPECT");
-
-  //for (auto const& x : list) {
-  //  std::cout << x << std::endl;
-  //}
-
-  //std::cout << shf::str_to_int("test") << std::endl;
   std::cout << "Hello World!" << std::endl;
 }

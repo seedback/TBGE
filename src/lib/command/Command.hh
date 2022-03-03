@@ -51,8 +51,14 @@ class Command{
    */
   std::string command_word() {return this->command_word_;}
 
-  //void command_action(CommandAction command_action);  // TODO(Seedback): implement CommandAction class + this function// NOLINT
-  //CommandAction command_action();  // TODO(Seedback): implement CommandAction class + this function// NOLINT
+  /// @todo (Seedback): implement CommandAction class +
+  ///                   command_action(CommandAction command_action)
+  /// @brief Setter for @ref command_action_
+  //void command_action(CommandAction command_action); // NOLINT
+  /// @brief Getter for @ref command_action_
+  /// @todo (Seedback): implement CommandAction class + command_action()
+  //CommandAction command_action(); // NOLINT
+
 
  private:
   /**
