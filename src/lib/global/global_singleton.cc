@@ -29,12 +29,12 @@ namespace global {
   *          containing command-word - alias pairs to replace the current
   *          @ref command_word_aliases_.
   */
-void GlobalSingleton::command_word_aliases(
-      std::multimap<std::string, std::string> command_word_aliases) {
+void GlobalSingleton::set_command_word_aliases(
+      std::multimap<std::string, std::string> new_command_word_aliases) {
     std::multimap<std::string, std::string> new_multimap;
     // Iterates through command_word_aliases with the iterator it
     for (std::multimap<std::string, std::string>::iterator it =
-         command_word_aliases.begin(); it != command_word_aliases.end();
+         new_command_word_aliases.begin(); it != new_command_word_aliases.end();
          ++it) {
       new_multimap.emplace(shf::toupper_string(it->first),
                            shf::toupper_string(it->second));
