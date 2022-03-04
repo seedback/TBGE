@@ -17,3 +17,9 @@ be needed to do a certain action for example, but this is still a ways away.
 ### Doxygen
 This whole project will be documented with the use of the Doxygen tool, and a link to this
 documentation can be found here: Link is coming soon
+
+### New releases
+As it stands the first release will happen when I have a rudimentary player-input system in
+place allowing for a rudimentary system of interacting with an example game, and with this
+release there will be included an example game-file. This example will of course be updated
+with each subsequent release.
