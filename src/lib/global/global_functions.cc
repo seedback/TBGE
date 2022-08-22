@@ -9,16 +9,19 @@
 * _____________________________
 */
 
-#include "src/lib/game_object/location.hh"
+#include "src/lib/global/global_functions.hh"
 
-#include "src/lib/game_object/exit.hh"
-
+#include <string>
+#include <iostream>
 
 namespace tbge {
+namespace global {
 
-void Location::add_exit(tbge::Exit* new_exit) {
-  add_child(new_exit);
-  exits_.push_back(new_exit);
+/// @todo make a proper markup parser
+void parse_print(std::string s) {
+  std::cout << s;
 }
 
+}  // namespace global
 }  // namespace tbge
+

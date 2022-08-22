@@ -22,7 +22,17 @@
 
 #include "toupper_string/toupper_string.hh"
 
+#include "src/lib/game_object/game_object.hh"
+
 namespace tbge {
+enum CommandAction {
+  kNoCommand,
+  kGo,
+  kLook,
+  kTake,
+  kUse,
+};
+
 /**
  * @class Command
  * @brief Holds a command-word and a command-action.
@@ -32,15 +42,21 @@ namespace tbge {
  */
 class Command{
  public:
-  Command();
-  //Command(std::string command_word, CommandAction command_action);  // TODO(Seedback): implement CommandAction class + this function// NOLINT
-  ~Command();
+  Command() {
+    command_action_ = CommandAction::kNoCommand;
+    command_word_ = "";
+  }
+  Command(std::string command_word, CommandAction command_action) {
+    command_action_ = command_action;
+    command_word_ = command_word;
+  }
+  ~Command() {}
 
   /**
    * @brief Setter for command_word_.
    * @param command_word std::string
    */
-  void command_word(std::string command_word) {
+  void set_command_word(std::string command_word) {
     this->command_word_ = shf::toupper_string(command_word);
   }
 
@@ -49,16 +65,21 @@ class Command{
    * @return std::string - uppercase representation of this
    *           command's command_word
    */
-  std::string command_word() {return this->command_word_;}
+  std::string get_command_word() {return this->command_word_;}
 
   /// @todo (Seedback): implement CommandAction class +
   ///                   command_action(CommandAction command_action)
   /// @brief Setter for @ref command_action_
-  //void command_action(CommandAction command_action); // NOLINT
+  void set_command_action(CommandAction command_action) {
+    command_action_ = command_action;
+  }
   /// @brief Getter for @ref command_action_
-  /// @todo (Seedback): implement CommandAction class + command_action()
-  //CommandAction command_action(); // NOLINT
+  CommandAction get_command_action() {
+    return command_action_;
+  }
 
+  void run_command(GameObject* game_object, CommandAction command_action);
+  bool check_command(GameObject* game_object, CommandAction command_action);
 
  private:
   /**
@@ -66,7 +87,7 @@ class Command{
    *        should be activated by.
    */
   std::string command_word_;
-  //CommandAction command_action;  // TODO(Seedback): implement CommandAction class // NOLINT
+  CommandAction command_action_;  // TODO(Seedback): implement CommandAction class // NOLINT
 };
 }  // namespace tbge
 

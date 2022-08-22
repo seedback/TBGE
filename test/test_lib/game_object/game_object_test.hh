@@ -32,7 +32,7 @@ TEST(GameObject, nameConstructor) {
 
 TEST(GameObject, copyConstructor) {
   int start_num_game_objects =
-      tbge::global::GlobalSingleton::get_instance().get_game_objects().size();
+      tbge::global::GameController::get_instance().get_game_objects().size();
 
   tbge::GameObject first_default = tbge::GameObject();
   tbge::GameObject first_name = tbge::GameObject("Some_Name");
@@ -57,7 +57,7 @@ TEST(GameObject, copyConstructor) {
   EXPECT_EQ(first_name.get_children(), actual.get_children());
 
   EXPECT_GT(
-      tbge::global::GlobalSingleton::get_instance().get_game_objects().size(),
+      tbge::global::GameController::get_instance().get_game_objects().size(),
       start_num_game_objects);
 }
 

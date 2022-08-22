@@ -8,3 +8,10 @@
 * _____________________________
 */
 
+#include "src/lib/game_object/interactable_object.hh"
+
+namespace tbge {
+
+
+
+}  // namespace tbge

@@ -9,16 +9,17 @@
 * _____________________________
 */
 
-#include "src/lib/game_object/location.hh"
-
 #include "src/lib/game_object/exit.hh"
 
+#include "src/lib/global/global_functions.hh"
+#include "src/lib/game_object/location.hh"
 
 namespace tbge {
 
-void Location::add_exit(tbge::Exit* new_exit) {
-  add_child(new_exit);
-  exits_.push_back(new_exit);
+void Exit::go() {
+  global::parse_print(description_on_go_);
+  global::parse_print(target_->get_description());
+  global::GameController::get_instance().set_cur_location(target_);
 }
 
 }  // namespace tbge

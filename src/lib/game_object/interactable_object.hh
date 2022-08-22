@@ -1,3 +1,4 @@
+// NOLINT(legal/copyright)
 /*
 * _____________________________
 *    _____ ____   ____ _____   
@@ -8,28 +9,29 @@
 * _____________________________
 */
 
-/*
-	Class definition for the basic interactable object class.
-	This class is used for all objects that will react to one or more
-		dynamically generated commands consisting of a command-word and one or
-		more descriptors.
-	Is not meant to be used by itself, but to be inherited from. Though items
-		that can be interacted with but with no other pre-defined behaviour other
-		than a description, this can be used.
-	OBS: Objects of this class cannot be added to an inventory.
-		For that see the ObtainableItems class
-*/
+// Class definition for the basic interactable object class.
+// This class is used for all objects that will react to one or more
+//   dynamically generated commands consisting of a command-word and one or
+//   more descriptors.
+// Is not meant to be used by itself, but to be inherited from.
 
+#ifndef TBGE_LIB_GAME_OBJECT_INTERACTABLE_OBJECT_HH_  // NOLINT
+#define TBGE_LIB_GAME_OBJECT_INTERACTABLE_OBJECT_HH_
 
 #include <string>
 #include <vector>
 
-//#include "lib/command/Command.hh"
+#include "src/lib/game_object/game_object.hh"
 
-class InteractableObjects {
-	public:
+// #include "lib/command/Command.hh"
 
-	private:
-		std::string name = "";
-		//std::vector<Command> commands;
+namespace tbge {
+class InteractableObject : public GameObject{
+ public:
+
+ private:
+
 };
+}  // namespace tbge
+
+#endif // #ifndef TBGE_LIB_GAME_OBJECT_INTERACTABLE_OBJECT_HH_  //NOLINT

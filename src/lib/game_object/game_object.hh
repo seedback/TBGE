@@ -15,7 +15,7 @@
 // hierarchically through a parent-child relationship-tree. @n @n
 // The class itself is not meant to be used directly, but every object in the
 // engine should be based on this vlass, allowing a master-list of all object
-// to be stored in the GlobalSingleton as pointers of type GameObject* allowi
+// to be stored in the GameController as pointers of type GameObject* allowi
 // for more safe destruction/construction between games in the same session.
 
 
@@ -27,17 +27,12 @@
 #include <string>
 #include <vector>
 
-#include "src/lib/global/global_singleton.hh"
+#include "src/lib/global/game_controller.hh"
 #include "src/lib/command/command.hh"
 
-// Forward declarations to fix cyclic inclusion
 namespace tbge {
-namespace global {
-class GlobalSingleton;
-}
-}
+enum CommandAction;
 
-namespace tbge {
 /**
  * @brief The base class for all objects in the engine.
  * @details This class has base functionality allowing the user to access the
@@ -45,7 +40,7 @@ namespace tbge {
  *          hierarchically through a parent-child relationship-tree. @n @n
  *          The class itself is not meant to be used directly, but every object
  *          in the engine should be based on this vlass, allowing a master-list
- *          of all objects to be stored in the GlobalSingleton as pointers of
+ *          of all objects to be stored in the GameController as pointers of
  *          type GameObject* allowing for more safe destruction/construction
  *          between games in the same session.
  */
@@ -58,25 +53,24 @@ class GameObject {
    *        @ref id_.  @n
    *        Automatically assigns a unique integer ID. @n
    *        Automatically registers this object in
-   *        @ref tbge::global::globalSingleton::game_objects_
+   *        @ref tbge::global::GameController::game_objects_
    */
-  GameObject() {
-    assign_id();
-    this->set_name(class_name_ + "_" + std::to_string(this->id_));
-    register_game_object();
-    children_ = std::vector<GameObject*>();
-    update_full_name();
-  }
+  GameObject();
   /** 
    * @brief Constructs a new Game Object object with a defined name instead of
    *        automatically generating it. @n
    *        Automatically assigns a unique integer ID. @n
    *        Automatically registers this object in
-   *        @ref tbge::global::globalSingleton::game_objects_
+   *        @ref tbge::global::GameController::game_objects_
    */
   // Note: inherits from default constructor to reuse the same code
   explicit GameObject(const std::string name) : GameObject() {
     set_name(name);
+  }
+
+  GameObject(const std::string name, std::string description) : GameObject() {
+    set_name(name);
+    set_description(description);
   }
   /// Copy constructor
   GameObject(const GameObject& game_object) {
@@ -130,6 +124,60 @@ class GameObject {
    */
   GameObject* get_child_by_name(std::string name);
 
+  /// @brief Setter for @ref descriptors_ @n
+  ///        Ensures that all descriptors are @b all-upper-case
+  void set_descriptors(std::vector<std::string> new_descriptors) {
+    descriptors_.clear();
+    for (int i = 0; i < new_descriptors.size(); i++) {
+      descriptors_.push_back(shf::toupper_string(new_descriptors[i]));
+    }
+  }
+  /// @brief Getter for @ref descriptors_
+  std::vector<std::string> get_descriptors() {
+    return descriptors_;
+  }
+  /// @brief adds a descriptor
+  void add_descriptor(std::string new_descriptor) {
+    descriptors_.push_back(shf::toupper_string(new_descriptor));
+  }
+
+  void set_description(std::string description) {
+    description_ = description;
+  }
+  std::string get_description() {
+    return description_;
+  }
+
+  /**
+   * @brief Go through all children, and children of children recursively that
+   *        fit all given descriptors
+   * @param descriptors List of given descriptors
+   * @return @a std::vector<GameObject*> A list of all child-objects with all
+   *         the given descriptors
+   */
+  std::vector<GameObject*> find_objects_by_descriptors(
+      std::vector<std::string> descriptors);
+
+  void set_valid_actions(std::vector<CommandAction> new_valid_actions) {
+    valid_actions_ = new_valid_actions;
+  }
+  std::vector<CommandAction> get_valid_actions() {
+    return valid_actions_;
+  }
+
+  void set_commands(std::vector<Command*> new_commands) {
+    commands_ = new_commands;
+  }
+  std::vector<Command*> get_command() {
+    return commands_;
+  }
+  void add_command(Command* new_command) {
+    commands_.push_back(new_command);
+  }
+  void add_command(Command& const new_command) {
+    add_command(&new_command);
+  }
+
  protected:
   /// @brief Adds @a new_child to @ref children_
   /// @see children_
@@ -143,6 +191,10 @@ class GameObject {
         children_.erase(children_.begin() + i);
       }
     }
+  }
+
+  void add_valid_action(CommandAction action) {
+    valid_actions_.push_back(action);
   }
 
  private:
@@ -181,7 +233,7 @@ class GameObject {
   }
 
   /// @brief Registers this object in
-  ///        tbge::global::GlobalSingleton::game_objects_
+  ///        tbge::global::GameController::game_objects_
   void register_game_object();
 
   /// @brief An automatically assigned ID, each ID is unique @n
@@ -237,6 +289,20 @@ class GameObject {
    * @see set_parent(GameObject*)
    */
   std::vector<GameObject*> children_;
+
+  /**
+   * @brief A list of all descriptors available on the objects.@n
+   *        These are used to differenciate objects from each other when using
+   *        a command.
+   */
+  std::vector<std::string> descriptors_;
+
+  std::string description_;
+    // add command object
+
+  std::vector<CommandAction> valid_actions_;
+
+  std::vector<Command*> commands_;
 };
 }  // namespace tbge
 

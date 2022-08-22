@@ -13,18 +13,31 @@
 
 #include <iostream>
 
-#include "src/lib/global/global_singleton.hh"
+#include "src/lib/global/game_controller.hh"
+#include "src/lib/command/command.hh"
 
 namespace tbge {
 
+
+GameObject::GameObject() {
+    assign_id();
+    this->set_name(class_name_ + "_" + std::to_string(this->id_));
+    register_game_object();
+    children_ = std::vector<GameObject*>();
+    update_full_name();
+
+    add_valid_action(CommandAction::kLook);
+    add_valid_action(CommandAction::kGo);
+  }
+
 /**
- * @see tbge::global::GlobalSingleton
- * @see tbge::global::GlobalSingleton::get_instance()
- * @see tbge::global::GlobalSingleton::add_game_object()
+ * @see tbge::global::GameController
+ * @see tbge::global::GameController::get_instance()
+ * @see tbge::global::GameController::add_game_object()
  */
 void GameObject::register_game_object() {
-  tbge::global::GlobalSingleton& global_singleton =
-      global::GlobalSingleton::get_instance();
+  tbge::global::GameController& global_singleton =
+      global::GameController::get_instance();
 
   global_singleton.add_game_object(this);
 }
@@ -73,7 +86,6 @@ void GameObject::set_parent(GameObject& const new_parent) {
  */
 GameObject* GameObject::get_child_by_name(std::string name) {
   std::string cur_name = "";
-
   /*
    * Going throug @a name, appending the first character each time onto
    * @a cur_name and deleting it from @a name, until a dot is separating dot
@@ -100,5 +112,57 @@ GameObject* GameObject::get_child_by_name(std::string name) {
     }
   }
   return nullptr;
+}
+
+/**
+ * @brief 
+ * @param descriptors 
+ * @return std::vector<GameObject*> 
+ */
+std::vector<GameObject*> GameObject::find_objects_by_descriptors(
+    std::vector<std::string> descriptors) {
+  std::vector<GameObject*> described_objects;
+  for (auto& i : descriptors) i = shf::toupper_string(i);
+
+  for (auto& i : descriptors) {
+    std::cout << "input descriptors: " << i << std::endl;
+    for (auto& n :
+        global::GameController::get_instance().get_words_by_alias(i)) {
+      std::cout << "aliases: " << n << std::endl;
+    }
+  }
+
+  for (auto& i : descriptors_) std::cout << ". ." << i << std::endl;
+
+  // For each given descriptor, at least one valid word should match at least
+  // one of the object's descriptors.
+  bool object_is_described = true;
+  for (auto& desc : descriptors) {
+    bool desc_is_valid = false;
+    for (auto& local_desc : descriptors_) {
+      if (global::GameController::get_instance().check_alias_of_word(desc,
+          local_desc)) {
+        desc_is_valid = true;
+      }
+    }
+    if (!desc_is_valid) {
+      object_is_described = false;
+    }
+  }
+
+  std::cout << object_is_described << std::endl;
+
+  if (object_is_described) {
+    std::cout << "described" << std::endl;
+    described_objects.push_back(this);
+  }
+
+  for (auto& i : children_) {
+    std::vector<GameObject*> temp =
+        i->find_objects_by_descriptors(descriptors);
+    described_objects.insert(described_objects.end(),
+        temp.begin(), temp.end());
+  }
+  return described_objects;
 }
 }  // namespace tbge
