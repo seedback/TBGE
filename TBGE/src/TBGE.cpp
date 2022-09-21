@@ -3,9 +3,11 @@
 
 #include <iostream>
 
+#include "include\global\global_singleton.h"
+
 int main()
-{
-    std::cout << "Hello World!\n";
+{  
+  std::cout << "Hello World!" << std::endl << tbge::global::global.s << std::endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
