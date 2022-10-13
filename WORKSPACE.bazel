@@ -3,12 +3,14 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 git_repository(
     name = "gtest",
     remote = "https://github.com/google/googletest",
-    tag = "release-1.11.0",
+    commit = "58d77fa8070e8cec2dc1ed015d66b454c8d78850",
+    shallow_since = "1656350095 -0400",
+    recursive_init_submodules = True,
 )
 
 git_repository(
-    name = "shf",
-    remote = "https://github.com/seedback/seedback_helper_functions",
-    tag = "v0.0.1"
+    name = "shl",
+    remote = "https://https://github.com/seedback/SHL",
+    # tag = "v0.0.1"
     #commit = "2af5b39f5b091561e3fa0661f96217ef8109d65c"
 )

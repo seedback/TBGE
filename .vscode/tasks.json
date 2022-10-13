@@ -1,0 +1,56 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build release",
+      "type": "shell",
+      "command": "bazel build :release",
+      "windows":{
+        "command": "bazel build :release",
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "build debug",
+      "type": "shell",
+      "command": "bazel build :dev -c dbg",
+      "windows":{
+        "command": "bazel build :dev -c dbg",
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+    {
+      "label": "test all",
+      "type": "shell",
+      "command": "bazel test --test_output=all //:test_all",
+      "windows":{
+        "command": "bazel test --test_output=all //:test_all",
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    },
+  ]
+}

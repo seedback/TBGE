@@ -333,7 +333,7 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
-.vscode/
+#.vscode/
 
 bazel-bin/**/*
 bazel-out/**/*
