@@ -4,9 +4,9 @@
     {
       "label": "build release",
       "type": "shell",
-      "command": "bazel build :release",
+      "command": "bazel build :release;echo \"\n#### RELEASE ####\n\";./bazel-bin/release.exe",
       "windows":{
-        "command": "bazel build :release",
+        "command": "bazel build :release;echo \"\n#### RELEASE ####\n\";./bazel-bin/release.exe",
       },
       "group": "build",
       "presentation": {
@@ -21,9 +21,9 @@
     {
       "label": "build debug",
       "type": "shell",
-      "command": "bazel build :dev -c dbg",
+      "command": "bazel build :debug -c dbg;echo \"\n#### DEBUG ####\n\";./bazel-bin/debug.exe",
       "windows":{
-        "command": "bazel build :dev -c dbg",
+        "command": "bazel build :debug -c dbg;echo \"\n#### DEBUG ####\n\";./bazel-bin/debug.exe",
       },
       "group": "build",
       "presentation": {
@@ -38,9 +38,9 @@
     {
       "label": "test all",
       "type": "shell",
-      "command": "bazel test --test_output=all //:test_all",
+      "command": "bazel test --test_output=all ////:test_all",
       "windows":{
-        "command": "bazel test --test_output=all //:test_all",
+        "command": "bazel test --test_output=all ///:test_all",
       },
       "group": "test",
       "presentation": {

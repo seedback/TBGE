@@ -1,10 +1,10 @@
 // NOLINT(legal/copyright)
-#include "src/lib/game_object/game_object.h"
+#include "lib/game_object/game_object.h"
 
 #include "gtest/gtest.h"
 
 // Demonstrate some basic assertions.
-TEST(HelloTest, BasicAssertions) {
+TEST(HelloTest3, BasicAssertions3) {
   GameObject go;
 
   EXPECT_EQ(go.getId(), 23);

@@ -1,26 +1,30 @@
 cc_binary(
   name = "release",
-  srcs = glob(["src/lib/**/*.cpp"]) + 
-    ["src/main.cpp"],
-  includes = glob(["src/lib/**/*.h"]),
+  srcs = glob(["lib/**/*.cpp"]) + 
+    ["main.cpp"],
+  includes = glob(["lib/**/*.h"]),
+  deps = [
+    "@shl"
+  ],
 )
 
 cc_binary(
   name = "debug",
-  srcs = glob(["src/lib/**/*.cpp"]) + 
-    ["src/main.cpp"],
-  includes = glob(["src/lib/**/*.h"]),
+  srcs = glob(["lib/**/*.cpp"]) + 
+    ["main.cpp"],
+  includes = glob(["lib/**/*.h"]),
+  deps = [
+    "@shl"
+  ],
 )
 
 cc_test(
   name = "test_all",
   size = "small",
-  srcs = glob([
-    "src/lib/**/*.cpp",
-    "src/tests/**/*.cpp"
-  ]),
-  includes = glob([
-    "src/lib/**/*.h"
-  ]),
-  deps = ["@gtest//:gtest_main"],
+  srcs = glob(["tests/*.cpp", "lib/**/*.cpp"]),
+  includes = glob(["lib/**/*.h"]),
+  deps = [
+    "@gtest//:gtest_main",
+    "@shl//:shl"
+  ],
 )
