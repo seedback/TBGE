@@ -10,7 +10,7 @@ git_repository(
 
 git_repository(
     name = "shl",
-    remote = "https://github.com/seedback/SHL",
+    remote = "https://github.com/seedback/SHL/",
     commit = "857996c6b0534da25ec707a915d556d5dba4b98b",
     shallow_since = "1665780604 +0200",
 )
