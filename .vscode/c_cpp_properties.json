@@ -6,7 +6,8 @@
                 "${default}",
                 "${workspaceFolder}",
                 "${workspaceFolder}/bazel-tbge/external/gtest/googletest/include",
-                "D:/C++/Compilers/mingw/mingw64/**" // Needs to point to default include path
+                "${workspaceFolder}/bazel-tbge/external/gtest/googlemock/include",
+                "C:/msys64/mingw64/include/**" // Needs to point to default include path
             ],
             "windowsSdkVersion": "10.0.19041.0",
             "cStandard": "c17",

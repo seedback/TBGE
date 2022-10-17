@@ -19,7 +19,7 @@ cc_binary(
 )
 
 cc_test(
-  name = "test_all",
+  name = "all",
   size = "small",
   srcs = glob(["tests/*.cpp", "lib/**/*.cpp"]),
   includes = glob(["lib/**/*.h"]),
