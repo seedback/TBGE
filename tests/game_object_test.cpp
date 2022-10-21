@@ -1,24 +1,28 @@
-// NOLINT(legal/copyright)
+#include <vector>
+
 #include "lib/game_object/game_object.h"
 
 #include "gtest/gtest.h"
 
 // Demonstrate some basic assertions.
-TEST(HelloTest3, BasicAssertions3) {
-  GameObject go;
+TEST(GameObjectClass, FullConstructor) {
+  tbge::Game game = tbge::Game();
+  
+  tbge::GameObject parent = tbge::GameObject(&game, "parent");
+  tbge::GameObject child1 = tbge::GameObject(&game, "child1");
+  tbge::GameObject child2 = tbge::GameObject(&game, "child2");
+  tbge::GameObject child3 = tbge::GameObject(&game, "child3");
 
-  EXPECT_EQ(go.getId(), 23);
+  std::vector<tbge::GameObject*> children;
+  children.push_back(&child1);
+  children.push_back(&child2);
+  children.push_back(&child3);
 
+  tbge::GameObject go0 = tbge::GameObject(&game, &parent, children, "game_object_0");
 
-  // Expect two strings not to be equal.
-  EXPECT_STRNE("hello", "world");
-  // Expect equality.
-  EXPECT_EQ(7 * 6, 42);
-}
+  EXPECT_EQ(go0.game, &game);
+  EXPECT_EQ(go0.get_parent(), &parent);
+  EXPECT_EQ(go0.get_children(), children);
 
-TEST(TbgeTest, GameObjectGetId) {
-  GameObject go;
-
-
-  EXPECT_EQ(go.getId(), 23);
+  EXPECT_EQ(1,1);
 }

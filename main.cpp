@@ -4,25 +4,14 @@
 
 #include "lib/object/object.h"
 #include "lib/game_object/game_object.h"
+#include "lib/game/game.h"
 
 int main() {
-  tbge::Object ob0;
-  tbge::Object ob1;
-  tbge::Object ob2;
-  tbge::Object ob3;
-  tbge::Object ob4;
-  tbge::Object ob5;
+  tbge::Game g0 = tbge::Game();
 
-  std::cout << ob0.getId() << std::endl
-            << ob1.getId() << std::endl
-            << ob2.getId() << std::endl
-            << ob3.getId() << std::endl
-            << ob4.getId() << std::endl
-            << ob5.getId() << std::endl;
+  tbge::GameObject go0 = tbge::GameObject(&g0, "test");
 
-  GameObject go;
-
-  std::cout << "aaaHello World!" << go.getId() << std::endl;
+  std::cout << "Hello World!" << std::endl;
 
   system("PAUSE");
 }
