@@ -7,6 +7,7 @@
  * for future unforseen usecases
  */
 
+// NOLINT(build/header_guard)
 #ifndef TBGE_LIB_OBJECT_OBJECT_H_
 #define TBGE_LIB_OBJECT_OBJECT_H_
 
@@ -16,7 +17,9 @@ namespace tbge {
 class Object {
  public:
   Object();
-  Object(std::string);
+  explicit Object(std::string);
+  
+  bool Object::operator== (const Object&);  //TODO(Seedback): Test
 
   int get_id();
 
@@ -26,13 +29,16 @@ class Object {
 
   Object& set_name(std::string);
 
+ protected:
+  Object& _set_id(int);
+
  private:
   int assignId();
 
-  int id_;
+  int id_ = -1;
   std::string name_;
 };
 
-} // namespace tbge
+}  // namespace tbge
 
 #endif  // TBGE_LIB_OBJECT_OBJECT_H_
