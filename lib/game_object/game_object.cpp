@@ -58,6 +58,15 @@ std::vector<GameObject*> GameObject::get_children() {
   return children_;
 }
 
+GameObject* GameObject::get_child_by_index(int index) {
+  std::cout << children_[index] << std::endl << (index >= 0 && index < children_.size()) << std::endl;
+  if (index >= 0 && index < children_.size()) {
+    std::cout << "true" << std::endl;
+    return children_[index];
+  }
+  return nullptr;
+}
+
 GameObject& GameObject::add_child(GameObject* child) {
   for(GameObject* c : children_) {
     if (child == c) {

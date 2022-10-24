@@ -19,7 +19,8 @@ namespace tbge {
 
 class GameObject : public Object {
  public:
-  GameObject() = delete; // GameObjects has to exist in a Game
+  // No default constructor because GameObjects has to exist in a Game
+  GameObject() = delete;
   GameObject(GameObject&); // TODO: implement
   GameObject(Game*); // TODO: implement
   GameObject(Game*, std::string); // TODO: implement
@@ -30,6 +31,7 @@ class GameObject : public Object {
 
   ~GameObject(){}
 
+  // Sets parent, and if parent is already set, removes this from the parents children list
   GameObject& set_parent(GameObject*);
   GameObject* get_parent(); // TODO: implement
   GameObject& remove_parent(); // TODO: implement

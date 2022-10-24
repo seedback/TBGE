@@ -12,6 +12,7 @@
 #include <string>
 
 #include "lib/object/object.h"
+#include "lib/game_object/game_object.h"
 
 namespace tbge
 {
