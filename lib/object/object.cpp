@@ -42,7 +42,7 @@ std::string Object::get_name() {
 /**
  * @brief Returns the full name of the object, which is on the format
  *        @c [parent.full_name].[this.name] @n
- *        NOTE: an object of type tbge::Object cannot have a parent thus
+ *        @note An object of type tbge::Object cannot have a parent thus
  *        get_full_name just returns the name, this is intended to be overridden
  *        in sub-classes
  */
@@ -54,18 +54,22 @@ std::string Object::get_full_name() {
  * @return @c this to allow for method-chaining
  */
 Object& Object::set_name(std::string name) {
-  if(name.size() > 0) {
+  if (name.size() > 0) {
     name_ = name;
     return *this;
   }
-  name_ = name_ = get_class_name() + "_" + std::to_string(id_);
+  name_ = get_class_name() + "_" + std::to_string(id_);
+  return *this;
+}
+
+Object& Object::_set_id(int id) {
+  id_ = id;
   return *this;
 }
 
 int Object::assignId() {
-  static int id_counter = -1;
-  id_counter++;
-  id_ = id_counter;
+  static int id_counter = 0;
+  id_ = id_counter++;
   return id_counter;
 }
 

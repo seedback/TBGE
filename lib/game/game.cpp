@@ -13,11 +13,16 @@ namespace tbge{
 
 Game::Game() : Object("") {
   set_name("");
+  dud_game_object_ = new GameObject();
 }
 Game::Game(std::string name) : Object(name) {}
 
 std::string Game::get_class_name() {
   return "Game";
+}
+
+GameObject* Game::get_dud_game_object() {
+  return dud_game_object_;
 }
 
 } // namespace tbge
