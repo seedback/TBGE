@@ -25,12 +25,15 @@ GameObject::GameObject(GameObject& obj) {
 }
 GameObject::GameObject(Game* game, std::string name) :
             GameObject(game, nullptr, std::vector<GameObject*>(), name) {}
+
 GameObject::GameObject(Game* game, GameObject* parent, std::string name) :
             GameObject(game, parent, std::vector<GameObject*>(), name) {}
+
 GameObject::GameObject(Game* game,
                        std::vector<GameObject*> children,
                        std::string name) :
             GameObject(game, nullptr, children, name) {}
+
 GameObject::GameObject(Game* game,
                        GameObject* parent,
                        std::vector<GameObject*> children,
@@ -53,6 +56,21 @@ bool GameObject::operator== (const Object& rhs) {
   return true;
 }
 
+GameObject::~GameObject() {
+  // Game.unregister_game_object(this);
+  std::cout << "destructor " << get_name() << " : " << get_id() << std::endl;
+  if (get_id() != -1) {
+    remove_parent();
+    std::cout << "destructor2 " << children_.size() << std::endl;
+    while (children_.size() > 0) {
+      std::cout << "destructor3 " << children_.at(0)->get_name() << std::endl;
+      remove_child(children_.at(0));
+    }
+  }
+
+  std::cout << "destructor4" << std::endl;
+}
+
 GameObject& GameObject::set_parent(GameObject* parent) {
   if (parent_ == parent) {
     return *this;
@@ -70,6 +88,7 @@ GameObject* GameObject::get_parent() {
 }
 
 GameObject& GameObject::remove_parent() {
+  std::cout << "Remove parent " << get_name() << std::endl;
   return remove_parent_actual(false);
 }
 
@@ -153,20 +172,29 @@ std::string GameObject::get_full_name() {
 }
 
 GameObject& GameObject::remove_parent_actual(bool isFinal) {
-  if (!isFinal) {
+  std::cout << "Remove parent actual " << get_name() << std::endl;
+  if (!isFinal && parent_) {
+    std::cout << "Remove parent actual1" << std::endl;
+    std::cout << parent_ << std::endl;
+    std::cout << parent_->get_id() << std::endl;
+    std::cout << parent_->get_class_name() << std::endl;
     parent_->remove_child_actual(this, true);
   }
+  std::cout << "Remove parent actual2" << std::endl;
   parent_ = nullptr;
+  std::cout << "Remove parent actual3" << std::endl;
   return *this;
 }
 
 GameObject& GameObject::remove_child_actual(GameObject* child, bool isFinal) {
+  std::cout << "Remove child actual " << get_name() << std::endl;
   for (int i = 0; i < children_.size(); i++) {
     if (children_.at(i) == child) {
-      remove_child_by_index(i);
-      return *this;
+      std::cout << "Remove child actual2 " << children_.at(i)->get_name() << " : " << children_.size() << std::endl;
+      return remove_child_by_index(i);
     }
   }
+  std::cout << "Remove child actual3" << std::endl;
   return *this;
 }
 

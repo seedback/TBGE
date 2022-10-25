@@ -30,7 +30,7 @@ class GameObject : public Object {
    */
   GameObject();
   GameObject(GameObject&);
-  GameObject(Game*, std::string = "");
+  explicit GameObject(Game*, std::string = "");
   GameObject(Game*, GameObject*, std::string = "");
   GameObject(Game*, std::vector<GameObject*>, std::string = "");
   GameObject(Game*, GameObject*, std::vector<GameObject*>, std::string = "");
@@ -42,7 +42,7 @@ class GameObject : public Object {
   bool GameObject::operator== (const GameObject&);
   bool GameObject::operator== (const Object&);
 
-  ~GameObject() {}  //TODO(Seedback): Implement
+  ~GameObject();  // TODO(Seedback): Implement
 
   /**
    * @details Sets @c this.parent_ to @a parent. If @c this.parent_ is already

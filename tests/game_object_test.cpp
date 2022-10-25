@@ -25,6 +25,7 @@ class GameObjectClass : public ::testing::Test {
     child4 = tbge::GameObject(&game, "child4");
 
     children1 = std::vector<tbge::GameObject*>();
+    children2 = std::vector<tbge::GameObject*>();
 
     children1.push_back(&child1);
     children1.push_back(&child2);
@@ -32,9 +33,6 @@ class GameObjectClass : public ::testing::Test {
 
     children2.push_back(&child4);
     children2.push_back(&child5);
-  }
-
-  virtual void TearDown() {
   }
 
   tbge::Object object1;
@@ -66,7 +64,7 @@ TEST_F(GameObjectClass, DefaultConstructor) {
 
 TEST_F(GameObjectClass, CopyConstructor) {
   tbge::GameObject go0 = tbge::GameObject(&game, &parent1, children1,
-                                          "game_object_0");                      
+                                          "game_object_0");
   tbge::GameObject goc = tbge::GameObject(go0);
 
   EXPECT_TRUE(go0 == goc);
@@ -154,7 +152,8 @@ TEST_F(GameObjectClass, ConstructorGameParentChildren) {
 }
 
 TEST_F(GameObjectClass, FullConstructor) {
-  tbge::GameObject go0 = tbge::GameObject(&game, &parent1, children1, "test_game_object");
+  tbge::GameObject go0 = tbge::GameObject(&game, &parent1, children1,
+                                          "test_game_object");
 
   EXPECT_EQ(go0.get_name(), "test_game_object");
   EXPECT_EQ(go0.get_game(), &game);
@@ -169,24 +168,29 @@ TEST_F(GameObjectClass, FullConstructor) {
 }
 
 TEST_F(GameObjectClass, OperatorDoubleEqualsGameObject) {
-  tbge::GameObject go0 = tbge::GameObject(&game, &parent1, children1, "test_game_object1");
-  tbge::GameObject go1 = tbge::GameObject(&game, &parent1, children1, "test_game_object1");
-  tbge::GameObject go2 = tbge::GameObject(&game, &parent1, children2, "test_game_object1");
+  tbge::GameObject go0 = tbge::GameObject(&game, &parent1, children1,
+                                          "test_game_object1");
+  tbge::GameObject go1 = tbge::GameObject(&game, &parent1, children1,
+                                          "test_game_object1");
 
   EXPECT_TRUE(go0 == go1);
-  EXPECT_TRUE(go0 == go2);
 
-  go2 = tbge::GameObject(&game2, &parent1, children1, "test_game_object1");
-  EXPECT_FALSE(go0 == go2);
-  go2 = tbge::GameObject(&game, &parent2, children1, "test_game_object1");
-  EXPECT_FALSE(go0 == go2);
-  go2 = tbge::GameObject(&game, &parent1, children1, "test_game_object2");
-  EXPECT_FALSE(go0 == go2);
+  go1 = tbge::GameObject(&game, &parent1, children2, "test_game_object1");
+  EXPECT_TRUE(go0 == go1);
+
+  go1 = tbge::GameObject(&game2, &parent1, children1, "test_game_object1");
+  EXPECT_FALSE(go0 == go1);
+  go1 = tbge::GameObject(&game, &parent2, children1, "test_game_object1");
+  EXPECT_FALSE(go0 == go1);
+  go1 = tbge::GameObject(&game, &parent1, children1, "test_game_object2");
+  EXPECT_FALSE(go0 == go1);
 }
 
 TEST_F(GameObjectClass, OperatorDoubleEqualsObject) {
-  tbge::GameObject go0 = tbge::GameObject(&game, &parent1, children1, "test_object");
-  tbge::GameObject go1 = tbge::GameObject(&game, &parent1, children1, "test_game_object1");
+  tbge::GameObject go0 = tbge::GameObject(&game, &parent1, children1,
+                                          "test_object");
+  tbge::GameObject go1 = tbge::GameObject(&game, &parent1, children1,
+                                          "test_game_object1");
 
   EXPECT_TRUE(go0 == object1);
   EXPECT_FALSE(go1 == object1);
