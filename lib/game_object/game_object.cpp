@@ -18,14 +18,19 @@ GameObject::GameObject() {
   set_name(get_class_name() + "_dud");
   _set_id(-1);
 }
-GameObject::GameObject(Game* game) :
-            GameObject(game, nullptr, std::vector<GameObject*>(), "") {}
+GameObject::GameObject(GameObject& obj) {
+  set_name(obj.get_name());
+  game = obj.get_game();
+  parent_ = obj.get_parent();
+}
 GameObject::GameObject(Game* game, std::string name) :
             GameObject(game, nullptr, std::vector<GameObject*>(), name) {}
-GameObject::GameObject(Game* game, GameObject* parent) :
-            GameObject(game, parent, std::vector<GameObject*>(), "") {}
 GameObject::GameObject(Game* game, GameObject* parent, std::string name) :
             GameObject(game, parent, std::vector<GameObject*>(), name) {}
+GameObject::GameObject(Game* game,
+                       std::vector<GameObject*> children,
+                       std::string name) :
+            GameObject(game, nullptr, children, name) {}
 GameObject::GameObject(Game* game,
                        GameObject* parent,
                        std::vector<GameObject*> children,
@@ -36,16 +41,25 @@ GameObject::GameObject(Game* game,
   set_name(name);
 }
 
+bool GameObject::operator== (const GameObject& rhs) {
+  if (!Object::operator==(rhs)) return false;
+  if (game != rhs.game) return false;
+  if (parent_ != rhs.parent_) return false;
+  return true;
+}
+
+bool GameObject::operator== (const Object& rhs) {
+  if (!Object::operator==(rhs)) return false;
+  return true;
+}
+
 GameObject& GameObject::set_parent(GameObject* parent) {
   if (parent_ == parent) {
-    std::cout << "has same parent"<< std::endl;
     return *this;
   }
   if (parent_) {
-    std::cout << "has a parent"<< std::endl;
     parent_->remove_child(this);
   }
-  std::cout << "setting parent"<< std::endl;
   parent_ = parent;
   parent_->add_child(this);
   return *this;
@@ -107,6 +121,7 @@ GameObject& GameObject::add_child(GameObject* child) {
     }
   }
   children_.push_back(child);
+  child->set_parent(this);
   return *this;
 }
 
@@ -114,20 +129,9 @@ GameObject& GameObject::remove_child(GameObject* child) {
   return remove_child_actual(child, false);
 }
 
-GameObject& GameObject::remove_child_actual(GameObject* child, bool isFinal) {
-  for (int i = 0; i < children_.size(); i++) {
-    if (children_.at(i) == child) {
-      children_.at(i)->remove_parent_actual(true);
-      remove_child_by_index(i);
-      return *this;
-    }
-  }
-  return *this;
-}
-
 GameObject& GameObject::remove_child_by_index(int index) {
-  if (index > 0 && index < children_.size()) {
-    children_.at(index)->remove_parent();
+  if (index >= 0 && index < children_.size()) {
+    children_.at(index)->remove_parent_actual(true);
     children_.erase(children_.begin() + index);
   }
   return *this;
@@ -153,6 +157,16 @@ GameObject& GameObject::remove_parent_actual(bool isFinal) {
     parent_->remove_child_actual(this, true);
   }
   parent_ = nullptr;
+  return *this;
+}
+
+GameObject& GameObject::remove_child_actual(GameObject* child, bool isFinal) {
+  for (int i = 0; i < children_.size(); i++) {
+    if (children_.at(i) == child) {
+      remove_child_by_index(i);
+      return *this;
+    }
+  }
   return *this;
 }
 

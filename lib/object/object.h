@@ -18,6 +18,8 @@ class Object {
  public:
   Object();
   explicit Object(std::string);
+  
+  bool Object::operator== (const Object&);  //TODO(Seedback): Test
 
   int get_id();
 

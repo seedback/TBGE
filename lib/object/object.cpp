@@ -27,6 +27,11 @@ Object::Object(std::string name) {
   name_ = get_class_name() + "_" + std::to_string(id_);
 }
 
+bool Object::operator== (const Object& rhs) {
+  if (name_ != rhs.name_) return false;
+  return true;
+}
+
 int Object::get_id() {
   return id_;
 }

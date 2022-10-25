@@ -29,19 +29,20 @@ class GameObject : public Object {
    *          instance.
    */
   GameObject();
-  GameObject(GameObject&);  // TODO(Seedback): implement
-  explicit GameObject(Game*);  // TODO(Seedback): implement
-  GameObject(Game*, std::string);  // TODO(Seedback): implement
-  GameObject(Game*, GameObject*);  // TODO(Seedback): implement
-  GameObject(Game*, GameObject*, std::string);  // TODO(Seedback): implement
-  GameObject(Game*, std::vector<GameObject*>);  // TODO(Seedback): implement
-  // TODO(Seedback): implement
-  GameObject(Game*, std::vector<GameObject*>, std::string);
-  // TODO(Seedback): implement
-  GameObject(Game*, GameObject*, std::vector<GameObject*>);
-  GameObject(Game*, GameObject*, std::vector<GameObject*>, std::string);
+  GameObject(GameObject&);
+  GameObject(Game*, std::string = "");
+  GameObject(Game*, GameObject*, std::string = "");
+  GameObject(Game*, std::vector<GameObject*>, std::string = "");
+  GameObject(Game*, GameObject*, std::vector<GameObject*>, std::string = "");
+  /**
+   * @note Ignores @a children_ and @a id_ as these can never be the same
+   *       because each game_object can only ever have one parent, and each id
+   *       (except -1) is unique.
+  */
+  bool GameObject::operator== (const GameObject&);
+  bool GameObject::operator== (const Object&);
 
-  ~GameObject() {}
+  ~GameObject() {}  //TODO(Seedback): Implement
 
   /**
    * @details Sets @c this.parent_ to @a parent. If @c this.parent_ is already
@@ -50,7 +51,7 @@ class GameObject : public Object {
    * @return GameObject& Reference to @c this to allow for method-chaining
    */
   GameObject& set_parent(GameObject*);
-  GameObject* get_parent();  // TODO(Seedback): implement
+  GameObject* get_parent();
   GameObject& remove_parent();  // TODO(Seedback): implement
 
   // TODO(Seedback): implement
