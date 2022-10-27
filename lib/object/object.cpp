@@ -24,7 +24,7 @@ Object::Object(std::string name) {
     name_ = name;
     return;
   }
-  name_ = get_class_name() + "_" + std::to_string(id_);
+  name_ = GetClassName() + "_" + std::to_string(id_);
 }
 
 bool Object::operator== (const Object& rhs) {
@@ -36,7 +36,7 @@ int Object::get_id() {
   return id_;
 }
 
-std::string Object::get_class_name() {
+std::string Object::GetClassName() {
   return "Object";
 }
 
@@ -48,10 +48,10 @@ std::string Object::get_name() {
  * @brief Returns the full name of the object, which is on the format
  *        @c [parent.full_name].[this.name] @n
  *        @note An object of type tbge::Object cannot have a parent thus
- *        get_full_name just returns the name, this is intended to be overridden
+ *        GetFullName just returns the name, this is intended to be overridden
  *        in sub-classes
  */
-std::string Object::get_full_name() {
+std::string Object::GetFullName() {
   return get_name();
 }
 
@@ -63,7 +63,7 @@ Object& Object::set_name(std::string name) {
     name_ = name;
     return *this;
   }
-  name_ = get_class_name() + "_" + std::to_string(id_);
+  name_ = GetClassName() + "_" + std::to_string(id_);
   return *this;
 }
 

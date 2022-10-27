@@ -13,14 +13,14 @@ TEST(ObjectClass, Constructor) {
   int id = ob0.get_id();
 
   EXPECT_EQ(ob0.get_name(), "Object_" + std::to_string(id));
-  EXPECT_EQ(ob0.get_full_name(), "Object_" + std::to_string(id));
+  EXPECT_EQ(ob0.GetFullName(), "Object_" + std::to_string(id));
 }
 
 TEST(ObjectClass, ConstructorName) {
   tbge::Object ob0 = tbge::Object("object_name");
 
   EXPECT_EQ(ob0.get_name(), "object_name");
-  EXPECT_EQ(ob0.get_full_name(), "object_name");
+  EXPECT_EQ(ob0.GetFullName(), "object_name");
 }
 
 TEST(ObjectClass, IdsAssignedSequentially) {
@@ -52,6 +52,6 @@ TEST(ObjectClass, SetGetName) {
 TEST(ObjectClass, GetFullName) {
   tbge::Object ob0;
   
-  EXPECT_EQ(ob0.get_full_name(), "Object_" + std::to_string(ob0.get_id()));
-  EXPECT_EQ(ob0.set_name("Test Object").get_full_name(), "Test Object");
+  EXPECT_EQ(ob0.GetFullName(), "Object_" + std::to_string(ob0.get_id()));
+  EXPECT_EQ(ob0.set_name("Test Object").GetFullName(), "Test Object");
 }

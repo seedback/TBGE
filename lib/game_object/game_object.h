@@ -42,7 +42,7 @@ class GameObject : public Object {
   bool GameObject::operator== (const GameObject&);
   bool GameObject::operator== (const Object&);
 
-  ~GameObject();  // TODO(Seedback): Implement
+  ~GameObject();
 
   /**
    * @details Sets @c this.parent_ to @a parent. If @c this.parent_ is already
@@ -50,42 +50,41 @@ class GameObject : public Object {
    *          @c children_ list
    * @return GameObject& Reference to @c this to allow for method-chaining
    */
-  GameObject& set_parent(GameObject*);
-  GameObject* get_parent();
-  GameObject& remove_parent();  // TODO(Seedback): implement
+  GameObject& SetParent(GameObject*);
+  GameObject* GetParent();
+  GameObject& RemoveParent();
 
+  GameObject& SetChildren(std::vector<GameObject*>);
+  int GetNumChildren();
+  std::vector<GameObject*> GetChildren();
+  GameObject* GetChildByIndex(int);  // TODO(Seedback): implement
+  GameObject* GetChildById(int);  // TODO(Seedback): implement
+  GameObject* GetChildByName(std::string);  // TODO(Seedback): implement
+
+  GameObject& AddChild(GameObject*);
   // TODO(Seedback): implement
-  GameObject& set_children(std::vector<GameObject*>);
-  int get_num_children();  // TODO(Seedback): implement
-  std::vector<GameObject*> get_children();  // TODO(Seedback): implement
-  GameObject* get_child_by_index(int);  // TODO(Seedback): implement
-  GameObject* get_child_by_id(int);  // TODO(Seedback): implement
-  GameObject* get_child_by_name(std::string);  // TODO(Seedback): implement
+  GameObject& AddChildren(std::vector<GameObject*>);
 
-  GameObject& add_child(GameObject*);
-  // TODO(Seedback): implement
-  GameObject& add_children(std::vector<GameObject*>);
+  GameObject& RemoveChild(GameObject*);
+  GameObject& RemoveChildByIndex(int);  // TODO(Seedback): implement
+  GameObject& RemoveChildById(int);  // TODO(Seedback): implement
+  GameObject& RemoveChildByName(std::string);  // TODO(Seedback): implement
 
-  GameObject& remove_child(GameObject*);
-  GameObject& remove_child_by_index(int);  // TODO(Seedback): implement
-  GameObject& remove_child_by_id(int);  // TODO(Seedback): implement
-  GameObject& remove_child_by_name(std::string);  // TODO(Seedback): implement
+  Game* GetGame();
 
-  Game* get_game();
-
-  std::string get_class_name() override;
+  std::string GetClassName() override;
   /**
    * @brief Returns the full name of the object, which is on the format
    *        @c [parent.full_name].[this.name]
    */
-  std::string get_full_name() override;  // TODO(Seedback): implement
+  std::string GetFullName() override;  // TODO(Seedback): implement
 
  protected:
   Game* game = nullptr;
 
  private:
-  GameObject& remove_parent_actual(bool);
-  GameObject& remove_child_actual(GameObject*, bool);
+  GameObject& RemoveParentActual(bool);
+  GameObject& RemoveChildActual(GameObject*, bool);
 
   GameObject* parent_ = nullptr;
   std::vector<GameObject*> children_;

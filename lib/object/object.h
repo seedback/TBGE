@@ -24,8 +24,8 @@ class Object {
   int get_id();
 
   std::string get_name();
-  virtual std::string get_class_name();
-  virtual std::string get_full_name();
+  virtual std::string GetClassName();
+  virtual std::string GetFullName();
 
   Object& set_name(std::string);
 

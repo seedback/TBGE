@@ -17,7 +17,7 @@ Game::Game() : Object("") {
 }
 Game::Game(std::string name) : Object(name) {}
 
-std::string Game::get_class_name() {
+std::string Game::GetClassName() {
   return "Game";
 }
 

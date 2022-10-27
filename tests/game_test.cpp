@@ -13,6 +13,6 @@ TEST(GameClass, Constructor) {
   int id = g0.get_id();
 
   EXPECT_EQ(g0.get_name(), "Game_" + std::to_string(id));
-  EXPECT_EQ(g0.get_full_name(), "Game_" + std::to_string(id));
-  EXPECT_EQ(g0.get_class_name(), "Game");
+  EXPECT_EQ(g0.GetFullName(), "Game_" + std::to_string(id));
+  EXPECT_EQ(g0.GetClassName(), "Game");
 }

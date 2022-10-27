@@ -22,7 +22,7 @@ class Game : public Object {
   Game();
   explicit Game(std::string);
 
-  std::string get_class_name() override;
+  std::string GetClassName() override;
 
   GameObject* get_dud_game_object();
 
