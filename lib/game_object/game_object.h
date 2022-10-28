@@ -57,9 +57,9 @@ class GameObject : public Object {
   GameObject& SetChildren(std::vector<GameObject*>);
   int GetNumChildren();
   std::vector<GameObject*> GetChildren();
-  GameObject* GetChildByIndex(int);  // TODO(Seedback): implement
-  GameObject* GetChildById(int);  // TODO(Seedback): implement
-  GameObject* GetChildByName(std::string);  // TODO(Seedback): implement
+  GameObject* GetChildByIndex(int);
+  GameObject* GetChildById(int);
+  GameObject* GetChildByName(std::string);
 
   GameObject& AddChild(GameObject*);
   // TODO(Seedback): implement

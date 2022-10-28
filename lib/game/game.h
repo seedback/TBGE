@@ -24,7 +24,7 @@ class Game : public Object {
 
   std::string GetClassName() override;
 
-  GameObject* get_dud_game_object();
+  GameObject* GetDudGameObject();
 
  private:
   GameObject* dud_game_object_;

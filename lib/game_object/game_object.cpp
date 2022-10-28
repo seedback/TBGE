@@ -15,11 +15,11 @@ class Game;
 
 GameObject::GameObject() {
   game = nullptr;
-  set_name(GetClassName() + "_dud");
-  _set_id(-1);
+  SetName(GetClassName() + "_dud");
+  SetId(-1);
 }
 GameObject::GameObject(GameObject& obj) {
-  set_name(obj.get_name());
+  SetName(obj.GetName());
   game = obj.GetGame();
   parent_ = obj.GetParent();
 }
@@ -41,7 +41,7 @@ GameObject::GameObject(Game* game,
             Object(name), game(game) {
   SetParent(parent);
   SetChildren(children);
-  set_name(name);
+  SetName(name);
 }
 
 bool GameObject::operator== (const GameObject& rhs) {
@@ -59,7 +59,7 @@ bool GameObject::operator== (const Object& rhs) {
 GameObject::~GameObject() {
   // TODO(Seedback): Add registering and unregister game objects in tbge::Game
   // Game.unregister_game_object(this);
-  if (get_id() != -1) {
+  if (GetId() != -1) {
     RemoveParent();
     while (children_.size() > 0) {
       RemoveChild(children_.at(0));
@@ -107,25 +107,25 @@ GameObject* GameObject::GetChildByIndex(int index) {
   if (index >= 0 && index < children_.size()) {
     return children_[index];
   }
-  return game->get_dud_game_object();
+  return game->GetDudGameObject();
 }
 
 GameObject* GameObject::GetChildById(int id) {
   for (GameObject* child : children_) {
-    if (child->get_id() == id) {
+    if (child->GetId() == id) {
       return child;
     }
   }
-  return game->get_dud_game_object();
+  return game->GetDudGameObject();
 }
 
 GameObject* GameObject::GetChildByName(std::string name) {
   for (GameObject* child : children_) {
-    if (child->get_name() == name) {
+    if (child->GetName() == name) {
       return child;
     }
   }
-  return game->get_dud_game_object();
+  return game->GetDudGameObject();
 }
 
 GameObject& GameObject::AddChild(GameObject* child) {
@@ -136,6 +136,13 @@ GameObject& GameObject::AddChild(GameObject* child) {
   }
   children_.push_back(child);
   child->SetParent(this);
+  return *this;
+}
+
+GameObject& GameObject::AddChildren(std::vector<GameObject*> children) {
+  for (GameObject* child : children) {
+    AddChild(child);
+  }
   return *this;
 }
 
@@ -161,9 +168,9 @@ std::string GameObject::GetClassName() {
 
 std::string GameObject::GetFullName() {
   if (parent_) {
-    return parent_->GetFullName() + "." + get_name();
+    return parent_->GetFullName() + "." + GetName();
   }
-  return get_name();
+  return GetName();
 }
 
 GameObject& GameObject::RemoveParentActual(bool isFinal) {

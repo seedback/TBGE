@@ -19,7 +19,7 @@ Object::Object() : Object("") {}
  * @brief Name constructor
 */
 Object::Object(std::string name) {
-  assignId();
+  AssignId();
   if (name.size() > 0) {
     name_ = name;
     return;
@@ -32,7 +32,7 @@ bool Object::operator== (const Object& rhs) {
   return true;
 }
 
-int Object::get_id() {
+int Object::GetId() {
   return id_;
 }
 
@@ -40,7 +40,7 @@ std::string Object::GetClassName() {
   return "Object";
 }
 
-std::string Object::get_name() {
+std::string Object::GetName() {
   return name_;
 }
 
@@ -52,13 +52,13 @@ std::string Object::get_name() {
  *        in sub-classes
  */
 std::string Object::GetFullName() {
-  return get_name();
+  return GetName();
 }
 
 /**
  * @return @c this to allow for method-chaining
  */
-Object& Object::set_name(std::string name) {
+Object& Object::SetName(std::string name) {
   if (name.size() > 0) {
     name_ = name;
     return *this;
@@ -67,12 +67,12 @@ Object& Object::set_name(std::string name) {
   return *this;
 }
 
-Object& Object::_set_id(int id) {
+Object& Object::SetId(int id) {
   id_ = id;
   return *this;
 }
 
-int Object::assignId() {
+int Object::AssignId() {
   static int id_counter = 0;
   id_ = id_counter++;
   return id_counter;

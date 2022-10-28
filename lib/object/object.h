@@ -21,19 +21,19 @@ class Object {
   
   bool Object::operator== (const Object&);  //TODO(Seedback): Test
 
-  int get_id();
+  int GetId();
 
-  std::string get_name();
+  std::string GetName();
   virtual std::string GetClassName();
   virtual std::string GetFullName();
 
-  Object& set_name(std::string);
+  Object& SetName(std::string);
 
  protected:
-  Object& _set_id(int);
+  Object& SetId(int);
 
  private:
-  int assignId();
+  int AssignId();
 
   int id_ = -1;
   std::string name_;

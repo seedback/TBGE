@@ -10,9 +10,9 @@
 TEST(GameClass, Constructor) {
   tbge::Game g0;
 
-  int id = g0.get_id();
+  int id = g0.GetId();
 
-  EXPECT_EQ(g0.get_name(), "Game_" + std::to_string(id));
+  EXPECT_EQ(g0.GetName(), "Game_" + std::to_string(id));
   EXPECT_EQ(g0.GetFullName(), "Game_" + std::to_string(id));
   EXPECT_EQ(g0.GetClassName(), "Game");
 }
