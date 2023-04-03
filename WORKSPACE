@@ -1,9 +1,9 @@
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
-    name = "gtest",
+    name = "com_google_googletest",
     remote = "https://github.com/google/googletest",
-    tag = "release-1.11.0",
+    tag = "v1.13.0",
 )
 
 git_repository(
