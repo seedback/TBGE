@@ -81,31 +81,39 @@ GameObject* GameObject::getParent() const { return parent_; }
 
 const std::vector<GameObject*> GameObject::getChildren() const { return children_; }
 
-// Queries
-const bool GameObject::hasChildren() const { return !children_.empty(); }
-
-const bool GameObject::hasParent() const { return parent_ != nullptr; }
-
-const bool GameObject::hasChild(const GameObject* child) const {
-  return std::find(children_.begin(), children_.end(), child) != children_.end();
-}
-
-const bool GameObject::hasChild(const int id) const {
-  for (GameObject* child : children_) {
-    if (child->getId() == id) {
-      return true;
+// Returns the component of type T.
+// If the GameObject does not have a component of type T, nullptr is returned.
+// If the GameObject has multiple components of type T, the first component of
+// type T is returned.
+template <typename T>
+T* GameObject::getComponent() const {
+  // Iterate over the components_ vector
+  for (Component* component : components_) {
+    // If the component is of type T, return the component
+    T* cast_component = dynamic_cast<T*>(component);
+    if (cast_component != nullptr) {
+      return cast_component;
     }
   }
-  return false;
+  // Otherwise, return nullptr
+  return nullptr;
 }
 
-const bool GameObject::hasChild(const std::string& name) const {
-  for (GameObject* child : children_) {
-    if (child->getName() == name) {
-      return true;
+// Returns a vector of all components of type T.
+template <typename T>
+const std::vector<T*> GameObject::getComponents() const {
+  // Create a vector of type T
+  std::vector<T*> components;
+  // Iterate over the components_ vector
+  for (Component* component : components_) {
+    // If the component is of type T, add the component to the vector
+    T* cast_component = dynamic_cast<T*>(component);
+    if (cast_component != nullptr) {
+      components.push_back(cast_component);
     }
   }
-  return false;
+  // Return the vector
+  return components;
 }
 
 // Mutators
@@ -204,6 +212,91 @@ GameObject& GameObject::removeChild(GameObject* child) {
   return *this;
 }
 
+// Adds a component to the GameObject.
+template <typename T>
+T& GameObject::addComponent() {
+  // Ensure T is a subclass of Component
+  static_assert(std::is_base_of<Component, T>::value,
+                "T must be a subclass of Component");
+  // Create a new component of type T
+  // pasing this to the constructor to set the parent of the component
+  T* component = new T(this);
+  // Add the component to the components_ vector
+  components_.push_back(component);
+  return component;
+}
+
+// Removes a component from the GameObject based on the component's type.
+template <typename T> 
+GameObject& GameObject::removeComponent() {
+  // Ensure T is a subclass of Component
+  static_assert(std::is_base_of<Component, T>::value,
+                "T must be a subclass of Component");
+  // Iterate over the components_ vector
+  for (Component* component : components_) {
+    // Attempt to cast the component to type T
+    T* cast_component = dynamic_cast<T*>(component);
+    // If the cast is successful, we have a component of type T
+    if (cast_component != nullptr) {
+      // Remove the component from the components_
+      components_.erase(std::remove(
+                            components_.begin(),
+                            components_.end(),
+                            component),
+                        components_.end());
+      delete component;
+      return *this;
+    }
+  }
+  return *this;
+}
+
+// Removes the Component from the GameObject
+GameObject& GameObject::removeComponent(Component* component) {
+  // Remove the component from the components_
+  components_.erase(std::remove(
+                        components_.begin(),
+                        components_.end(),
+                        component),
+                    components_.end());
+  delete component;
+  return *this;
+}
+
+// Removes all components of type T from the GameObject.
+template <typename T>
+GameObject& GameObject::removeComponents() {
+  // Ensure T is a subclass of Component
+  static_assert(std::is_base_of<Component, T>::value,
+                "T must be a subclass of Component");
+  // Iterate over the components_ vector
+  for (Component* component : components_) {
+    // Attempt to cast the component to type T
+    T* cast_component = dynamic_cast<T*>(component);
+    // If the cast is successful, we have a component of type T
+    if (cast_component != nullptr) {
+      // Remove the component from the components_
+      components_.erase(std::remove(
+                            components_.begin(),
+                            components_.end(),
+                            component),
+                        components_.end());
+      delete component;
+    }
+  }
+  return *this;
+}
+
+// Removes all components from the GameObject.
+GameObject& GameObject::clearComponents() {
+  // Iterate over the components_ vector and delete them
+  for (Component* component : components_) {
+    delete component;
+  }
+  components_.clear();
+  return *this;
+}
+
 // Removes a child from the GameObject based on the child's id.
 // If the child is not nullptr, and is in the children_ vector, the child is
 // removed from the children_ vector and disconnected from the GameObject.
@@ -228,6 +321,51 @@ GameObject& GameObject::removeChild(const std::string& name) {
     }
   }
   return *this;
+}
+
+// Adds a component to the GameObject.
+
+// Queries
+const bool GameObject::hasChildren() const { return !children_.empty(); }
+
+const bool GameObject::hasParent() const { return parent_ != nullptr; }
+
+const bool GameObject::hasChild(const GameObject* child) const {
+  return std::find(children_.begin(), children_.end(), child) 
+                   != children_.end();
+}
+
+const bool GameObject::hasChild(const int id) const {
+  for (GameObject* child : children_) {
+    if (child->getId() == id) {
+      return true;
+    }
+  }
+  return false;
+}
+
+const bool GameObject::hasChild(const std::string& name) const {
+  for (GameObject* child : children_) {
+    if (child->getName() == name) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Returns true if the GameObject has a component of type T.
+template <typename T>
+const bool GameObject::hasComponent() const {
+  // Iterate over the components_ vector
+  for (Component* component : components_) {
+    // Attempt to cast the component to type T
+    T* cast_component = dynamic_cast<T*>(component);
+    // If the cast is successful, we have a component of type T
+    if (cast_component != nullptr) {
+      return true;
+    }
+  }
+  return false;
 }
 
 // Protected

@@ -6,9 +6,9 @@
 
 #include "src/command/command_action/print.h"
 
-class MockPrint : public tbge::Print {
+class MockPrint : public tbge::PrintCommandAction {
 public:
-  using Print::Print;
+  using PrintCommandAction::PrintCommandAction;
   MOCK_METHOD(void, execute, (std::vector<std::string>& arguments), (override));
 };
 

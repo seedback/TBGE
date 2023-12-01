@@ -9,7 +9,7 @@
 #include "tests/mocks/mock_print.h"
 
 TEST(PrintTest, Constructor) {
-  tbge::Print print_action;
+  tbge::PrintCommandAction print_action;
   tbge::Command command("test", &print_action);
   EXPECT_EQ(command.getCommandWord(), "test");
 }

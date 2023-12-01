@@ -6,8 +6,7 @@
 #include <map>
 
 namespace tbge {
-class GameObject;
-
+class GameObject; // Forward declaration
 namespace global {
 class Global {
  public:
@@ -19,14 +18,19 @@ class Global {
   const static std::vector<GameObject*> getGameObjects();
   const static GameObject* getGameObject(int id);
   const static GameObject* getGameObject(const std::string& name);
-  const static std::vector<GameObject*> getAllGameObjectsWithName(const std::string& name);
+  const static std::vector<GameObject*> getAllGameObjectsWithName(
+      const std::string& name);
   const static bool hasGameObject(int id);
   const static bool hasGameObject(const std::string& name);
-  const static void addCommandWordAlias(const std::string& command, const std::string& alias);
-  const static std::map<std::string, std::vector<std::string>> getCommandWordAliases();
+  const static void addCommandWordAlias(const std::string& command,
+                                        const std::string& alias);
+  const static std::map<std::string, std::vector<std::string>>
+      getCommandWordAliases();
   const static std::string getCommandWordFromAlias(const std::string& alias);
-  const static void addDescriptorAlias(const std::string& command, const std::string& alias);
-  const static std::map<std::string, std::vector<std::string>> getDescriptorAliases();
+  const static void addDescriptorAlias(const std::string& command,
+                                       const std::string& alias);
+  const static std::map<std::string, std::vector<std::string>>
+      getDescriptorAliases();
   const static std::string getDescriptorFromAlias(const std::string& alias);
 
  protected:

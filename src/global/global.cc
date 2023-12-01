@@ -28,11 +28,12 @@ const std::vector<GameObject*> Global::getGameObjects() {
 }
 
 /**
- * Returns a pointer to the GameObject with the specified ID.
- * If no GameObject with the specified ID is found, returns nullptr.
+ * Returns a pointer to the GameObject with the specified id.
+ * If no GameObject with the specified id is found, returns nullptr.
  *
- * @param id The ID of the GameObject to retrieve.
- * @return A pointer to the GameObject with the specified ID, or nullptr if no such GameObject exists.
+ * @param id The id of the GameObject to retrieve.
+ * @return A pointer to the GameObject with the specified id, or nullptr if no
+ *         such GameObject exists.
  */
 const GameObject* Global::getGameObject(int id) {
   for (const GameObject* game_object : getInstance().game_objects_) {
@@ -54,7 +55,8 @@ const GameObject* Global::getGameObject(int id) {
  * @param name The full name to split.
  * @return A vector of individual names.
  */
-const std::vector<std::string> createNameListFromFullName (const std::string& name) {
+const std::vector<std::string> createNameListFromFullName (
+    const std::string& name) {
   std::vector<std::string> name_list;
   std::string name_copy = name;
 
@@ -83,7 +85,8 @@ const GameObject* Global::getGameObject(const std::string& name) {
     std::vector<std::string> full_name_list =
         createNameListFromFullName(game_object->getFullName());
     if (full_name_list.size() >= name_list.size() &&
-        std::equal(full_name_list.end() - name_list.size(), full_name_list.end(),
+        std::equal(full_name_list.end() - name_list.size(),
+                   full_name_list.end(),
                    name_list.begin())) {
       return game_object;
     }
@@ -99,7 +102,8 @@ const GameObject* Global::getGameObject(const std::string& name) {
  * @param name The name to search for.
  * @return A vector of GameObject pointers.
  */
-const std::vector<GameObject*> Global::getAllGameObjectsWithName(const std::string& name) {
+const std::vector<GameObject*>
+      Global::getAllGameObjectsWithName(const std::string& name) {
   std::vector<GameObject*> game_objects;
   for (const GameObject* game_object : getInstance().game_objects_) {
     std::string full_name = game_object->getFullName();
@@ -113,18 +117,20 @@ const std::vector<GameObject*> Global::getAllGameObjectsWithName(const std::stri
 }
 
 /**
- * Checks if a game object with the given ID exists.
- * @param id The ID of the game object to check.
- * @return True if a game object with the given ID exists, false otherwise.
+ * Checks if a game object with the given id exists.
+ * @param id The id of the game object to check.
+ * @return True if a game object with the given id exists, false otherwise.
  */
 const bool Global::hasGameObject(int id) {
   return getGameObject(id) != nullptr;
 }
 
 /**
- * Checks if a game object with the given name exists in the global game object map.
+ * @brief Checks if a game object with the given name exists in the global game
+ *        object map.
  * 
- * Searches through all game objects for a game object whose full name ends with the given name.
+ * @details Searches through all game objects for a game object whose full name 
+ *          ends with the given name.
  * 
  * @param name The name of the game object to check for.
  * @return True if a game object with the given name exists, false otherwise.
@@ -139,11 +145,14 @@ const bool Global::hasGameObject(const std::string& name) {
  * @param command The command word to add an alias for.
  * @param alias The alias to add for the command word.
  */
-const void Global::addCommandWordAlias(const std::string& command, const std::string& alias) {
-  if (getInstance().command_word_aliases_.find(command) == getInstance().command_word_aliases_.end()) {
+const void Global::addCommandWordAlias(const std::string& command, 
+                                       const std::string& alias) {
+  if (getInstance().command_word_aliases_.find(command)
+      == getInstance().command_word_aliases_.end()) {
     getInstance().command_word_aliases_[command] = std::vector<std::string>();
   }
-  for (std::string alias_in_vector : getInstance().command_word_aliases_[command]) {
+  for (std::string alias_in_vector 
+       : getInstance().command_word_aliases_[command]) {
     if (alias_in_vector == alias) {
       return;
     }
@@ -156,7 +165,8 @@ const void Global::addCommandWordAlias(const std::string& command, const std::st
  *
  * @return A map of command words to their aliases.
  */
-const std::map<std::string, std::vector<std::string>> Global::getCommandWordAliases() {
+const std::map<std::string, std::vector<std::string>>
+    Global::getCommandWordAliases() {
   return getInstance().command_word_aliases_;
 }
 
@@ -166,8 +176,10 @@ const std::map<std::string, std::vector<std::string>> Global::getCommandWordAlia
  * @return The command word associated with the given alias.
  */
 const std::string Global::getCommandWordFromAlias(const std::string& alias) {
-  for (std::map<std::string, std::vector<std::string>>::iterator it = getInstance().command_word_aliases_.begin();
-       it != getInstance().command_word_aliases_.end(); ++it) {
+  for (std::map<std::string, std::vector<std::string>>::iterator it
+           = getInstance().command_word_aliases_.begin();
+       it != getInstance().command_word_aliases_.end();
+       ++it) {
     for (std::string alias_in_vector : it->second) {
       if (alias_in_vector == alias) {
         return it->first;
@@ -184,11 +196,14 @@ const std::string Global::getCommandWordFromAlias(const std::string& alias) {
  * @param command The command descriptor to add the alias to.
  * @param alias The alias to add to the command descriptor.
  */
-const void Global::addDescriptorAlias(const std::string& command, const std::string& alias) {
-  if (getInstance().descriptor_aliases_.find(command) == getInstance().descriptor_aliases_.end()) {
+const void Global::addDescriptorAlias(const std::string& command,
+                                      const std::string& alias) {
+  if (getInstance().descriptor_aliases_.find(command)
+      == getInstance().descriptor_aliases_.end()) {
     getInstance().descriptor_aliases_[command] = std::vector<std::string>();
   }
-  for (std::string alias_in_vector : getInstance().descriptor_aliases_[command]) {
+  for (std::string alias_in_vector :
+       getInstance().descriptor_aliases_[command]) {
     if (alias_in_vector == alias) {
       return;
     }
@@ -202,18 +217,22 @@ const void Global::addDescriptorAlias(const std::string& command, const std::str
  *
  * @return A map of descriptor aliases.
  */
-const std::map<std::string, std::vector<std::string>> Global::getDescriptorAliases() {
+const std::map<std::string, std::vector<std::string>>
+    Global::getDescriptorAliases() {
   return getInstance().descriptor_aliases_;
 }
 
 /**
- * Returns the descriptor associated with the given alias, or an empty string if no such alias exists.
+ * @brief Returns the descriptor associated with the given alias, or an empty
+ *        string if no such alias exists.
  *
  * @param alias The alias to look up.
- * @return The descriptor associated with the given alias, or an empty string if no such alias exists.
+ * @return The descriptor associated with the given alias, or an empty string if
+ *         no such alias exists.
  */
 const std::string Global::getDescriptorFromAlias(const std::string& alias) {
-  for (std::map<std::string, std::vector<std::string>>::iterator it = getInstance().descriptor_aliases_.begin();
+  for (std::map<std::string, std::vector<std::string>>::iterator it
+           = getInstance().descriptor_aliases_.begin();
        it != getInstance().descriptor_aliases_.end(); ++it) {
     for (std::string alias_in_vector : it->second) {
       if (alias_in_vector == alias) {
@@ -261,7 +280,8 @@ void Global::registerGameObject(GameObject* game_object) {
  * @param game_object Pointer to the game object to be unregistered.
  */
 void Global::unregisterGameObject(GameObject* game_object) {
-  for (std::vector<tbge::GameObject *>::iterator it = Global::getInstance().game_objects_.begin();
+  for (std::vector<tbge::GameObject *>::iterator it
+           = Global::getInstance().game_objects_.begin();
        it != Global::getInstance().game_objects_.end(); ++it) {
     if (*it == game_object) {
       Global::getInstance().game_objects_.erase(it);

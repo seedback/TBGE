@@ -8,10 +8,10 @@
 #include "src/command/command_action/command_action.h"
 
 namespace tbge {
-class Print : public virtual CommandAction {
+class PrintCommandAction : public virtual CommandAction {
  public:
-  Print() {}
-  ~Print() {}
+  PrintCommandAction() {}
+  ~PrintCommandAction() {}
 
  protected:
   virtual void execute(std::vector<std::string>& arguments) override {

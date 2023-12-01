@@ -343,3 +343,5 @@ graph.png
 
 # Documentation files, comment out when updating comments
 docs/**/*
+!docs/DefaultSettings.doxygen
+
