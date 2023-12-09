@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
 namespace tbge {
 // Constructors
@@ -16,20 +17,44 @@ Component::Component() {
   }
   root_ = this;
   setId();
+  if (parent_ != nullptr) {
+  }
 }
 
-Component::Component(Component* parent)
-    : parent_(parent) {
+Component::Component(Component* parent) {
+  if (parent == nullptr) {
+    throw std::runtime_error("Component(Component* parent) constructor requires "
+                             "a non-null parent. To construct the root "
+                             "component, use the Component() constructor"
+                             "instead.");
+  }
   setId();
-  parent->addChild(this);
+  setParent(parent);
+  if (parent_ != nullptr) {
+  }
 }
 
 // Copy constructor
 Component::Component(const Component& component) 
     : Component(component.parent_) {
-  // Copy children
-  for (auto child : component.children_) {
-    new Component(*child);
+  // Copy components
+  for (auto component : component.components_) {
+    new Component(*component);
+  }
+}
+
+// Destructor
+Component::~Component() {
+  // Delete all components and since they will also delete their components,
+  // all descendants will be deleted
+  while (components_.size() > 0) {
+    delete components_.back();
+    components_.erase(components_.end()-1);
+  }
+  // If this is the root object, reset the static variables
+  if (this == root_) {
+    id_counter_ = 0;
+    root_ = nullptr;
   }
 }
 
@@ -46,158 +71,205 @@ const Component* Component::getParent() const {
   return parent_;
 }
 
-template <typename T> Component* Component::getChild() const {
-  // Ensures that T is a Component subclass
-  static_assert(std::is_base_of<Component, T>::value, "T must be a Component");
-  // Traverse children_ to find a child of type T
-  for (auto child : children_) {
-    if (typeid(*child) == typeid(T)) {
-      return child;
+// TODO: reword all instanves of component to component
+Component* Component::getComponent(unsigned long long component_id) const {
+  // Traverse components_ to find a component with id child_id
+  for (auto component : components_) {
+    if (component->getId() == component_id) {
+      return component;
     }
   }
   return nullptr;
 }
 
-Component* Component::getChild(unsigned long long child_id) const {
-  // Traverse children_ to find a child with id child_id
-  for (auto child : children_) {
-    if (child->getId() == child_id) {
-      return child;
-    }
+std::vector<Component*> Component::getComponents(
+    std::vector<unsigned long long> components_ids) const {
+  // A temporary vector to store all components with ids in components_ids
+  std::vector<Component*> components;
+  // Traverse components_ids
+  for (auto child_id : components_ids) {
+    components.push_back(getComponent(child_id));
   }
-  return nullptr;
+  return components;
 }
 
-template <typename T> std::vector<Component*> Component::getChildren() const {
-  // Ensures that T is a Component subclass
-  static_assert(std::is_base_of<Component, T>::value, "T must be a Component");
-  // A temporary vector to store all children that are of type T
-  std::vector<Component*> children;
-  // Traverse children_ to find children of type T
-  // and add them to the temporary vector
-  for (auto child : children_) {
-    if (typeid(*child) == typeid(T)) {
-      children.push_back(child);
-    }
+// Mutators
+bool Component::setParent(Component* parent) {
+  // Ensures that parent is not nullptr
+  if (parent == nullptr) {
+    return false;
   }
-  return children;
+  // root_cannot have a parent
+  if (this == root_) {
+    return false;
+  }
+  // Ensures that parent is not this component
+  if (parent == this) {
+    return false;
+  }
+  // Ensures that parent is not already the parent of this component
+  if (parent == parent_) {
+    return false;
+  }
+  // Ensures that parent is not a descendant of this component
+  // thus preventing cyclical hierarchies
+  if (parent->isDescendantOf(this)) {
+    return false;
+  }
+
+  if (parent_ != nullptr) {
+    parent_->unregisterComponent(this);
+  }
+  parent->registerComponent(this);
+  parent_ = parent;
+
+  return true;
 }
 
-std::vector<Component*> Component::getChildren(
-    std::vector<unsigned long long> children_ids) const {
-  // A temporary vector to store all children with ids in children_ids
-  std::vector<Component*> children;
-  // Traverse children_ids
-  for (auto child_id : children_ids) {
-    children.push_back(getChild(child_id));
+long long Component::addComponent(Component* component) {
+  // Ensures that component is not nullptr
+  if (component == nullptr) {
+    return -1;
   }
-  return children;
+  // root_ cannot be a component of another component
+  if (component == root_) {
+    return -1;
+  }
+  // Ensures that component is not this component
+  if (component == this) {
+    return -1;
+  }
+  // Ensures that component is not already a component of this component
+  if (component->getParent() == this) {
+    return -1;
+  }
+  // Ensures that this this is not a descendant of component
+  // thus preventing cyclical hierarchies
+  if (isDescendantOf(component)) {
+    return -1;
+  }
+
+  components_.push_back(component);
+  component->registerParent(this);
+  return component->getId();
+}
+
+bool Component::removeComponent(unsigned long long child_id) {
+  // Traverse components_ to find a component with id child_id
+  for (auto component : components_) {
+    if (component->getId() == child_id) {
+      // Remove the component from components_
+      unregisterComponent(component);
+      // Delete the component
+      delete component;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Component::removeComponent(Component* component) {
+  // Traverse components_ to find component
+  for (auto current_component : components_) {
+    if (current_component == component) {
+      // Remove the component from components_
+      unregisterComponent(component);
+      // Delete the component
+      delete component;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Component::removeComponents(std::vector<long long> components_ids) {
+  // Traverse through components_ids
+  for (auto child_id : components_ids) {
+    // Remove the component with id child_id
+    removeComponent(child_id);
+  }
+  return true;
+}
+
+bool Component::removeComponents(std::vector<Component*> components) {
+  // Traverse through components
+  for (auto component : components) {
+    // Remove the component
+    removeComponent(component);
+  }
+  return true;
+}
+
+// Queries
+bool Component::isDescendantOf(const Component* component) const {
+  if (component == nullptr) {
+    return false;
+  }
+  if (parent_ == nullptr) {
+    return false;
+  }
+
+  if (this == root_) {
+    return false;
+  }
+  // Traverse parents until the target component
+  // or the root component is reached
+  if (component == parent_) {
+    return true;
+  }
+  if (parent_->isDescendantOf(component)) {
+    return true;
+  }
+  return false;
 }
 
 // Protected
 void Component::setId() {
-  id_ = Component::getId();
+  id_ = id_counter_++;
 }
 
-void Component::addChild(Component* child) {
-  // Ensures that child is not nullptr and that child is not already a child of
-  // this component
-  if (child == nullptr || std::find(children_.begin(),
-                                    children_.end(),
-                                    child)
-                              != children_.end()) {
-    return;
-  }
-  children_.push_back(child);
+void Component::registerComponent(Component* component) {
+  components_.push_back(component);
 }
 
-template <typename T> bool Component::removeChild() {
-  // Ensures that T is a Component subclass
-  static_assert(std::is_base_of<Component, T>::value, "T must be a Component");
-  // Traverse children_ to find a child of type T
-  for (auto child : children_) {
-    if (typeid(*child) == typeid(T)) {
-      // Remove the child from children_
-      children_.erase(std::remove(children_.begin(), children_.end(), child),
-                      children_.end());
-      // Delete the child
-      delete child;
-      return true;
-    }
+void Component::unregisterComponent(Component* component) {
+  auto it = std::find(components_.begin(), components_.end(), component);
+  if (it != components_.end()) {
+    components_.erase(it);
   }
-  return
 }
 
-bool Component::removeChild(unsigned long long child_id) {
-  // Traverse children_ to find a child with id child_id
-  for (auto child : children_) {
-    if (child->getId() == child_id) {
-      // Remove the child from children_
-      children_.erase(std::remove(children_.begin(), children_.end(), child),
-                      children_.end());
-      // Delete the child
-      delete child;
-      return true;
-    }
+void Component::registerParent(Component* parent) {
+  if (parent_ != nullptr) {
+    parent_->unregisterComponent(this);
   }
-  return false;
+  parent_ = parent;
 }
 
-bool Component::removeChild(Component* child) {
-  // Ensures that child is not nullptr
-  if (child == nullptr) {
-    return false;
+std::string Component::dbgToString(int num_indent) const {
+  std::string indent = "";
+  for (int i = 0; i < num_indent; i++) {
+    indent += "  ";
   }
-  // Traverse children_ to find child
-  for (auto child : children_) {
-    if (child == child) {
-      // Remove the child from children_
-      children_.erase(std::remove(children_.begin(), children_.end(), child),
-                      children_.end());
-      // Delete the child
-      delete child;
-      return true;
-    }
+
+  std::string str = "";
+  str +=  indent + "Component:\n";
+  str += indent + "  id_: " + std::to_string(id_) + "\n";
+  if (parent_ == nullptr) {
+    str += indent + "  parent_: nullptr\n";
+  } else {
+    str += indent + "  parent_: " + std::to_string(parent_->getId()) + "\n";
   }
-  return false;
+  str += indent + "  components_:\n";
+  for (auto component : components_) {
+    str += indent + "  - " + std::to_string(component->getId()) + "\n";
+  }
+  str += indent + "}\n";
+
+  return str;
 }
 
-template <typename T> bool Component::removeChildren() {
-  // Ensures that T is a Component subclass
-  static_assert(std::is_base_of<Component, T>::value, "T must be a Component");
-  // Temporary variable to store whether or not a child was removed
-  bool removed = false;
-  // Repeats until no children of type T are left
-  while (true) {
-    // If at least one child of type T was removed,
-    // the function should return true
-    if (removeChild<T>() == true) {
-      removed = true;
-    // If no children of type T were removed, stop repeating.
-    } else {
-      break;
-    }
-  }
-  // If at least one child of type T was removed, removed will be true
-  // Otherwise, removed will be false
-  return removed;
-}
-
-bool Component::removeChildren(std::vector<unsigned long long> children_ids) {
-  // Traverse through children_ids
-  for (auto child_id : children_ids) {
-    // Remove the child with id child_id
-    removeChild(child_id);
-  }
-  return true;
-}
-
-bool Component::removeChildren(std::vector<Component*> children) {
-  // Traverse through children
-  for (auto child : children) {
-    // Remove the child
-    removeChild(child);
-  }
-  return true;
-}
+// Static Variables
+Component* Component::root_ = nullptr;
+long long Component::id_counter_ = 0;
 }  // namespace tbge
