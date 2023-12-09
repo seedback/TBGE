@@ -1,9 +1,7 @@
 #include "component.h"
 
-#include "src/game_object/game_object.h"
-
+#include <string>
 #include <vector>
-#include <stdexcept>
 #include <iostream>
 
 namespace tbge {

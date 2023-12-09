@@ -2,12 +2,10 @@
 #ifndef TBGE_COMPONENT_COMPONENT_H
 #define TBGE_COMPONENT_COMPONENT_H
 
-#include "src/game_object/game_object.h"
-
+#include <string>
 #include <vector>
 
 namespace tbge {
-class GameObject; // Forward declaration
 class Component {
  public:
   // Public
