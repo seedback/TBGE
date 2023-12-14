@@ -334,6 +334,7 @@ ASALocalRun/
 .localhistory/
 
 .vscode/
+!.vscode/c_cpp_properties.json
 
 bazel-bin/**/*
 bazel-out/**/*

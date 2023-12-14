@@ -9,47 +9,20 @@
 
 class ComponentTest : public ::testing::Test {
   protected:
-    // ComponentTest() {
-    //   // You can do set-up work for each test here.
-    // }
-  
-    // ~ComponentTest() override {
-    //   // You can do clean-up work that doesn't throw exceptions here.
-    // }
-  
-    // // If the constructor and destructor are not enough for setting up
-    // // and cleaning up each test, you can define the following methods:
-    // void SetUp() override {
-    //   // Code here will be called immediately after the constructor (right
-    //   // before each test).
-    //   root_ = new tbge::Component();
-    //   child_ = new tbge::Component(root_);
-    //   grandchild_ = new tbge::Component(child_);
-    // }
-  
     void SetUp() override {
-      // Code here will be called immediately after each test (right
-      // before the destructor).
       delete tbge::Component::getRoot();
-      // root_ = new tbge::Component();
     }
 
-    // void TearDown() override {
-    //   delete tbge::Component::getRoot();
-    // }
-
-    void printComponent(tbge::Component* component) {
+    void printComponent(tbge::Component* component,
+                        std::string custom_name = "") {
+      if (custom_name != "") {
+        std::cout << custom_name << std::endl;
+      }
       std::cout << component->dbgToString() << std::endl;
     }
-  
-    // // Class members declared here can be used by all tests in the test suite
-    // // for Foo.
-    // tbge::Component* root_;
-    // tbge::Component* child_;
-    // tbge::Component* grandchild_;
 };
 
-TEST_F(ComponentTest, RootComponent) {
+TEST_F(ComponentTest, DefaultConstructor) {
   // Test that the Fixture's SetUp() method functions correctly, only needed to
   // be done here once
   EXPECT_EQ(nullptr, tbge::Component::getRoot());
@@ -57,7 +30,19 @@ TEST_F(ComponentTest, RootComponent) {
   tbge::Component* root = new tbge::Component();
 
   EXPECT_EQ(root, root->getRoot());
-  EXPECT_EQ(0, root->getId());
+  EXPECT_EQ(1, root->getId());
+  EXPECT_EQ(nullptr, root->getParent());
+}
+
+TEST_F(ComponentTest, DefaultConstructorThenDeleteAndConstructAgain) {
+  // Test that the Fixture's SetUp() method functions correctly, only needed to
+  // be done here once
+  EXPECT_EQ(nullptr, tbge::Component::getRoot());
+
+  tbge::Component* root = new tbge::Component();
+
+  EXPECT_EQ(root, root->getRoot());
+  EXPECT_EQ(1, root->getId());
   EXPECT_EQ(nullptr, root->getParent());
 
   delete root;
@@ -68,7 +53,7 @@ TEST_F(ComponentTest, RootComponent) {
 
   // Expect that the root component got reset after getting deleted
   EXPECT_EQ(root, root->getRoot());
-  EXPECT_EQ(0, root->getId());
+  EXPECT_EQ(1, root->getId());
   EXPECT_EQ(nullptr, root->getParent());
 }
 
@@ -78,31 +63,30 @@ TEST_F(ComponentTest, DefaultConstructorTwice) {
   EXPECT_THROW(new tbge::Component(), std::runtime_error);
 }
 
-TEST_F(ComponentTest, NonRootComponent) {
+TEST_F(ComponentTest, ConstructorWithParent) {
   tbge::Component* root = new tbge::Component();
   tbge::Component* child = new tbge::Component(root);
 
   EXPECT_EQ(root, child->getRoot());
-  EXPECT_EQ(1, child->getId());
+  EXPECT_EQ(2, child->getId());
   EXPECT_EQ(root, child->getParent());
+}
 
-  delete root;
+TEST_F(ComponentTest, ConstructorWithParentAndGrandparent) {
+  tbge::Component* root = new tbge::Component();
+  tbge::Component* child = new tbge::Component(root);
+  tbge::Component* grandchild = new tbge::Component(child);
 
-  EXPECT_EQ(nullptr, tbge::Component::getRoot());
-
-  root = new tbge::Component();
-  child = new tbge::Component(root);
-
-  // Expect that the root component got reset after getting deleted
   EXPECT_EQ(root, child->getRoot());
-  EXPECT_EQ(1, child->getId());
+  EXPECT_EQ(2, child->getId());
   EXPECT_EQ(root, child->getParent());
+  EXPECT_EQ(3, grandchild->getId());
+  EXPECT_EQ(child, grandchild->getParent());
 }
 
 TEST_F(ComponentTest, CopyConstructor) {
   tbge::Component* root = new tbge::Component();
   tbge::Component* child = new tbge::Component(root);
-  tbge::Component* grandchild = new tbge::Component(child);
 
   tbge::Component* copy = new tbge::Component(*child);
 
@@ -111,7 +95,7 @@ TEST_F(ComponentTest, CopyConstructor) {
   EXPECT_EQ(root, copy->getParent());
 }
 
-TEST_F(ComponentTest, CopyConstructorWithParent) {
+TEST_F(ComponentTest, CopyConstructorWithChildAndParent) {
   tbge::Component* root = new tbge::Component();
   tbge::Component* child = new tbge::Component(root);
   tbge::Component* grandchild = new tbge::Component(child);
@@ -119,9 +103,28 @@ TEST_F(ComponentTest, CopyConstructorWithParent) {
   EXPECT_EQ(root, child->getRoot());
   EXPECT_GT(grandchild->getId(), child->getId());
   EXPECT_EQ(root, child->getParent());
+
+  tbge::Component* copy = new tbge::Component(*child);
+
+  EXPECT_EQ(root, copy->getRoot());
+  EXPECT_GT(copy->getId(), child->getId());
+  EXPECT_EQ(root, copy->getParent());
+  EXPECT_EQ(child->getComponents().size(), copy->getComponents().size());
+
+  tbge::Component* grandchild_copy = copy->getComponent();
+
+  EXPECT_EQ(root, grandchild_copy->getRoot());
+  EXPECT_EQ(copy, grandchild_copy->getParent());
+  EXPECT_EQ(grandchild->getComponents().size(),
+            grandchild_copy->getComponents().size());
+  EXPECT_EQ(2, root->getComponents().size());
+  EXPECT_EQ(1, child->getComponents().size());
+  EXPECT_EQ(0, grandchild->getComponents().size());;
+  EXPECT_EQ(1, copy->getComponents().size());
+  EXPECT_EQ(0, grandchild_copy->getComponents().size());
 }
 
-TEST_F(ComponentTest, CopyConstructorWithNullParent) {
+TEST_F(ComponentTest, ConstructorWithNullParent) {
   tbge::Component* root = new tbge::Component();
   tbge::Component* child = new tbge::Component(root);
   tbge::Component* grandchild = new tbge::Component(child);
@@ -135,16 +138,27 @@ TEST_F(ComponentTest, CopyConstructorWithNullParent) {
 
 TEST_F(ComponentTest, Destructor) {
   tbge::Component* root = new tbge::Component();
-  tbge::Component* child = new tbge::Component(root);
-  tbge::Component* grandchild = new tbge::Component(child);
+  tbge::Component* child1 = new tbge::Component(root);
 
-  EXPECT_EQ(root, child->getRoot());
-  EXPECT_GT(grandchild->getId(), child->getId());
-  EXPECT_EQ(root, child->getParent());
+  EXPECT_EQ(1, root->getComponents().size());
+
+  delete child1;
+
+  EXPECT_EQ(0, root->getComponents().size());
+  EXPECT_EQ(nullptr, child1->getParent());
+}
+
+TEST_F(ComponentTest, DestructorWithChildrenAndGrandchildren) {
+  tbge::Component* root = new tbge::Component();
+  tbge::Component* child1 = new tbge::Component(root);
+  tbge::Component* child2 = new tbge::Component(root);
+  tbge::Component* grandchild1 = new tbge::Component(child1);
+  tbge::Component* grandchild2 = new tbge::Component(child1);
 
   delete root;
 
   EXPECT_EQ(nullptr, tbge::Component::getRoot());
+  EXPECT_EQ(nullptr, root->getRoot());
 }
 
 TEST_F(ComponentTest, GetRoot) {
@@ -155,6 +169,8 @@ TEST_F(ComponentTest, GetRoot) {
   EXPECT_EQ(root, root->getRoot());
   EXPECT_EQ(root, child->getRoot());
   EXPECT_EQ(root, grandchild->getRoot());
+  bool is_component_base_class = std::is_same<decltype(root), decltype(root->getRoot())>::value;
+  EXPECT_TRUE(is_component_base_class);
 }
 
 TEST_F(ComponentTest, GetId) {
@@ -162,9 +178,9 @@ TEST_F(ComponentTest, GetId) {
   tbge::Component* child = new tbge::Component(root);
   tbge::Component* grandchild = new tbge::Component(child);
 
-  EXPECT_EQ(0, root->getId());
-  EXPECT_EQ(1, child->getId());
-  EXPECT_EQ(2, grandchild->getId());
+  EXPECT_EQ(1, root->getId());
+  EXPECT_EQ(2, child->getId());
+  EXPECT_EQ(3, grandchild->getId());
 }
 
 TEST_F(ComponentTest, GetParent) {
@@ -181,14 +197,14 @@ TEST_F(ComponentTest, GetComponentById) {
   tbge::Component* root = new tbge::Component();
   tbge::Component* child = new tbge::Component(root);
 
-  EXPECT_EQ(child, root->getComponent(1));
+  EXPECT_EQ(child, root->getComponent(2));
 }
 
 TEST_F(ComponentTest, GetComponentByInvalidId) {
   tbge::Component* root = new tbge::Component();
   tbge::Component* child = new tbge::Component(root);
 
-  EXPECT_EQ(nullptr, root->getComponent(2));
+  EXPECT_EQ(nullptr, root->getComponent(0));
 }
 
 TEST_F(ComponentTest, GetComponentByType) {
@@ -211,7 +227,7 @@ TEST_F(ComponentTest, GetComponentsByIds) {
   tbge::Component* child2 = new tbge::Component(root);
   tbge::Component* child3 = new tbge::Component(root);
 
-  std::vector<unsigned long long> ids = {1, 2, 3};
+  std::vector<unsigned long long> ids = {2, 3, 4};
   std::vector<tbge::Component*> components = root->getComponents(ids);
 
   EXPECT_EQ(3, components.size());
@@ -226,8 +242,20 @@ TEST_F(ComponentTest, GetComponentsByInvalidIds) {
   tbge::Component* child2 = new tbge::Component(root);
   tbge::Component* child3 = new tbge::Component(root);
 
-  std::vector<unsigned long long> ids = {4, 5, 6};
+  std::vector<unsigned long long> ids = {5, 6, 7};
   std::vector<tbge::Component*> components = root->getComponents(ids);
+
+  EXPECT_EQ(0, components.size());
+}
+
+TEST_F(ComponentTest, GetComponentsByInvalidIdsWithoutFilter) {
+  tbge::Component* root = new tbge::Component();
+  tbge::Component* child1 = new tbge::Component(root);
+  tbge::Component* child2 = new tbge::Component(root);
+  tbge::Component* child3 = new tbge::Component(root);
+
+  std::vector<unsigned long long> ids = {5, 6, 7};
+  std::vector<tbge::Component*> components = root->getComponents(ids, false);
 
   EXPECT_EQ(3, components.size());
   EXPECT_EQ(nullptr, components[0]);
@@ -258,6 +286,22 @@ TEST_F(ComponentTest, GetComponentsByInvalidType) {
   std::vector<tbge::Component*> components = root->getComponents<int>();
 
   EXPECT_EQ(0, components.size());
+}
+
+// TODO: Update GetComponents tests when more sub classes exist to make sure it
+//       works regardless of class
+TEST_F(ComponentTest, GetAllComponents) {
+  tbge::Component* root = new tbge::Component();
+  tbge::Component* child1 = new tbge::Component(root);
+  tbge::Component* child2 = new tbge::Component(root);
+  tbge::Component* child3 = new tbge::Component(root);
+
+  std::vector<tbge::Component*> components = root->getComponents();
+
+  EXPECT_EQ(3, components.size());
+  EXPECT_EQ(child1, components[0]);
+  EXPECT_EQ(child2, components[1]);
+  EXPECT_EQ(child3, components[2]);
 }
 
 TEST_F(ComponentTest, SetParent) {
@@ -352,8 +396,8 @@ TEST_F(ComponentTest, AddComponent) {
   EXPECT_EQ(root, grandchild1->getParent());
   EXPECT_EQ(root, grandchild2->getParent());
 
-  EXPECT_NE(-1, child1->addComponent(grandchild1));
-  EXPECT_NE(-1, child1->addComponent(grandchild2));
+  EXPECT_EQ(grandchild1, child1->addComponent(grandchild1));
+  EXPECT_EQ(grandchild2, child1->addComponent(grandchild2));
 
   EXPECT_EQ(1, root->getComponents().size());
   EXPECT_EQ(2, child1->getComponents().size());
@@ -362,8 +406,11 @@ TEST_F(ComponentTest, AddComponent) {
   EXPECT_EQ(child1, grandchild1->getParent());
   EXPECT_EQ(child1, grandchild2->getParent());
 
-  EXPECT_NE(-1, root->addComponent<tbge::Component>());
-  EXPECT_NE(-1, root->addComponent<tbge::Component>());
+  tbge::Component* child2 = root->addComponent<tbge::Component>();
+  tbge::Component* child3 = root->addComponent<tbge::Component>();
+
+  EXPECT_EQ(typeid(tbge::Component*), typeid(child2));
+  EXPECT_EQ(typeid(tbge::Component*), typeid(child3));
 
   EXPECT_EQ(3, root->getComponents().size());
   EXPECT_EQ(2, child1->getComponents().size());
@@ -378,42 +425,42 @@ TEST_F(ComponentTest, AddComponentWithNullptr) {
 
   EXPECT_EQ(0, root->getComponents().size());
 
-  EXPECT_EQ(-1, root->addComponent(nullptr));
+  EXPECT_EQ(nullptr, root->addComponent(nullptr));
 
   EXPECT_EQ(0, root->getComponents().size());
 }
 
-TEST_F(ComponentTest, AddComponentWithInvalidParent) {
+TEST_F(ComponentTest, AddComponentToCurrentParent) {
   tbge::Component* root = new tbge::Component();
   tbge::Component* child1 = new tbge::Component(root);
 
   EXPECT_EQ(1, root->getComponents().size());
 
-  EXPECT_EQ(-1, root->addComponent(child1));
+  EXPECT_EQ(nullptr, root->addComponent(child1));
 
   EXPECT_EQ(1, root->getComponents().size());
 }
 
-TEST_F(ComponentTest, AddComponentWithChildComponent) {
+TEST_F(ComponentTest, AddComponentToCurrentGranparent) {
   tbge::Component* root = new tbge::Component();
   tbge::Component* child1 = new tbge::Component(root);
   tbge::Component* grandchild1 = new tbge::Component(child1);
 
   EXPECT_EQ(1, root->getComponents().size());
 
-  EXPECT_NE(-1, root->addComponent(grandchild1));
+  EXPECT_NE(nullptr, root->addComponent(grandchild1));
 
   EXPECT_EQ(2, root->getComponents().size());
 }
 
-TEST_F(ComponentTest, AddComponentWithInvalidChildComponent) {
+TEST_F(ComponentTest, AddComponentToDecendant) {
   tbge::Component* root = new tbge::Component();
   tbge::Component* child1 = new tbge::Component(root);
   tbge::Component* grandchild1 = new tbge::Component(child1);
 
   EXPECT_EQ(1, root->getComponents().size());
 
-  EXPECT_EQ(-1, grandchild1->addComponent(root));
+  EXPECT_EQ(nullptr, grandchild1->addComponent(root));
 
   EXPECT_EQ(1, root->getComponents().size());
 }
@@ -435,7 +482,7 @@ TEST_F(ComponentTest, RemoveComponentById) {
 
   EXPECT_EQ(1, root->getComponents().size());
 
-  EXPECT_TRUE(root->removeComponent(1));
+  EXPECT_TRUE(root->removeComponent(2));
 
   EXPECT_EQ(0, root->getComponents().size());
 }
@@ -511,7 +558,7 @@ TEST_F(ComponentTest, RemoveComponentAndGrandchildrenById) {
   EXPECT_EQ(2, root->getComponents().size());
   EXPECT_EQ(2, child1->getComponents().size());
 
-  EXPECT_TRUE(root->removeComponent(1));
+  EXPECT_TRUE(root->removeComponent(2));
 
   EXPECT_EQ(1, root->getComponents().size());
   EXPECT_EQ(0, child1->getComponents().size());
@@ -576,6 +623,8 @@ TEST_F(ComponentTest, IsDecendantOf) {
 
 TEST_F(ComponentTest, IsNotDecendantOfNullptr) {
   tbge::Component* root = new tbge::Component();
+
+  std::cout << root->dbgToString() << std::endl;
 
   EXPECT_FALSE(root->isDescendantOf(nullptr));
 }
