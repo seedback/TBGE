@@ -1,6 +1,5 @@
-
-#ifndef TBGE_COMPONENT_COMPONENT_H
-#define TBGE_COMPONENT_COMPONENT_H
+#ifndef TBGE_COMPONENT_COMPONENT_H_
+#define TBGE_COMPONENT_COMPONENT_H_
 
 #include <string>
 #include <vector>
@@ -191,4 +190,4 @@ class Component {
 
 }  // namespace tbge
 
-#endif  // TBGE_COMPONENT_COMPONENT_H
+#endif  // TBGE_COMPONENT_COMPONENT_H_
