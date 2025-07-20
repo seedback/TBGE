@@ -7,7 +7,7 @@ load("@rules_cc//cc:cc_test.bzl", "cc_test")
 # Example: Define a simple cc_library target
 cc_library(
   name = "tbge_lib",
-  srcs = glob(["src/**/*.cc"], allow_empty = True),
+  srcs = glob(["src/**/*.cc", "src/**/*.tcc"], allow_empty = True),
   hdrs = glob(["src/**/*.h", "src/**/*.hh"], allow_empty = True),
   visibility = ["//visibility:public"],
 )

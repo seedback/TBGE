@@ -1,0 +1,2 @@
+Checks: '-*,modernize-avoid-auto'
+WarningsAsErrors: 'modernize-avoid-auto'
