@@ -1,20 +1,22 @@
 #ifndef TBGE_SRC_ECS_COMPONENT_ARRAY_TCC_
 #define TBGE_SRC_ECS_COMPONENT_ARRAY_TCC_
 
-#include "src/ecs/component_array.h"
+#include <absl/log/log.h>
 
-#include <vector>
 #include <unordered_map>
-#include <cassert>
+#include <vector>
 
+#include "src/ecs/component_array.h"
 #include "src/ecs/definitions.h"
 
 namespace ECS {
 
 template <typename T>
 ComponentArray<T>& ComponentArray<T>::InsertData(Entity entity, T component) {
-  assert(entity_to_index_map_.find(entity) == entity_to_index_map_.end() &&
-         "Component added to same entity more than once.");
+  if (entity_to_index_map_.find(entity) != entity_to_index_map_.end()) {
+    LOG(WARNING) << "Component added to same entity more than once.";
+    return *this;
+  }
 
   // Put new entry at end and update the maps
   size_t new_index = size_;
@@ -28,8 +30,10 @@ ComponentArray<T>& ComponentArray<T>::InsertData(Entity entity, T component) {
 
 template <typename T>
 ComponentArray<T>& ComponentArray<T>::RemoveData(Entity entity) {
-  assert(entity_to_index_map_.find(entity) != entity_to_index_map_.end() &&
-         "Removing non-existent component.");
+  if (entity_to_index_map_.find(entity) == entity_to_index_map_.end()) {
+    LOG(WARNING) << "Removing non-existent component.";
+    return *this;
+  }
 
   // Copy element at end into deleted element's place to maintain density
   size_t index_of_removed_entity = entity_to_index_map_[entity];
@@ -52,8 +56,10 @@ ComponentArray<T>& ComponentArray<T>::RemoveData(Entity entity) {
 
 template <typename T>
 T& ComponentArray<T>::GetData(Entity entity) {
-  assert(entity_to_index_map_.find(entity) != entity_to_index_map_.end() &&
-         "Retrieving non-existent component.");
+  if (entity_to_index_map_.find(entity) == entity_to_index_map_.end()) {
+    LOG(WARNING) << "Retrieving non-existent component.";
+    return nullptr;
+  }
 
   // Return a reference to the entity's component
   return component_array_.at(entity_to_index_map_[entity]);

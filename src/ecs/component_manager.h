@@ -1,9 +1,7 @@
 #ifndef TBGE_SRC_ECS_COMPONENT_MANAGER_H_
 #define TBGE_SRC_ECS_COMPONENT_MANAGER_H_
 
-#include <cassert>
 #include <memory>
-#include <typeinfo>
 #include <unordered_map>
 
 #include "src/ecs/component_array.h"

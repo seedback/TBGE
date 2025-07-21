@@ -8,6 +8,7 @@ build:debug --cxxopt=/std:c++20
 # Test configuration
 build:test --compilation_mode=dbg
 build:test --cxxopt=/std:c++20
+build:test --test_output=all
 
 # Release configuration  
 build:release --compilation_mode=opt

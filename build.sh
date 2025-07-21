@@ -84,14 +84,13 @@ fi
 
 if [[ $TEST -eq 1 ]]; then
   [[ -z "$TESTTARGET" ]] && TESTTARGET="tbge_test"
-  bazel test $BAZEL_FLAGS --test_output=all //:"$TESTTARGET"
+  bazel test $BAZEL_FLAGS //:"$TESTTARGET"
 fi
 
 if [[ $RUN -eq 1 ]]; then
   [[ -z "$TARGET" ]] && TARGET="tbge_main"
   bazel run $BAZEL_FLAGS //:"$TARGET"
 fi
-
 
 if [[ $RUN -eq 0 && $TEST -eq 0 ]]; then
   [[ -z "$TARGET" ]] && TARGET="tbge_main"

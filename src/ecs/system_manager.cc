@@ -1,6 +1,8 @@
 #include "src/ecs/system_manager.h"
 
-#include <cassert>
+#include <absl/log/check.h>
+#include <absl/log/log.h>
+
 #include <memory>
 #include <typeinfo>
 
@@ -8,12 +10,16 @@ namespace ECS {
 
 template <typename T>
 std::shared_ptr<T> SystemManager::RegisterSystem() {
-  static_assert(std::is_base_of<System, T>::value,
-                "T must inherit from System");
+  static_assert(
+      std::is_base_of<System, T>::value,
+      "Cannot register a system of type T. Must inherit from ECS::System");
   const char* type_name = typeid(T).name();
 
-  assert(systems_.find(type_name) == systems_.end() &&
-         "Registering system more than once.");
+  if (systems_.find(type_name) != systems_.end()) {
+    LOG(WARNING)
+        << "Registering system more than once, returning existing pointer";
+    return systems_.find(type_name);
+  }
 
   // Create a pointer to the system and return it so it can be used externally
   auto system = std::make_shared<T>();
@@ -25,8 +31,12 @@ template <typename T>
 SystemManager& SystemManager::SetSignature(Signature signature) {
   const char* type_name = typeid(T).name();
 
-  assert(systems_.find(type_name) != systems_.end() &&
-         "System used before registered.");
+  if (systems_.find(type_name) == systems_.end()) {
+    LOG(ERROR) << "Attempted to set signature on system before it was "
+                  "registered. No signature will be registered, this may lead "
+                  "to bugs and errors down the line.";
+    return *this;
+  }
 
   // Set the signature for this system
   signatures_.insert({type_name, signature});

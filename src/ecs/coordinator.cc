@@ -4,10 +4,12 @@
 
 #include "src/ecs/component_manager.h"
 #include "src/ecs/definitions.h"
+#include "src/ecs/ecs_logsink.h"
 #include "src/ecs/entity_manager.h"
 #include "src/ecs/system_manager.h"
 
 namespace ECS {
+Coordinator::Coordinator() { Init(); }
 
 // #####   Entity methods   #####
 Entity Coordinator::CreateEntity() { return entity_manager_->CreateEntity(); }
@@ -97,7 +99,6 @@ Coordinator& Coordinator::Init() {
 #ifdef _DEBUG
 void Coordinator::debug_warning() {
   std::cout
-
       << "The \033[31m_DEBUG\033[0m preprocessor definition has been detected"
       << std::endl
       << "\033[33m######################## ECS ########################\033[0m"

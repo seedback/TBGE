@@ -1,39 +1,14 @@
 # BUILD file for TBGE project
-
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
-# Example: Define a simple cc_library target
-cc_library(
-    name = "tbge_lib",
-    srcs = glob(
-        [
-            "src/**/*.cc",
-            "src/**/*.tcc",
-        ],
-        allow_empty = True,
-    ),
-    hdrs = glob(
-        [
-            "src/**/*.h",
-            "src/**/*.hh",
-        ],
-        allow_empty = True,
-    ),
-    deps = [
-      "@abseil-cpp//absl/log",
-      "@abseil-cpp//absl/log:check",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-# Example: Define a cc_binary target
 cc_binary(
     name = "tbge_main",
     srcs = ["src/main.cc"],
     deps = [
         ":tbge_lib",
+        ":abseil_log",
     ],
 )
 
@@ -45,4 +20,37 @@ cc_test(
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],
+)
+
+cc_library(
+    name = "tbge_lib",
+    srcs = glob(
+        [
+            "src/**/*.cc",
+            "src/**/*.tcc",
+        ],
+        allow_empty = True,
+        exclude = ["src/main.cc"],
+    ),
+    hdrs = glob(
+        [
+            "src/**/*.h",
+            "src/**/*.hh",
+        ],
+        allow_empty = True,
+    ),
+    deps = [
+      ":abseil_log",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+  name = "abseil_log",
+  deps = [
+    "@abseil-cpp//absl/log",
+    "@abseil-cpp//absl/log:check",
+    "@abseil-cpp//absl/log:initialize",
+  ],
+  visibility = ["//visibility:public"],
 )

@@ -29,7 +29,7 @@ class Coordinator {
    * The constructor calls the Init() method to set up the necessary components
    * and systems required for the Coordinator to function properly.
    */
-  Coordinator() { Init(); }
+  Coordinator();
 
   // #####   Entity methods   #####
   /**
