@@ -170,6 +170,11 @@ class Coordinator {
    * @return Reference to the initialized Coordinator instance.
    */
   Coordinator& Init();
+
+  #ifdef _DEBUG
+  void debug_warning();
+  #endif
+
   std::unique_ptr<ComponentManager> component_manager_;
   std::unique_ptr<EntityManager> entity_manager_;
   std::unique_ptr<SystemManager> system_manager_;
