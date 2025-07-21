@@ -6,17 +6,35 @@ load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
 # Example: Define a simple cc_library target
 cc_library(
-  name = "tbge_lib",
-  srcs = glob(["src/**/*.cc", "src/**/*.tcc"], allow_empty = True),
-  hdrs = glob(["src/**/*.h", "src/**/*.hh"], allow_empty = True),
-  visibility = ["//visibility:public"],
+    name = "tbge_lib",
+    srcs = glob(
+        [
+            "src/**/*.cc",
+            "src/**/*.tcc",
+        ],
+        allow_empty = True,
+    ),
+    hdrs = glob(
+        [
+            "src/**/*.h",
+            "src/**/*.hh",
+        ],
+        allow_empty = True,
+    ),
+    deps = [
+      "@abseil-cpp//absl/log",
+      "@abseil-cpp//absl/log:check",
+    ],
+    visibility = ["//visibility:public"],
 )
 
 # Example: Define a cc_binary target
 cc_binary(
-  name = "tbge_main",
-  srcs = ["src/main.cc"],
-  deps = [":tbge_lib"],
+    name = "tbge_main",
+    srcs = ["src/main.cc"],
+    deps = [
+        ":tbge_lib",
+    ],
 )
 
 cc_test(
