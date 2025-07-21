@@ -98,35 +98,49 @@ Coordinator& Coordinator::Init() {
 void Coordinator::debug_warning() {
   std::cout
 
-      << "The _DEBUG preprocessor definition has been detected" << std::endl
+      << "The \033[31m_DEBUG\033[0m preprocessor definition has been detected"
       << std::endl
-      << "######################## ECS ########################" << std::endl
+      << "\033[33m######################## ECS ########################\033[0m"
+      << std::endl
       << "ECS (Entity Component System) is curently configured like this:"
       << std::endl
-      << "The Entity datatype alias is represented by (" << sizeof(Entity) * 8
-      << " bit) " << typeid(Entity).name() << std::endl
-      << "The ComponentType datatype alias is represented by ("
+      << "The \033[34mEntity\033[0m datatype alias is represented by \033[36m("
+      << sizeof(Entity) * 8 << " bit) " << typeid(Entity).name() << "\033[0m"
+      << std::endl
+      << "The \033[34mComponentType\033[0m datatype alias is represented by "
+         "\033[36m("
       << sizeof(ComponentType) * 8 << " bit) " << typeid(ComponentType).name()
+      << "\033[0m" << std::endl
+      << "The \033[34mSignature\033[0m datatype alias is represented by "
+         "\033[36m"
+      << typeid(Signature).name() << "\033[0m" << std::endl
+      << "The maximum number of \033[34mentities\033[0m is \033[36m"
+      << kMaxEntities << "\033[0m" << std::endl
+      << "The maximum number of \033[34mcomponent\033[0m types is \033[36m"
+      << kMaxComponentTypes << "\033[0m" << std::endl
       << std::endl
-      << "The Signature datatype alias is represented by "
-      << typeid(Signature).name() << std::endl
-      << "The maximum number of entities is " << kMaxEntities << std::endl
-      << "The maximum number of component types is " << kMaxComponentTypes
+      << "NOTE: The datatypes used for the \033[34mEntity\033[0m and "
+         "\033[34mComponentType\033[0m aliases "
       << std::endl
+      << "can be changed in \033[90mecs/config.h\033[0m by setting the "
       << std::endl
-      << "NOTE: The datatypes used for the Entity and ComponentType aliases "
+      << "\033[90mECS_ENTITY_DATATYPE\033[0m and "
+         "\033[90mECS_COMPONENT_TYPE_DATATYPE\033[0m "
       << std::endl
-      << "can be changed in ecs/config.h by setting the " << std::endl
-      << "ECS_ENTITY_DATATYPE and ECS_COMPONENT_TYPE_DATATYPE " << std::endl
       << "preprocessor definitions to the desired datatype." << std::endl
       << std::endl
-      << "NOTE: Likewise the size of the Signature bitset, as well as the "
+      << "NOTE: Likewise the size of the \033[34mSignature\033[0m bitset, as "
+         "well as the "
       << std::endl
-      << "maximum number of Entity and ComponentType objects can be "
+      << "maximum number of \033[34mEntity\033[0m and "
+         "\033[34mComponentType\033[0m objects can be "
       << std::endl
-      << "adjusted by setting the ECS_MAX_ENTITIES and " << std::endl
-      << "ECS_MAX_COMPONENT_TYPES preprocessor definitions." << std::endl
-      << "#####################################################" << std::endl
+      << "adjusted by setting the \033[90mECS_MAX_ENTITIES\033[0m and "
+      << std::endl
+      << "\033[90mECS_MAX_COMPONENT_TYPES\033[0m preprocessor definitions."
+      << std::endl
+      << "\033[33m#####################################################\033[0m"
+      << std::endl
       << std::endl;
 }
 #endif
