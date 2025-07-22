@@ -30,7 +30,7 @@ ComponentArray<T>& ComponentArray<T>::InsertData(Entity entity, T component) {
     component_array_.at(new_index) = component;
   }
   ++size_;
-
+  
   return *this;
 }
 
@@ -57,14 +57,6 @@ ComponentArray<T>& ComponentArray<T>::RemoveData(Entity entity) {
 
   --size_;
 
-  return *this;
-}
-
-template <typename T>
-ComponentArray<T>& ComponentArray<T>::ClearData(Entity entity) {
-  for(int i = 0; i < component_array_.size(); ++i) {
-    RemoveData(entity);
-  }
   return *this;
 }
 

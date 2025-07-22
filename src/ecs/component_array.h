@@ -58,8 +58,6 @@ class ComponentArray : public GenericComponentArray {
    */
   ComponentArray& RemoveData(Entity entity);
 
-  ComponentArray& ClearData(Entity entity);
-
   /**
    * @brief Returns the component associated with the ::Entity ID.
    *
@@ -76,6 +74,8 @@ class ComponentArray : public GenericComponentArray {
    * @return Reference to the current ECS::ComponentArray for method chaining.
    */
   ComponentArray& EntityDestroyed(Entity entity) override;
+
+  size_t get_size() { return size_; };
 
  private:
   /// @brief The packed array of components (of generic type T),

@@ -4,7 +4,6 @@
 
 #include "src/ecs/component_manager.h"
 #include "src/ecs/definitions.h"
-#include "src/ecs/ecs_logsink.h"
 #include "src/ecs/entity_manager.h"
 #include "src/ecs/system_manager.h"
 

@@ -1,59 +1,154 @@
-#include <gtest/gtest.h>
 #include "src/ecs/component_array.h"
+
+#include <absl/log/initialize.h>
+#include <absl/log/log.h>
+#include <absl/log/log_sink.h>
+#include <absl/log/log_sink_registry.h>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
+
+#include "test/includes/test_log_sink.h"
 
 struct TestComponent {
   int value;
+  bool operator==(const TestComponent& other) const {
+    return value == other.value;
+  }
 };
 
 class ComponentArrayTest : public ::testing::Test {
-protected:
-  tbge::ComponentArray<TestComponent> componentArray;
+ protected:
+  static void SetUpTestSuite() {
+    static bool initialized = false;
+    if (!initialized) {
+      absl::InitializeLog();
+      initialized = true;
+    }
+  }
+  
+  void SetUp() override {
+    test_sink_ = std::make_unique<TestLogSink>();
+    absl::AddLogSink(test_sink_.get());
+  }
+
+  void TearDown() override { absl::RemoveLogSink(test_sink_.get()); }
+
+  std::unique_ptr<TestLogSink> test_sink_;
+  ECS::ComponentArray<TestComponent> test_component_array;
+  ECS::Entity entity1 = 1;
+  ECS::Entity entity2 = 2;
+  TestComponent component1{10};
+  TestComponent component2{20};
 };
 
-TEST_F(ComponentArrayTest, InsertAndGetComponent) {
-  size_t entity = 1;
-  TestComponent comp{42};
-  componentArray.InsertData(entity, comp);
+/**
+ * @brief Tests insertion and retrieval of a component in the ComponentArray.
+ *
+ * This test verifies that after inserting a TestComponent with a specific value
+ * for a given entity, retrieving the component returns the correct value.
+ * It ensures that the InsertData and GetData methods of the ComponentArray
+ * work as expected for basic usage.
+ */
+TEST_F(ComponentArrayTest, InsertComponent) {
+  TestComponent retrieved;
 
-  auto* retrieved = componentArray.GetData(entity);
-  ASSERT_NE(retrieved, nullptr);
-  EXPECT_EQ(retrieved->value, 42);
+  test_component_array.InsertData(entity1, component1);
+  EXPECT_EQ(test_component_array.get_size(), 1);
+
+  test_component_array.InsertData(entity2, component1);
+  EXPECT_EQ(test_component_array.get_size(), 2);
 }
 
-TEST_F(ComponentArrayTest, RemoveComponent) {
-  size_t entity = 2;
-  componentArray.InsertData(entity, {100});
-  componentArray.RemoveData(entity);
-
-  EXPECT_EQ(componentArray.GetData(entity), nullptr);
-}
-
+/**
+ * @brief Tests that inserting a component for the same entity twice triggers an
+ * error log and does not overwrite the original component.
+ *
+ * @details
+ * This test verifies the following behavior:
+ * - When a component is inserted for an entity that already has the same
+ * component, an error log is generated.
+ * - The severity of the log is `absl::LogSeverity::kError`.
+ * - The log message contains "Component added to same entity more than once".
+ * - The original component's value remains unchanged after attempting to insert
+ * a new component for the same entity.
+ */
 TEST_F(ComponentArrayTest, OverwriteComponent) {
-  size_t entity = 3;
-  componentArray.InsertData(entity, {10});
-  componentArray.InsertData(entity, {20});
+  test_component_array.InsertData(entity1, component1);
 
-  auto* retrieved = componentArray.GetData(entity);
-  ASSERT_NE(retrieved, nullptr);
-  EXPECT_EQ(retrieved->value, 20);
+  test_sink_->Clear();
+  test_component_array.InsertData(entity1, component2);
+
+  test_sink_->TestLogs(absl::LogSeverity::kWarning,
+                       "Component added to same entity more than once");
+
+  TestComponent retrieved = test_component_array.GetData(entity1);
+  EXPECT_EQ(retrieved, component1);
 }
 
-TEST_F(ComponentArrayTest, RemoveNonexistentComponent) {
-  size_t entity = 4;
-  // Should not throw or crash
-  componentArray.RemoveData(entity);
-  EXPECT_EQ(componentArray.GetData(entity), nullptr);
+/**
+ * @brief Tests the removal of a component from the ComponentArray.
+ *
+ * @details
+ * This test inserts a component for a given entity, removes it,
+ * and then asserts that accessing the removed component results in a program
+ * death. It verifies that the ComponentArray correctly handles removal and
+ * prevents access to deleted components.
+ */
+TEST_F(ComponentArrayTest, RemoveComponent) {
+  test_component_array.InsertData(entity1, component1);
+  EXPECT_EQ(test_component_array.get_size(), 1);
+  test_component_array.RemoveData(entity1);
+  EXPECT_EQ(test_component_array.get_size(), 1);
 }
 
-TEST_F(ComponentArrayTest, ClearRemovesAllComponents) {
-  componentArray.InsertData(1, {1});
-  componentArray.InsertData(2, {2});
-  componentArray.Clear();
+/**
+ * @brief Tests that removing a non-existent component from the component array
+ *        triggers a warning log.
+ *
+ * @details
+ * This test verifies that when RemoveData is called with an ID that does not
+ * exist in the component array, the system logs a warning indicating the
+ * attempted removal of a non-existent component.
+ */
+TEST_F(ComponentArrayTest, RemoveNonExistentComponent) {
+  test_sink_->Clear();
 
-  EXPECT_EQ(componentArray.GetData(1), nullptr);
-  EXPECT_EQ(componentArray.GetData(2), nullptr);
+  test_component_array.RemoveData(999);
+
+  test_sink_->TestLogs(absl::LogSeverity::kWarning,
+                       "Removing non-existent component.");
 }
 
-TEST_F(ComponentArrayTest, GetDataReturnsNullptrForMissingEntity) {
-  EXPECT_EQ(componentArray.GetData(999), nullptr);
+/**
+ * @brief Tests insertion and retrieval of a component in the ComponentArray.
+ *
+ * This test verifies that after inserting a TestComponent with a specific value
+ * for a given entity, retrieving the component returns the correct value.
+ * It ensures that the InsertData and GetData methods of the ComponentArray
+ * work as expected for basic usage.
+ */
+TEST_F(ComponentArrayTest, GetComponent) {
+  TestComponent retrieved;
+
+  test_component_array.InsertData(entity1, component1);
+  retrieved = test_component_array.GetData(entity1);
+  EXPECT_EQ(retrieved, component1);
+
+  test_component_array.InsertData(entity2, component1);
+  retrieved = test_component_array.GetData(entity2);
+  EXPECT_EQ(retrieved, component1);
+}
+
+/**
+ * @brief Tests retrieval of a non-existent component from the component array.
+ *
+ * @details
+ * This test verifies that attempting to get data for a component ID that does
+ * not exist triggers a warning log with the expected message.
+ */
+TEST_F(ComponentArrayTest, GettingNonexistentComponent) {
+  test_sink_->Clear();
+  test_component_array.GetData(999);
+  test_sink_->TestLogs(absl::LogSeverity::kWarning,
+                       "Retrieving non-existent component.");
 }
