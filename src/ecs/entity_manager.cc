@@ -12,11 +12,6 @@ namespace ECS {
 EntityManager::EntityManager() {
   // TODO: don't preemptively fill the queue, but rather keep track of how many
   // are available, and if/when necessary add more.
-
-  // Initialize the queue with all possible entity IDs
-  for (Entity entity = 0; entity < kMaxEntities; ++entity) {
-    available_entities_.push(entity);
-  }
 }
 
 Entity EntityManager::CreateEntity() {
@@ -25,12 +20,13 @@ Entity EntityManager::CreateEntity() {
   // If there are no available entities, create one
   if (available_entities_.empty()) {
 #ifndef _DEBUG
-    CHECK(entity_id_counter >= kMaxEntities)
+    CHECK(entity_id_counter < kMaxEntities)
         << "Too many Entities were created.";
 #else
     // TODO: Update message to reflect that the config has been made
     // programatic, when this change is made.
-    CHECK(entity_id_counter >= kMaxEntities)
+    LOG(ERROR) << entity_id_counter << " : " << kMaxEntities;
+    CHECK(entity_id_counter < kMaxEntities)
         << "Too many Entities were created. The maximum amount of Entities is "
         << kMaxEntities << ". This maximum can be adjusted in ecs/config.h.";
 #endif
@@ -48,7 +44,7 @@ Entity EntityManager::CreateEntity() {
 }
 
 EntityManager& EntityManager::DestroyEntity(Entity entity) {
-  if (entity > kMaxEntities) {
+  if (entity >= kMaxEntities) {
 #ifndef _DEBUG
     LOG(ERROR) << "Attempted to destroy Entity out of range.";
 #else
@@ -61,7 +57,7 @@ EntityManager& EntityManager::DestroyEntity(Entity entity) {
   }
 
   // Invalidate the destroyed entity's signature
-  signatures_[entity].reset();
+  signatures_.at(entity).reset();
 
   // Put the destroyed ID at the back of the queue
   available_entities_.push(entity);
@@ -71,7 +67,7 @@ EntityManager& EntityManager::DestroyEntity(Entity entity) {
 }
 
 EntityManager& EntityManager::SetSignature(Entity entity, Signature signature) {
-  if (entity > kMaxEntities) {
+  if (entity >= kMaxEntities) {
 #ifndef _DEBUG
     LOG(ERROR) << "Attempted to set signature of Entity out of range.";
 #else
@@ -84,24 +80,22 @@ EntityManager& EntityManager::SetSignature(Entity entity, Signature signature) {
   }
 
   // Put this entity's signature into the array
-  signatures_[entity] = signature;
+  signatures_.at(entity) = signature;
 
   return *this;
 }
 
 Signature EntityManager::GetSignature(Entity entity) {
-  if (entity > kMaxEntities) {
 #ifndef _DEBUG
-    LOG(ERROR) << "Attempted to get signature of Entity out of range.";
+    CHECK(entity > kMaxEntities) << "Attempted to get signature of Entity out of range.";
 #else
-    LOG(ERROR) << "Attempted to get signature of Entity out of range. The "
+    CHECK(entity > kMaxEntities) << "Attempted to get signature of Entity out of range. The "
                   "maximum amount of Entities is "
                << kMaxEntities
                << ". This maximum can be adjusted in ecs/config.h.";
 #endif
-  }
 
   // Get this entity's signature from the array
-  return signatures_[entity];
+  return signatures_.at(entity);
 }
 };  // namespace ECS

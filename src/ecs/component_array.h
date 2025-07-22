@@ -9,8 +9,8 @@
 namespace ECS {
 class GenericComponentArray {
  public:
-  virtual ~GenericComponentArray();
-  virtual void EntityDestroyed(Entity entity);
+  virtual ~GenericComponentArray() = default;
+  virtual GenericComponentArray& EntityDestroyed(Entity entity) = 0;
 };
 
 /**
@@ -57,6 +57,8 @@ class ComponentArray : public GenericComponentArray {
    * @return Reference to the current ECS::ComponentArray for method chaining.
    */
   ComponentArray& RemoveData(Entity entity);
+
+  ComponentArray& ClearData(Entity entity);
 
   /**
    * @brief Returns the component associated with the ::Entity ID.

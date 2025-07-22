@@ -73,10 +73,8 @@ template <typename T>
 std::shared_ptr<ComponentArray<T>> ComponentManager::GetComponentArray() {
   const char* type_name = typeid(T).name();
 
-  if (component_types_.find(type_name) == component_types_.end()) {
-    LOG(ERROR) << "Component not registered before use.";
-    return *this;
-  }
+  CHECK(component_types_.find(type_name) == component_types_.end())
+      << "Component not registered before use.";
 
   return std::static_pointer_cast<ComponentArray<T>>(
       component_arrays_[type_name]);

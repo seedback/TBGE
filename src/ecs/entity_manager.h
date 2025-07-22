@@ -1,7 +1,6 @@
 #ifndef TBGE_SRC_ECS_ENTITY_MANAGER_H_
 #define TBGE_SRC_ECS_ENTITY_MANAGER_H_
 
-#include <cassert>
 #include <queue>
 #include <vector>
 

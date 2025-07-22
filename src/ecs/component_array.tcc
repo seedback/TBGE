@@ -1,10 +1,12 @@
 #ifndef TBGE_SRC_ECS_COMPONENT_ARRAY_TCC_
 #define TBGE_SRC_ECS_COMPONENT_ARRAY_TCC_
 
+#include <absl/log/check.h>
 #include <absl/log/log.h>
 
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 
 #include "src/ecs/component_array.h"
 #include "src/ecs/definitions.h"
@@ -17,12 +19,16 @@ ComponentArray<T>& ComponentArray<T>::InsertData(Entity entity, T component) {
     LOG(WARNING) << "Component added to same entity more than once.";
     return *this;
   }
-
   // Put new entry at end and update the maps
   size_t new_index = size_;
+
   entity_to_index_map_[entity] = new_index;
   index_to_entity_map_[new_index] = entity;
-  component_array_.at(new_index) = component;
+  if (new_index >= component_array_.size()) {
+    component_array_.push_back(component);
+  } else {
+    component_array_.at(new_index) = component;
+  }
   ++size_;
 
   return *this;
@@ -55,11 +61,17 @@ ComponentArray<T>& ComponentArray<T>::RemoveData(Entity entity) {
 }
 
 template <typename T>
-T& ComponentArray<T>::GetData(Entity entity) {
-  if (entity_to_index_map_.find(entity) == entity_to_index_map_.end()) {
-    LOG(WARNING) << "Retrieving non-existent component.";
-    return nullptr;
+ComponentArray<T>& ComponentArray<T>::ClearData(Entity entity) {
+  for(int i = 0; i < component_array_.size(); ++i) {
+    RemoveData(entity);
   }
+  return *this;
+}
+
+template <typename T>
+T& ComponentArray<T>::GetData(Entity entity) {
+  CHECK(entity_to_index_map_.find(entity) != entity_to_index_map_.end())
+      << "Retrieving non-existent component.";
 
   // Return a reference to the entity's component
   return component_array_.at(entity_to_index_map_[entity]);

@@ -15,10 +15,16 @@ cc_binary(
 cc_test(
     name = "tbge_test",
     size = "small",
-    srcs = ["test/hello_test.cc"],
+    srcs = glob(
+        [
+            "test/**/*.cc",
+        ],
+    ),
     deps = [
         "@googletest//:gtest",
         "@googletest//:gtest_main",
+        ":tbge_lib",
+        ":tbge_test_includes",
     ],
 )
 
@@ -42,6 +48,18 @@ cc_library(
     deps = [
       ":abseil_log",
     ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "tbge_test_includes",
+    hdrs = glob(
+        [
+            "test/includes/**/*.h",
+            "test/includes/**/*.hh",
+        ],
+        allow_empty = True,
+    ),
     visibility = ["//visibility:public"],
 )
 

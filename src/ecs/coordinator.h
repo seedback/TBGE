@@ -171,14 +171,16 @@ class Coordinator {
    */
   Coordinator& Init();
 
-  #ifdef _DEBUG
+#ifdef _DEBUG
   void debug_warning();
-  #endif
+#endif
 
   std::unique_ptr<ComponentManager> component_manager_;
   std::unique_ptr<EntityManager> entity_manager_;
   std::unique_ptr<SystemManager> system_manager_;
 };
+
 }  // namespace ECS
 
+#include "src/ecs/coordinator.tcc"
 #endif  // TBGE_SRC_ECS_COORDINATOR_H_
