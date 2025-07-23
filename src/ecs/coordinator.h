@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "src/ecs/component_manager.h"
-#include "src/ecs/definitions.h"
+#include "src/ecs/context.h"
 #include "src/ecs/entity_manager.h"
 #include "src/ecs/system_manager.h"
 
@@ -14,14 +14,22 @@ namespace ECS {
  * @class Coordinator
  * @brief Central class for managing entities, components, and systems in
  * this ECS (Entity Component System) architecture.
- *  *
+ * 
+ * @tparam Context The Context that holds configuration data and data types.
+ * 
+ * @details
  * The Coordinator class provides a unified interface for creating and
  * destroying entities, registering and managing components, and handling
  * systems and their signatures. It acts as the main entry point for
  * interacting with the ECS framework.
  */
+template <typename Context = Context<>>
 class Coordinator {
  public:
+  using Entity = typename Context::Entity;
+  using ComponentType = typename Context::ComponentType;
+  using Signature = typename Context::Signature;
+
   /**
    * @brief Constructs a Coordinator object and initializes its internal state.
    *
@@ -51,7 +59,7 @@ class Coordinator {
    * @param entity The entity to be destroyed.
    * @return Reference to the Coordinator for method chaining.
    */
-  Coordinator& DestroyEntity(Entity entity);
+  Coordinator<Context>& DestroyEntity(Entity entity);
 
   // #####   Component methods   #####
   /**
@@ -66,7 +74,7 @@ class Coordinator {
    * @return Reference to the Coordinator instance for method chaining.
    */
   template <typename T>
-  Coordinator& RegisterComponentType();
+  Coordinator<Context>& RegisterComponentType();
 
   /**
    * @brief Adds a component of type T to the specified entity.
@@ -80,7 +88,7 @@ class Coordinator {
    * @return Reference to the Coordinator for method chaining.
    */
   template <typename T>
-  Coordinator& AddComponent(Entity entity, T component);
+  Coordinator<Context>& AddComponent(Entity entity, T component);
 
   /**
    * @brief Removes a component of type T from the specified entity.
@@ -93,7 +101,7 @@ class Coordinator {
    * @return Reference to the Coordinator for method chaining.
    */
   template <typename T>
-  Coordinator& RemoveComponent(Entity entity);
+  Coordinator<Context>& RemoveComponent(Entity entity);
 
   /**
    * @brief Retrieves a reference to the component of type T associated with the
@@ -154,7 +162,7 @@ class Coordinator {
    * @return Reference to the Coordinator to allow method chaining.
    */
   template <typename T>
-  Coordinator& SetSystemSignature(Signature signature);
+  Coordinator<Context>& SetSystemSignature(Signature signature);
 
  private:
   /**
@@ -169,15 +177,16 @@ class Coordinator {
    *
    * @return Reference to the initialized Coordinator instance.
    */
-  Coordinator& Init();
+  Coordinator<Context>& Init();
 
 #ifdef _DEBUG
   void debug_warning();
 #endif
 
-  std::unique_ptr<ComponentManager> component_manager_;
-  std::unique_ptr<EntityManager> entity_manager_;
-  std::unique_ptr<SystemManager> system_manager_;
+  Context config_;
+  std::unique_ptr<ComponentManager<Context>> component_manager_;
+  std::unique_ptr<EntityManager<Context>> entity_manager_;
+  std::unique_ptr<SystemManager<Context>> system_manager_;
 };
 
 }  // namespace ECS

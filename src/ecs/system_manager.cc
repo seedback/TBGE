@@ -6,12 +6,15 @@
 #include <memory>
 #include <typeinfo>
 
+#include "src/ecs/context.h"
+
 namespace ECS {
 
+template <typename Context>
 template <typename T>
-std::shared_ptr<T> SystemManager::RegisterSystem() {
+std::shared_ptr<T> SystemManager<Context>::RegisterSystem() {
   static_assert(
-      std::is_base_of<System, T>::value,
+      std::is_base_of<System<Context>, T>::value,
       "Cannot register a system of type T. Must inherit from ECS::System");
   const char* type_name = typeid(T).name();
 
@@ -27,8 +30,10 @@ std::shared_ptr<T> SystemManager::RegisterSystem() {
   return system;
 }
 
+template <typename Context>
 template <typename T>
-SystemManager& SystemManager::SetSignature(Signature signature) {
+SystemManager<Context>& SystemManager<Context>::SetSignature(
+    typename Context::Signature signature) {
   const char* type_name = typeid(T).name();
 
   if (systems_.find(type_name) == systems_.end()) {
@@ -44,7 +49,9 @@ SystemManager& SystemManager::SetSignature(Signature signature) {
   return *this;
 }
 
-SystemManager& SystemManager::EntityDestroyed(Entity entity) {
+template <typename Context>
+SystemManager<Context>& SystemManager<Context>::EntityDestroyed(
+    typename Context::Entity entity) {
   // Erase a destroyed entity from all system lists
   // entities_ is a set so no check needed
   for (auto const& pair : systems_) {
@@ -56,8 +63,10 @@ SystemManager& SystemManager::EntityDestroyed(Entity entity) {
   return *this;
 }
 
-SystemManager& SystemManager::EntitySignatureChanged(
-    Entity entity, Signature entitySignature) {
+template <typename Context>
+SystemManager<Context>& SystemManager<Context>::EntitySignatureChanged(
+    typename Context::Entity entity,
+    typename Context::Signature entitySignature) {
   // Notify each system that an entity's signature changed
   for (auto const& pair : systems_) {
     auto const& type = pair.first;

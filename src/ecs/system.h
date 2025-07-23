@@ -3,7 +3,7 @@
 
 #include <set>
 
-#include "src/ecs/definitions.h"
+#include "src/ecs/context.h"
 
 namespace ECS {
 
@@ -15,9 +15,11 @@ namespace ECS {
  * Each system typically processes entities that have a specific set of
  * components.
  */
+template <typename Context = ECS::Context<>>
 class System {
  public:
-  std::set<Entity> entities_; //TODO: make this private with set/get functions
+  std::set<typename Context::Entity>
+      entities_;  // TODO: make this private with set/get functions
 };
 
 }  // namespace ECS

@@ -4,7 +4,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "src/ecs/definitions.h"
+#include "src/ecs/context.h"
 #include "src/ecs/system.h"
 
 namespace ECS {
@@ -21,10 +21,13 @@ namespace ECS {
  * components a system is interested in.
  * - Notifying systems when entities are destroyed or when their signatures
  * change, allowing systems to update their internal entity lists accordingly.
+ * 
+ * @tparam Context The Context that holds configuration data and data types.
  *
  * @note This class is a core part of this Entity-Component-System (ECS)
  * architecture.
  */
+template <typename Context = ECS::Context<>>
 class SystemManager {
  public:
   /**
@@ -58,7 +61,7 @@ class SystemManager {
    * Asserts that the system has been registered before being given a signature.
    */
   template <typename T>
-  SystemManager& SetSignature(Signature signature);
+  SystemManager& SetSignature(Context::Signature signature);
 
   /**
    * @brief Notifies all Systems that an entity has been destroyed.
@@ -71,7 +74,7 @@ class SystemManager {
    * @return Reference to the current SystemManager instance for method
    * chaining.
    */
-  SystemManager& EntityDestroyed(Entity entity);
+  SystemManager& EntityDestroyed(Context::Entity entity);
 
   /**
    * @brief Notifies the SystemManager that an entity's signature has changed.
@@ -86,15 +89,15 @@ class SystemManager {
    * @return Reference to the current SystemManager instance for method
    * chaining.
    */
-  SystemManager& EntitySignatureChanged(Entity entity,
-                                        Signature entitySignature);
+  SystemManager& EntitySignatureChanged(Context::Entity entity,
+                                        Context::Signature entitySignature);
 
  private:
   /// @brief Map from system type string pointer to a signature
-  std::unordered_map<const char*, Signature> signatures_{};
+  std::unordered_map<const char*, typename Context::Signature> signatures_{};
 
   /// @brief Map from system type string pointer to a system pointer
-  std::unordered_map<const char*, std::shared_ptr<System>> systems_{};
+  std::unordered_map<const char*, std::shared_ptr<System<Context>>> systems_{};
 };
 
 }  // namespace ECS

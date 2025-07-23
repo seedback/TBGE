@@ -4,7 +4,7 @@
 #include <queue>
 #include <vector>
 
-#include "src/ecs/definitions.h"
+#include "src/ecs/context.h"
 
 namespace ECS {
 /**
@@ -24,26 +24,26 @@ namespace ECS {
  * - Use DestroyEntity() to remove an entity and recycle its ID.
  * - Use SetSignature() and GetSignature() to manage the component signature of
  * an entity.
+ * 
+ * @tparam Context The Context that holds configuration data and data types.
+ *
+ * @tparam Context The Context that holds configuration data and data types.
  *
  * @note The maximum number of entities is limited by kMaxEntities.
  * @note Entity IDs are recycled after destruction.
  *
  * @see kMaxEntities
  */
+template <typename Context = Context<>>
 class EntityManager {
  public:
-  /**
-   * @brief Constructs an EntityManager and initializes the pool of available
-   * entity IDs.
-   *
-   * @details
-   * This constructor fills the queue of available entities with all possible
-   * entity IDs, ranging from 0 to kMaxEntities - 1. This allows for efficient
-   * allocation and recycling of entity IDs during the lifetime of the
-   * EntityManager.
-   */
-  EntityManager();
-
+  EntityManager() {
+    current_entity_count_ = 0;
+    signatures_.clear();
+    while (!available_entities_.empty()) {
+      available_entities_.pop();
+    }
+  }
   /**
    * @brief Creates a new entity and returns its unique identifier.
    *
@@ -56,7 +56,7 @@ class EntityManager {
    *
    * @note Asserts that the maximum number of entities has not been exceeded.
    */
-  Entity CreateEntity();
+  Context::Entity CreateEntity();
 
   /**
    * @brief Destroys the specified entity and recycles its ID.
@@ -73,7 +73,24 @@ class EntityManager {
    *
    * @note Asserts that the entity is within the valid range.
    */
-  EntityManager& DestroyEntity(Entity entity);
+  EntityManager<Context>& DestroyEntity(Context::Entity entity);
+<<<<<<< HEAD
+
+  /**
+   * @brief Checks if the specified entity exists in the manager.
+   *
+   * @note This operation gets really expensive the more destroyed entities
+   * exist that has not yet been reused as it bases itself on which entities are
+   * currently in the available_entities_ queue, and as such has to go through
+   * the whole queue to verify if it is in use or not.
+   * This is mostly meant to be a debug tool.
+   *
+   * @param entity The entity to check for existence.
+   * @return true if the entity exists, false otherwise.
+   */
+  bool HasEntity(Context::Entity entity);
+=======
+>>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
 
   /**
    * @brief Sets the signature for a given entity.
@@ -89,7 +106,8 @@ class EntityManager {
    *
    * @note Asserts that the entity is within the valid range.
    */
-  EntityManager& SetSignature(Entity entity, Signature signature);
+  EntityManager<Context>& SetSignature(Context::Entity entity,
+                                       Context::Signature signature);
 
   /**
    * @brief Retrieves the signature associated with a given entity.
@@ -103,18 +121,30 @@ class EntityManager {
    *
    * @note Asserts that the entity identifier is within the valid range.
    */
-  Signature GetSignature(Entity entity);
+  Context::Signature GetSignature(Context::Entity entity);
+
+<<<<<<< HEAD
+  Context::Entity get_current_entity_count() { return current_entity_count_; }
+  Context::Entity get_entity_id_counter() { return entity_id_counter_; }
+=======
+  Context::Entity get_current_entity_count_() { return current_entity_count_; }
+>>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
 
  private:
   /// Queue of unused entity IDs
-  std::queue<Entity> available_entities_{};
+  std::queue<typename Context::Entity> available_entities_{};
 
   /// Array of signatures where the index corresponds to the entity ID
-  std::vector<Signature> signatures_{};
+  std::vector<typename Context::Signature> signatures_{};
 
   /// Total living entities - used to keep limits on how many exist
-  Entity current_entity_count_ = 0;
+  Context::Entity current_entity_count_ = 0;
+
+  /// Keeps track of the next Entity ID to be used when creating a new one.
+  Context::Entity entity_id_counter_ = 0;
 };
 }  // namespace ECS
+
+#include "src/ecs/entity_manager.tcc"
 
 #endif  // TBGE_SRC_ECS_ENTITY_MANAGER_H_

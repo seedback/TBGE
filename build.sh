@@ -5,6 +5,7 @@ TEST=0
 RUN=0
 HELP=0
 DEBUG=0
+DOC=0
 RELEASE=0
 TARGET=""
 TESTTARGET=""
@@ -27,6 +28,9 @@ for arg in "$@"; do
     -d|--debug)
       DEBUG=1
       ;;
+    --doc)
+      DOC=1
+      ;;
     --release)
       RELEASE=1
       ;;
@@ -42,6 +46,10 @@ for arg in "$@"; do
       ;;
   esac
 done
+
+if [[ $TEST -eq 1 ]]; then
+  DEBUG=1;
+fi
 
 echo "CLEAN=$CLEAN"
 echo "TEST=$TEST"
@@ -80,6 +88,10 @@ Description:
   This script automates the build process for the project.
 EOF
   exit 0
+fi
+
+if [[ $DOC -eq 1 ]]; then
+  ./docs.sh
 fi
 
 if [[ $TEST -eq 1 ]]; then

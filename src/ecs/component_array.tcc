@@ -4,17 +4,19 @@
 #include <absl/log/check.h>
 #include <absl/log/log.h>
 
+#include <iostream>
+#include <optional>
 #include <unordered_map>
 #include <vector>
-#include <iostream>
 
 #include "src/ecs/component_array.h"
-#include "src/ecs/definitions.h"
+#include "src/ecs/context.h"
 
 namespace ECS {
 
-template <typename T>
-ComponentArray<T>& ComponentArray<T>::InsertData(Entity entity, T component) {
+template <typename T, typename Context>
+ComponentArray<T, Context>& ComponentArray<T, Context>::InsertData(
+    Context::Entity entity, T component) {
   if (entity_to_index_map_.find(entity) != entity_to_index_map_.end()) {
     LOG(WARNING) << "Component added to same entity more than once.";
     return *this;
@@ -30,12 +32,13 @@ ComponentArray<T>& ComponentArray<T>::InsertData(Entity entity, T component) {
     component_array_.at(new_index) = component;
   }
   ++size_;
-  
+
   return *this;
 }
 
-template <typename T>
-ComponentArray<T>& ComponentArray<T>::RemoveData(Entity entity) {
+template <typename T, typename Context>
+ComponentArray<T, Context>& ComponentArray<T, Context>::RemoveData(
+    Context::Entity entity) {
   if (entity_to_index_map_.find(entity) == entity_to_index_map_.end()) {
     LOG(WARNING) << "Removing non-existent component.";
     return *this;
@@ -48,7 +51,8 @@ ComponentArray<T>& ComponentArray<T>::RemoveData(Entity entity) {
       component_array_.at(index_of_last_element);
 
   // Update map to point to moved spot
-  Entity entity_of_last_element = index_to_entity_map_[index_of_last_element];
+  typename Context::Entity entity_of_last_element =
+      index_to_entity_map_[index_of_last_element];
   entity_to_index_map_[entity_of_last_element] = index_of_removed_entity;
   index_to_entity_map_[index_of_removed_entity] = entity_of_last_element;
 
@@ -60,17 +64,21 @@ ComponentArray<T>& ComponentArray<T>::RemoveData(Entity entity) {
   return *this;
 }
 
-template <typename T>
-T& ComponentArray<T>::GetData(Entity entity) {
-  CHECK(entity_to_index_map_.find(entity) != entity_to_index_map_.end())
-      << "Retrieving non-existent component.";
+template <typename T, typename Context>
+std::optional<T> ComponentArray<T, Context>::GetData(
+    typename Context::Entity entity) {
+  if (entity_to_index_map_.find(entity) == entity_to_index_map_.end()) {
+    LOG(WARNING) << "Retrieving non-existent component.";
+    return std::nullopt;
+  }
 
   // Return a reference to the entity's component
   return component_array_.at(entity_to_index_map_[entity]);
 }
 
-template <typename T>
-ComponentArray<T>& ComponentArray<T>::EntityDestroyed(Entity entity) {
+template <typename T, typename Context>
+ComponentArray<T, Context>& ComponentArray<T, Context>::EntityDestroyed(
+    typename Context::Entity entity) {
   if (entity_to_index_map_.find(entity) != entity_to_index_map_.end()) {
     // Remove the entity's component if it existed
     RemoveData(entity);
