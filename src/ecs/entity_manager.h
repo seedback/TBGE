@@ -74,7 +74,6 @@ class EntityManager {
    * @note Asserts that the entity is within the valid range.
    */
   EntityManager<Context>& DestroyEntity(Context::Entity entity);
-<<<<<<< HEAD
 
   /**
    * @brief Checks if the specified entity exists in the manager.
@@ -89,8 +88,6 @@ class EntityManager {
    * @return true if the entity exists, false otherwise.
    */
   bool HasEntity(Context::Entity entity);
-=======
->>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
 
   /**
    * @brief Sets the signature for a given entity.
@@ -123,12 +120,8 @@ class EntityManager {
    */
   Context::Signature GetSignature(Context::Entity entity);
 
-<<<<<<< HEAD
   Context::Entity get_current_entity_count() { return current_entity_count_; }
   Context::Entity get_entity_id_counter() { return entity_id_counter_; }
-=======
-  Context::Entity get_current_entity_count_() { return current_entity_count_; }
->>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
 
  private:
   /// Queue of unused entity IDs

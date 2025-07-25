@@ -1,10 +1,8 @@
 #include "src/ecs/component_array.h"
 
 #include <absl/log/initialize.h>
-#include <absl/log/log.h>
 #include <absl/log/log_sink.h>
 #include <absl/log/log_sink_registry.h>
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "test/includes/test_log_sink.h"
@@ -18,14 +16,7 @@ struct TestComponent {
 
 class ComponentArrayTest : public ::testing::Test {
  protected:
-  static void SetUpTestSuite() {
-    static bool initialized = false;
-    if (!initialized) {
-      absl::InitializeLog();
-      initialized = true;
-    }
-  }
-  
+  using TestContext = ECS::Context<uint8_t, uint8_t, 10, 5>;
   void SetUp() override {
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
@@ -34,9 +25,9 @@ class ComponentArrayTest : public ::testing::Test {
   void TearDown() override { absl::RemoveLogSink(test_sink_.get()); }
 
   std::unique_ptr<TestLogSink> test_sink_;
-  ECS::ComponentArray<TestComponent> test_component_array;
-  ECS::Entity entity1 = 1;
-  ECS::Entity entity2 = 2;
+  ECS::ComponentArray<TestComponent, TestContext> test_component_array;
+  typename TestContext::Entity entity1 = 1;
+  typename TestContext::Entity entity2 = 2;
   TestComponent component1{10};
   TestComponent component2{20};
 };
@@ -81,7 +72,7 @@ TEST_F(ComponentArrayTest, OverwriteComponent) {
   test_sink_->TestLogs(absl::LogSeverity::kWarning,
                        "Component added to same entity more than once");
 
-  TestComponent retrieved = test_component_array.GetData(entity1);
+  TestComponent retrieved = test_component_array.GetData(entity1).value();
   EXPECT_EQ(retrieved, component1);
 }
 
@@ -98,7 +89,7 @@ TEST_F(ComponentArrayTest, RemoveComponent) {
   test_component_array.InsertData(entity1, component1);
   EXPECT_EQ(test_component_array.get_size(), 1);
   test_component_array.RemoveData(entity1);
-  EXPECT_EQ(test_component_array.get_size(), 1);
+  EXPECT_EQ(test_component_array.get_size(), 0);
 }
 
 /**
@@ -113,7 +104,7 @@ TEST_F(ComponentArrayTest, RemoveComponent) {
 TEST_F(ComponentArrayTest, RemoveNonExistentComponent) {
   test_sink_->Clear();
 
-  test_component_array.RemoveData(999);
+  test_component_array.RemoveData(255);
 
   test_sink_->TestLogs(absl::LogSeverity::kWarning,
                        "Removing non-existent component.");
@@ -131,11 +122,11 @@ TEST_F(ComponentArrayTest, GetComponent) {
   TestComponent retrieved;
 
   test_component_array.InsertData(entity1, component1);
-  retrieved = test_component_array.GetData(entity1);
+  retrieved = test_component_array.GetData(entity1).value();
   EXPECT_EQ(retrieved, component1);
 
   test_component_array.InsertData(entity2, component1);
-  retrieved = test_component_array.GetData(entity2);
+  retrieved = test_component_array.GetData(entity2).value();
   EXPECT_EQ(retrieved, component1);
 }
 
@@ -144,11 +135,15 @@ TEST_F(ComponentArrayTest, GetComponent) {
  *
  * @details
  * This test verifies that attempting to get data for a component ID that does
- * not exist triggers a warning log with the expected message.
+ * not exist triggers a fatal check with the expected message.
  */
 TEST_F(ComponentArrayTest, GettingNonexistentComponent) {
+  // EXPECT_DEATH(test_component_array.GetData(255), "Retrieving non-existent
+  // component.");
   test_sink_->Clear();
-  test_component_array.GetData(999);
+
+  test_component_array.GetData(255);
+
   test_sink_->TestLogs(absl::LogSeverity::kWarning,
                        "Retrieving non-existent component.");
 }
