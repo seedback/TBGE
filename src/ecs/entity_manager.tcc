@@ -18,23 +18,15 @@ typename Context::Entity EntityManager<Context>::CreateEntity() {
   // If there are no available entities, create one
   if (available_entities_.empty()) {
 #ifndef _DEBUG
-<<<<<<< HEAD
     CHECK(entity_id_counter_ < Context::kMaxEntities)
-=======
-    CHECK(entity_id_counter < Context::kMaxEntities)
->>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
         << "Too many Entities were created.";
 #else
     // TODO: Update message to reflect that the config has been made
     // programatic, when this change is made.
     CHECK(entity_id_counter_ < Context::kMaxEntities)
         << "Too many Entities were created. The maximum amount of Entities is "
-<<<<<<< HEAD
         << std::to_string(Context::kMaxEntities)
         << ". This maximum can be adjusted in the Context.";
-=======
-        << Context::kMaxEntities << ". This maximum can be adjusted in ecs/config.h.";
->>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
 #endif
 
     available_entities_.push(entity_id_counter_);
@@ -52,25 +44,15 @@ typename Context::Entity EntityManager<Context>::CreateEntity() {
 
 template <typename Context>
 EntityManager<Context>& EntityManager<Context>::DestroyEntity(
-<<<<<<< HEAD
     typename Context::Entity entity) {
   if (entity >= entity_id_counter_) {
-=======
-    Context::Entity entity) {
-  if (entity >= Context::kMaxEntities) {
->>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
 #ifndef _DEBUG
     LOG(ERROR) << "Attempted to destroy Entity out of range.";
 #else
     LOG(ERROR) << "Attempted to destroy Entity out of range. The maximum "
                   "amount of Entities is "
-<<<<<<< HEAD
                << std::to_string(entity_id_counter_)
                << ". This maximum can be adjusted in the Context.";
-=======
-               << Context::kMaxEntities
-               << ". This maximum can be adjusted in ecs/config.h.";
->>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
 #endif
     return *this;
   }
@@ -86,7 +68,6 @@ EntityManager<Context>& EntityManager<Context>::DestroyEntity(
 }
 
 template <typename Context>
-<<<<<<< HEAD
 bool EntityManager<Context>::HasEntity(typename Context::Entity entity) {
   if (entity > entity_id_counter_) {
     return false;
@@ -119,18 +100,6 @@ EntityManager<Context>& EntityManager<Context>::SetSignature(
         << std::to_string(entity_id_counter_)
         << ". This error usually means that you're trying to access an "
            "Entity that has not yet been created or has been deleted.";
-=======
-EntityManager<Context>& EntityManager<Context>::SetSignature(
-    Context::Entity entity, Context::Signature signature) {
-  if (entity >= Context::kMaxEntities) {
-#ifndef _DEBUG
-    LOG(ERROR) << "Attempted to set signature of Entity out of range.";
-#else
-    LOG(ERROR) << "Attempted to set signature of Entity out of range. The "
-                  "maximum amount of Entities is "
-               << Context::kMaxEntities
-               << ". This maximum can be adjusted in ecs/config.h.";
->>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
 #endif
     return *this;
   }
@@ -143,7 +112,6 @@ EntityManager<Context>& EntityManager<Context>::SetSignature(
 
 template <typename Context>
 Context::Signature EntityManager<Context>::GetSignature(
-<<<<<<< HEAD
     typename Context::Entity entity) {
 #ifndef _DEBUG
   CHECK(entity < entity_id_counter_)
@@ -155,17 +123,6 @@ Context::Signature EntityManager<Context>::GetSignature(
       << std::to_string(entity_id_counter_)
       << ". This error usually means that you're trying to access an "
          "Entity that has not yet been created or has been deleted.";
-=======
-    Context::Entity entity) {
-#ifndef _DEBUG
-  CHECK(entity < Context::kMaxEntities)
-      << "Attempted to get signature of Entity out of range.";
-#else
-  CHECK(entity < Context::kMaxEntities)
-      << "Attempted to get signature of Entity out of range. The "
-         "maximum amount of Entities is "
-      << Context::kMaxEntities << ". This maximum can be adjusted in ecs/config.h.";
->>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
 #endif
 
   // Get this entity's signature from the array
