@@ -26,7 +26,8 @@ typename Context::Entity EntityManager<Context>::CreateEntity() {
     CHECK(entity_id_counter_ < Context::kMaxEntities)
         << "Too many Entities were created. The maximum amount of Entities is "
         << std::to_string(Context::kMaxEntities)
-        << ". This maximum can be adjusted in the Context.";
+        << " and has been reached. This maximum can be adjusted in the "
+           "Context.";
 #endif
 
     available_entities_.push(entity_id_counter_);
@@ -52,6 +53,8 @@ EntityManager<Context>& EntityManager<Context>::DestroyEntity(
     LOG(ERROR) << "Attempted to destroy Entity out of range. The maximum "
                   "amount of Entities is "
                << std::to_string(entity_id_counter_)
+               << ". ID that was attempted to be removed is "
+               << std::to_string(entity)
                << ". This maximum can be adjusted in the Context.";
 #endif
     return *this;

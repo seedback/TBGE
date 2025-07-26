@@ -13,7 +13,7 @@ namespace ECS {
  * @class ComponentManager
  * @brief Manages registration, storage, and retrieval of components in this ECS
  * (Entity Component System) architecture.
- * 
+ *
  * @tparam Context The Context that holds configuration data and data types.
  *
  * @details
@@ -56,7 +56,7 @@ class ComponentManager {
    * @return Reference to the current ECS::ComponentManager for method chaining.
    */
   template <typename T>
-  ComponentManager<Context>& AddComponent(Context::Entity entity, T component);
+  ComponentManager<Context>& AddComponent(typename Context::Entity entity, T component);
 
   /**
    * @brief Removes a component from the correct ComponentArray based on the
@@ -68,7 +68,11 @@ class ComponentManager {
    * @return Reference to the current ECS::ComponentManager for method chaining.
    */
   template <typename T>
-  ComponentManager<Context>& RemoveComponent(Context::Entity entity);
+  ComponentManager<Context>& RemoveComponent(typename Context::Entity entity);
+
+
+  template <typename T>
+  bool HasComponent(typename Context::Entity entity);
 
   /**
    * @brief Returns the component associated with Entity ID
@@ -78,7 +82,7 @@ class ComponentManager {
    * @return The component of type T
    */
   template <typename T>
-  T& GetComponent(Context::Entity entity);
+  T& GetComponent(typename Context::Entity entity);
 
   /**
    * @brief To be called whenever a component has been destroyed.
@@ -90,7 +94,18 @@ class ComponentManager {
    * @param entity The Entity ID of the component that has been destroyed
    * @return Reference to the current ECS::ComponentManager for method chaining.
    */
-  ComponentManager<Context>& EntityDestroyed(Context::Entity entity);
+  ComponentManager<Context>& EntityDestroyed(typename Context::Entity entity);
+
+  /**
+   * @brief Retrieves the mapping of component type names to their corresponding component types.
+   *
+   * @return An unordered map where the key is a C-string representing the component type name,
+   *         and the value is the associated component type as defined in the Context.
+   */
+  std::unordered_map<const char*, typename Context::ComponentType>
+  get_component_types() {
+    return component_types_;
+  }
 
  private:
   /// @brief Map from type string pointer to a component type

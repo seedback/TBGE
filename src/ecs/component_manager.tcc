@@ -20,7 +20,9 @@ ComponentManager<Context>& ComponentManager<Context>::RegisterComponentType() {
   const char* type_name = typeid(T).name();
 
   if (component_types_.find(type_name) != component_types_.end()) {
-    LOG(WARNING) << "Registering component type more than once.";
+    LOG(WARNING) << "Registering component type more than once. Component type "
+                    "registered twice has typeid \""
+                 << type_name << "\". Operation ignored.";
     return *this;
   }
 
@@ -42,8 +44,8 @@ template <typename T>
 typename Context::ComponentType ComponentManager<Context>::GetComponentType() {
   const char* type_name = typeid(T).name();
 
-  CHECK(component_types_.find(type_name) == component_types_.end())
-      << "Component not registered before use.";
+  CHECK(component_types_.find(type_name) != component_types_.end())
+      << "Component of type " << type_name << " not registered before use.";
 
   // Return this component's type - used for creating signatures
   return component_types_[type_name];
@@ -67,6 +69,12 @@ ComponentManager<Context>& ComponentManager<Context>::RemoveComponent(
   GetComponentArray<T>()->RemoveData(entity);
 
   return *this;
+}
+
+template <typename Context>
+template <typename T>
+bool ComponentManager<Context>::HasComponent(Context::Entity entity) {
+  return GetComponentArray<T>()->HasData(entity);
 }
 
 template <typename Context>
@@ -97,8 +105,9 @@ std::shared_ptr<ComponentArray<Context, T>>
 ComponentManager<Context>::GetComponentArray() {
   const char* type_name = typeid(T).name();
 
-  CHECK(component_types_.find(type_name) == component_types_.end())
-      << "Component not registered before use.";
+  CHECK(component_types_.find(type_name) != component_types_.end())
+      << "Component with typename \"" << std::string(type_name)
+      << "\" not registered before use.";
 
   return std::static_pointer_cast<ComponentArray<Context, T>>(
       component_arrays_[type_name]);

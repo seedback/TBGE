@@ -54,7 +54,7 @@ class GenericComponentArray {
  * @note Inherits from GenericComponentArray to allow for storage of all
  * ComponentArrays in a single list.
  */
-template <typename T, typename Context = ECS::Context<>>
+template <typename Context, typename T>
 class ComponentArray : public GenericComponentArray<Context> {
  public:
   /**
@@ -84,13 +84,21 @@ class ComponentArray : public GenericComponentArray<Context> {
   ComponentArray& RemoveData(typename Context::Entity entity);
 
   /**
+   * @brief Checks whether the specified entity has associated component data.
+   *
+   * @param entity The entity to check for associated component data.
+   * @return true if the entity has component data; false otherwise.
+   */
+  bool HasData(typename Context::Entity entity);
+
+  /**
    * @brief Returns the component associated with the entity ID.
    *
    * @param entity The entity ID to which the component is associated.
    * @return An optional containing the component if found, otherwise
    * std::nullopt.
    */
-  std::optional<T> GetData(typename Context::Entity entity);
+  T& GetData(typename Context::Entity entity);
 
   /**
    * @brief Called when an entity has been destroyed and its data needs to be
@@ -106,7 +114,7 @@ class ComponentArray : public GenericComponentArray<Context> {
    *
    * @return The size of the component array.
    */
-  size_t get_size() {return size_;}
+  size_t get_size() { return size_; }
 
  private:
   /// @brief The packed array of components (of generic type T).

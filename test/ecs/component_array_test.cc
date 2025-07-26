@@ -25,7 +25,7 @@ class ComponentArrayTest : public ::testing::Test {
   void TearDown() override { absl::RemoveLogSink(test_sink_.get()); }
 
   std::unique_ptr<TestLogSink> test_sink_;
-  ECS::ComponentArray<TestComponent, TestContext> test_component_array;
+  ECS::ComponentArray<TestContext, TestComponent> test_component_array;
   typename TestContext::Entity entity1 = 1;
   typename TestContext::Entity entity2 = 2;
   TestComponent component1{10};
@@ -69,10 +69,11 @@ TEST_F(ComponentArrayTest, OverwriteComponent) {
   test_sink_->Clear();
   test_component_array.InsertData(entity1, component2);
 
-  test_sink_->TestLogs(absl::LogSeverity::kWarning,
-                       "Component added to same entity more than once");
+  test_sink_->TestLogs(
+      absl::LogSeverity::kWarning,
+      "Component of type \".*\" added to the same entity more than once.");
 
-  TestComponent retrieved = test_component_array.GetData(entity1).value();
+  TestComponent retrieved = test_component_array.GetData(entity1);
   EXPECT_EQ(retrieved, component1);
 }
 
@@ -107,7 +108,7 @@ TEST_F(ComponentArrayTest, RemoveNonExistentComponent) {
   test_component_array.RemoveData(255);
 
   test_sink_->TestLogs(absl::LogSeverity::kWarning,
-                       "Removing non-existent component.");
+                       "Removing non-existent component of type \".*\".");
 }
 
 /**
@@ -122,11 +123,11 @@ TEST_F(ComponentArrayTest, GetComponent) {
   TestComponent retrieved;
 
   test_component_array.InsertData(entity1, component1);
-  retrieved = test_component_array.GetData(entity1).value();
+  retrieved = test_component_array.GetData(entity1);
   EXPECT_EQ(retrieved, component1);
 
   test_component_array.InsertData(entity2, component1);
-  retrieved = test_component_array.GetData(entity2).value();
+  retrieved = test_component_array.GetData(entity2);
   EXPECT_EQ(retrieved, component1);
 }
 
@@ -138,12 +139,6 @@ TEST_F(ComponentArrayTest, GetComponent) {
  * not exist triggers a fatal check with the expected message.
  */
 TEST_F(ComponentArrayTest, GettingNonexistentComponent) {
-  // EXPECT_DEATH(test_component_array.GetData(255), "Retrieving non-existent
-  // component.");
-  test_sink_->Clear();
-
-  test_component_array.GetData(255);
-
-  test_sink_->TestLogs(absl::LogSeverity::kWarning,
-                       "Retrieving non-existent component.");
+  EXPECT_DEATH(test_component_array.GetData(255),
+               "Retrieving non-existent component of type \".*\".");
 }

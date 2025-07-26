@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <optional>
+#include <typeinfo>
 #include <unordered_map>
 #include <vector>
 
@@ -14,11 +15,12 @@
 
 namespace ECS {
 
-template <typename T, typename Context>
-ComponentArray<T, Context>& ComponentArray<T, Context>::InsertData(
+template <typename Context, typename T>
+ComponentArray<Context, T>& ComponentArray<Context, T>::InsertData(
     Context::Entity entity, T component) {
   if (entity_to_index_map_.find(entity) != entity_to_index_map_.end()) {
-    LOG(WARNING) << "Component added to same entity more than once.";
+    LOG(WARNING) << "Component of type \"" << std::string(typeid(T).name())
+                 << "\" added to the same entity more than once.";
     return *this;
   }
   // Put new entry at end and update the maps
@@ -36,11 +38,12 @@ ComponentArray<T, Context>& ComponentArray<T, Context>::InsertData(
   return *this;
 }
 
-template <typename T, typename Context>
-ComponentArray<T, Context>& ComponentArray<T, Context>::RemoveData(
+template <typename Context, typename T>
+ComponentArray<Context, T>& ComponentArray<Context, T>::RemoveData(
     Context::Entity entity) {
   if (entity_to_index_map_.find(entity) == entity_to_index_map_.end()) {
-    LOG(WARNING) << "Removing non-existent component.";
+    LOG(WARNING) << "Removing non-existent component of type \""
+                 << std::string(typeid(T).name()) << "\".";
     return *this;
   }
 
@@ -64,20 +67,23 @@ ComponentArray<T, Context>& ComponentArray<T, Context>::RemoveData(
   return *this;
 }
 
-template <typename T, typename Context>
-std::optional<T> ComponentArray<T, Context>::GetData(
-    typename Context::Entity entity) {
-  if (entity_to_index_map_.find(entity) == entity_to_index_map_.end()) {
-    LOG(WARNING) << "Retrieving non-existent component.";
-    return std::nullopt;
-  }
+template <typename Context, typename T>
+bool ComponentArray<Context, T>::HasData(typename Context::Entity entity) {
+  return entity_to_index_map_.find(entity) != entity_to_index_map_.end();
+}
+
+template <typename Context, typename T>
+T& ComponentArray<Context, T>::GetData(typename Context::Entity entity) {
+  CHECK(entity_to_index_map_.find(entity) != entity_to_index_map_.end())
+      << "Retrieving non-existent component of type \""
+      << std::string(typeid(T).name()) << "\".";
 
   // Return a reference to the entity's component
   return component_array_.at(entity_to_index_map_[entity]);
 }
 
-template <typename T, typename Context>
-ComponentArray<T, Context>& ComponentArray<T, Context>::EntityDestroyed(
+template <typename Context, typename T>
+ComponentArray<Context, T>& ComponentArray<Context, T>::EntityDestroyed(
     typename Context::Entity entity) {
   if (entity_to_index_map_.find(entity) != entity_to_index_map_.end()) {
     // Remove the entity's component if it existed

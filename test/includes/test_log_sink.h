@@ -1,12 +1,15 @@
 #ifndef TBGE_TEST_TEST_LOG_SINK_H_
 #define TBGE_TEST_TEST_LOG_SINK_H_
 
+#include <absl/log/globals.h>
 #include <absl/log/log.h>
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <string>
 #include <vector>
+
+#define ADITIONAL_TEST_LOGGING false
 
 class TestLogSink : public absl::LogSink {
  public:
@@ -31,11 +34,22 @@ class TestLogSink : public absl::LogSink {
   void TestLogs(absl::LogSeverity severity, std::string test_string) {
     ASSERT_FALSE(GetCapturedLogs().empty());
     EXPECT_EQ(GetCapturedSeverities()[0], severity);
-    EXPECT_THAT(GetCapturedLogs()[0], testing::HasSubstr(test_string));
+    EXPECT_THAT(GetCapturedLogs()[0], testing::ContainsRegex(test_string));
+#if ADITIONAL_TEST_LOGGING == true
+    std::cout << "[" << GetCapturedSeverities()[0] << "] "
+              << GetCapturedLogs()[0] << std::endl;
+#endif
+  }
+
+  void PrintLogs() {
+    for (int i = 0; i < captured_logs_.size(); i++) {
+      std::cout << "[" << captured_severities_[i] << "] " << captured_logs_[i]
+                << std::endl;
+    }
   }
 
   void TestLogs(std::vector<absl::LogSeverity> severities,
-                 std::vector<std::string> test_strings) {
+                std::vector<std::string> test_strings) {
     const auto& logs = GetCapturedLogs();
     const auto& local_severities = GetCapturedSeverities();
 
