@@ -142,11 +142,7 @@ void Coordinator<Context>::debug_warning() {
       << "NOTE: The datatypes used for the \033[34mEntity\033[0m and "
          "\033[34mComponentType\033[0m aliases "
       << std::endl
-<<<<<<< HEAD
       << "can be changed in the \033[90mecs/Context\033[0m by setting the "
-=======
-      << "can be changed in \033[90mecs/config.h\033[0m by setting the "
->>>>>>> 6b2823dae85c6f455931288a10b9689c0d96b458
       << std::endl
       << "\033[90mECS_ENTITY_DATATYPE\033[0m and "
          "\033[90mECS_COMPONENT_TYPE_DATATYPE\033[0m "
