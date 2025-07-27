@@ -21,7 +21,7 @@ namespace ECS {
  * components a system is interested in.
  * - Notifying systems when entities are destroyed or when their signatures
  * change, allowing systems to update their internal entity lists accordingly.
- * 
+ *
  * @tparam Context The Context that holds configuration data and data types.
  *
  * @note This class is a core part of this Entity-Component-System (ECS)
@@ -92,6 +92,16 @@ class SystemManager {
   SystemManager& EntitySignatureChanged(Context::Entity entity,
                                         Context::Signature entitySignature);
 
+  std::unordered_map<const char*, typename Context::Signature>
+  get_signatures() {
+    return signatures_;
+  }
+
+  std::unordered_map<const char*, std::shared_ptr<System<Context>>>
+  get_systems() {
+    return systems_;
+  }
+
  private:
   /// @brief Map from system type string pointer to a signature
   std::unordered_map<const char*, typename Context::Signature> signatures_{};
@@ -101,5 +111,7 @@ class SystemManager {
 };
 
 }  // namespace ECS
+
+#include "src/ecs/system_manager.tcc"
 
 #endif  // TBGE_SRC_ECS_SYSTEM_MANAGER_H_
