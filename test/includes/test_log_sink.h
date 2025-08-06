@@ -31,6 +31,14 @@ class TestLogSink : public absl::LogSink {
     captured_severities_.clear();
   }
 
+  void ConsumeLog(int index = 0) {
+    captured_logs_.erase(captured_logs_.begin() + index);
+  }
+
+  void ConsumeSeverity(int index = 0) {
+    captured_severities_.erase(captured_severities_.begin() + index);
+  }
+
   void TestLogs(absl::LogSeverity severity, std::string test_string) {
     ASSERT_FALSE(GetCapturedLogs().empty());
     EXPECT_EQ(GetCapturedSeverities()[0], severity);
@@ -39,26 +47,46 @@ class TestLogSink : public absl::LogSink {
     std::cout << "[" << GetCapturedSeverities()[0] << "] "
               << GetCapturedLogs()[0] << std::endl;
 #endif
+    ConsumeLog();
+    ConsumeSeverity();
+  }
+
+  void TestLogs(std::vector<absl::LogSeverity> severities,
+                std::vector<std::string> test_strings,
+                int line = __builtin_LINE()) {
+    const auto& logs = GetCapturedLogs();
+    const auto& local_severities = GetCapturedSeverities();
+
+    EXPECT_FALSE(local_severities.empty()) << "Called from line: " << line;
+    ASSERT_FALSE(logs.empty()) << "Called from line: " << line;
+    for (int i = 0; i < severities.size(); ++i) {
+      EXPECT_EQ(local_severities.at(i), severities.at(i))
+          << "Called from line: " << line;
+      ConsumeLog();
+    }
+    for (int i = 0; i < test_strings.size(); ++i) {
+      EXPECT_THAT(logs.at(i), testing::HasSubstr(test_strings[0]))
+          << "Called from line: " << line;
+      ConsumeSeverity();
+    }
+  }
+
+  void TestNoLogs(std::string message = "", int line = __builtin_LINE()) {
+    const auto& logs = GetCapturedLogs();
+    const auto& local_severities = GetCapturedSeverities();
+
+    EXPECT_TRUE(local_severities.empty())
+        << "Called from line: " << line
+        << " (unexpected severity: " << local_severities.at(0) << ") " << message;
+    EXPECT_TRUE(logs.empty())
+        << "Called from line: " << line
+        << " (unexpected log: " << (logs.empty() ? "" : logs.at(0)) << ") " << message;
   }
 
   void PrintLogs() {
     for (int i = 0; i < captured_logs_.size(); i++) {
       std::cout << "[" << captured_severities_[i] << "] " << captured_logs_[i]
                 << std::endl;
-    }
-  }
-
-  void TestLogs(std::vector<absl::LogSeverity> severities,
-                std::vector<std::string> test_strings) {
-    const auto& logs = GetCapturedLogs();
-    const auto& local_severities = GetCapturedSeverities();
-
-    ASSERT_FALSE(GetCapturedLogs().empty());
-    for (int i = 0; i < severities.size(); ++i) {
-      EXPECT_EQ(local_severities.at(i), severities.at(i));
-    }
-    for (int i = 0; i < test_strings.size(); ++i) {
-      EXPECT_THAT(logs.at(i), testing::HasSubstr(test_strings[0]));
     }
   }
 

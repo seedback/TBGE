@@ -11,11 +11,11 @@ template <typename E = std::uint16_t, typename C = std::uint16_t,
           C MAX_C = std::numeric_limits<C>::max()>
 struct Context {
   using Entity = E;
-  using ComponentType = C;
+  using ComponentTypeId = C;
   using Signature = std::bitset<MAX_C>;
 
   static constexpr Entity kMaxEntities = MAX_E;
-  static constexpr ComponentType kMaxComponentTypes = MAX_C;
+  static constexpr ComponentTypeId kMaxComponentTypes = MAX_C;
 };
 
 }  // namespace ECS

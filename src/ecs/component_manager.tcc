@@ -41,7 +41,7 @@ ComponentManager<Context>& ComponentManager<Context>::RegisterComponentType() {
 
 template <typename Context>
 template <typename T>
-typename Context::ComponentType ComponentManager<Context>::GetComponentType() {
+typename Context::ComponentTypeId ComponentManager<Context>::GetComponentTypeId() {
   const char* type_name = typeid(T).name();
 
   CHECK(component_types_.find(type_name) != component_types_.end())
@@ -56,7 +56,7 @@ template <typename T>
 ComponentManager<Context>& ComponentManager<Context>::AddComponent(
     Context::Entity entity, T component) {
   // Add a component to the array for an entity
-  GetComponentArray<T>()->InsertData(entity, component);
+  get_component_array<T>()->InsertData(entity, component);
 
   return *this;
 }
@@ -66,7 +66,7 @@ template <typename T>
 ComponentManager<Context>& ComponentManager<Context>::RemoveComponent(
     Context::Entity entity) {
   // Remove a component from the array for an entity
-  GetComponentArray<T>()->RemoveData(entity);
+  get_component_array<T>()->RemoveData(entity);
 
   return *this;
 }
@@ -74,14 +74,14 @@ ComponentManager<Context>& ComponentManager<Context>::RemoveComponent(
 template <typename Context>
 template <typename T>
 bool ComponentManager<Context>::HasComponent(Context::Entity entity) {
-  return GetComponentArray<T>()->HasData(entity);
+  return get_component_array<T>()->HasData(entity);
 }
 
 template <typename Context>
 template <typename T>
 T& ComponentManager<Context>::GetComponent(Context::Entity entity) {
   // Get a reference to a component from the array for an entity
-  return GetComponentArray<T>()->GetData(entity);
+  return get_component_array<T>()->GetData(entity);
 }
 
 template <typename Context>
@@ -102,12 +102,14 @@ ComponentManager<Context>& ComponentManager<Context>::EntityDestroyed(
 template <typename Context>
 template <typename T>
 std::shared_ptr<ComponentArray<Context, T>>
-ComponentManager<Context>::GetComponentArray() {
+ComponentManager<Context>::get_component_array() {
   const char* type_name = typeid(T).name();
 
-  CHECK(component_types_.find(type_name) != component_types_.end())
-      << "Component with typename \"" << std::string(type_name)
-      << "\" not registered before use.";
+  if (component_types_.find(type_name) == component_types_.end()) {
+    LOG(WARNING) << "Component with typename \"" << std::string(type_name)
+                 << "\" not registered before access. Registering now.";
+    RegisterComponentType<T>();
+  }
 
   return std::static_pointer_cast<ComponentArray<Context, T>>(
       component_arrays_[type_name]);

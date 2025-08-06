@@ -15,7 +15,7 @@ TEST(Context, ContextDefault) {
   using TestContext = ECS::Context<>;  // Using default template
 
   EXPECT_EQ(typeid(TestContext::Entity), typeid(std::uint16_t));
-  EXPECT_EQ(typeid(TestContext::ComponentType), typeid(std::uint16_t));
+  EXPECT_EQ(typeid(TestContext::ComponentTypeId), typeid(std::uint16_t));
   EXPECT_EQ(typeid(TestContext::Signature), typeid(std::bitset<65535>));
   EXPECT_EQ(typeid(TestContext::kMaxEntities), typeid(std::uint16_t));
   EXPECT_EQ(typeid(TestContext::kMaxComponentTypes), typeid(std::uint16_t));
@@ -28,7 +28,7 @@ TEST(Context, ContextCustomTypes) {
   using TestContext = ECS::Context<std::uint32_t, std::uint8_t>;
 
   EXPECT_EQ(typeid(TestContext::Entity), typeid(std::uint32_t));
-  EXPECT_EQ(typeid(TestContext::ComponentType), typeid(std::uint8_t));
+  EXPECT_EQ(typeid(TestContext::ComponentTypeId), typeid(std::uint8_t));
   EXPECT_EQ(typeid(TestContext::Signature), typeid(std::bitset<255>));
   EXPECT_EQ(typeid(TestContext::kMaxEntities), typeid(std::uint32_t));
   EXPECT_EQ(typeid(TestContext::kMaxComponentTypes), typeid(std::uint8_t));
@@ -41,7 +41,7 @@ TEST(Context, ContextCustomALL) {
   using TestContext = ECS::Context<std::uint32_t, std::uint8_t, 500, 50>;
 
   EXPECT_EQ(typeid(TestContext::Entity), typeid(std::uint32_t));
-  EXPECT_EQ(typeid(TestContext::ComponentType), typeid(std::uint8_t));
+  EXPECT_EQ(typeid(TestContext::ComponentTypeId), typeid(std::uint8_t));
   EXPECT_EQ(typeid(TestContext::Signature), typeid(std::bitset<50>));
   EXPECT_EQ(typeid(TestContext::kMaxEntities), typeid(std::uint32_t));
   EXPECT_EQ(typeid(TestContext::kMaxComponentTypes), typeid(std::uint8_t));

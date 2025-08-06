@@ -14,9 +14,9 @@ namespace ECS {
  * @class Coordinator
  * @brief Central class for managing entities, components, and systems in
  * this ECS (Entity Component System) architecture.
- * 
+ *
  * @tparam Context The Context that holds configuration data and data types.
- * 
+ *
  * @details
  * The Coordinator class provides a unified interface for creating and
  * destroying entities, registering and managing components, and handling
@@ -27,7 +27,7 @@ template <typename Context = Context<>>
 class Coordinator {
  public:
   using Entity = typename Context::Entity;
-  using ComponentType = typename Context::ComponentType;
+  using ComponentTypeId = typename Context::ComponentTypeId;
   using Signature = typename Context::Signature;
 
   /**
@@ -118,16 +118,16 @@ class Coordinator {
   T& GetComponent(Entity entity);
 
   /**
-   * @brief Retrieves the unique ComponentType identifier for the specified
+   * @brief Retrieves the unique ComponentTypeId identifier for the specified
    * component type T.
    *
-   * @tparam T The component type for which to obtain the ComponentType
+   * @tparam T The component type for which to obtain the ComponentTypeId
    * identifier.
-   * @return ComponentType The unique identifier associated with the component
+   * @return ComponentTypeId The unique identifier associated with the component
    * type T.
    */
   template <typename T>
-  ComponentType GetComponentType();
+  ComponentTypeId GetComponentTypeId();
 
   // #####   System methods   #####
   /**
@@ -164,7 +164,23 @@ class Coordinator {
   template <typename T>
   Coordinator<Context>& SetSystemSignature(Signature signature);
 
+  Context getContext() { return context_; }
+  ComponentManager<Context>* get_component_manager() {
+    return component_manager_.get();
+  }
+  EntityManager<Context>* get_entity_manager() {
+    return entity_manager_.get();
+  }
+  SystemManager<Context>* get_system_manager() {
+    return system_manager_.get();
+  }
+
  private:
+  Context context_;
+  std::unique_ptr<ComponentManager<Context>> component_manager_;
+  std::unique_ptr<EntityManager<Context>> entity_manager_;
+  std::unique_ptr<SystemManager<Context>> system_manager_;
+
   /**
    * @brief Initializes the Coordinator instance.
    *
@@ -182,11 +198,6 @@ class Coordinator {
 #ifdef _DEBUG
   void debug_warning();
 #endif
-
-  Context config_;
-  std::unique_ptr<ComponentManager<Context>> component_manager_;
-  std::unique_ptr<EntityManager<Context>> entity_manager_;
-  std::unique_ptr<SystemManager<Context>> system_manager_;
 };
 
 }  // namespace ECS

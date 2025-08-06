@@ -21,9 +21,9 @@ std::shared_ptr<T> SystemManager<Context>::RegisterSystem() {
   const char* type_name = typeid(T).name();
 
   if (systems_.find(type_name) != systems_.end()) {
-    LOG(WARNING) << "Registering system of typename "
+    LOG(WARNING) << "Registering system of typename \""
                  << std::string(typeid(T).name())
-                 << " more than once, returning existing pointer";
+                 << "\" more than once, returning existing pointer";
 
     return std::static_pointer_cast<T>(systems_.find(type_name)->second);
   }
@@ -42,9 +42,9 @@ SystemManager<Context>& SystemManager<Context>::SetSignature(
   const char* type_name = typeid(T).name();
 
   if (systems_.find(type_name) == systems_.end()) {
-    LOG(ERROR) << "Attempted to set signature on system of typename "
+    LOG(ERROR) << "Attempted to set signature on system of typename \""
                << type_name
-               << " before it was registered. No signature will be registered, this may lead to bugs and errors down the line.";
+               << "\" before it was registered. No signature will be registered, this may lead to bugs and errors down the line.";
     return *this;
   }
 

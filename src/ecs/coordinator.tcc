@@ -35,7 +35,7 @@ Coordinator<Context>& Coordinator<Context>::DestroyEntity(Entity entity) {
 template <typename Context>
 template <typename T>
 Coordinator<Context>& Coordinator<Context>::RegisterComponentType() {
-  component_manager_->RegisterComponentType<T>();
+  component_manager_->template RegisterComponentType<T>();
 
   return *this;
 }
@@ -44,10 +44,10 @@ template <typename Context>
 template <typename T>
 Coordinator<Context>& Coordinator<Context>::AddComponent(Entity entity,
                                                          T component) {
-  component_manager_->AddComponent<T>(entity, component);
+  component_manager_->template AddComponent<T>(entity, component);
 
   Signature signature = entity_manager_->GetSignature(entity);
-  signature.set(component_manager_->GetComponentType<T>(), true);
+  signature.set(component_manager_->template GetComponentTypeId<T>(), true);
   entity_manager_->SetSignature(entity, signature);
 
   system_manager_->EntitySignatureChanged(entity, signature);
@@ -59,10 +59,12 @@ template <typename Context>
 template <typename T>
 Coordinator<Context>& Coordinator<Context>::RemoveComponent(
     typename Context::Entity entity) {
-  component_manager_->RemoveComponent<T>(entity);
+  component_manager_->template RemoveComponent<T>(entity);
 
+  // Grabbing the signature of the entity, resetting the bit corresponding to
+  // the component, and setting the signature of the entity to the new one.
   Signature signature = entity_manager_->GetSignature(entity);
-  signature.set(component_manager_->GetComponentType<T>(), false);
+  signature.set(component_manager_->template GetComponentTypeId<T>(), false);
   entity_manager_->SetSignature(entity, signature);
 
   system_manager_->EntitySignatureChanged(entity, signature);
@@ -73,27 +75,27 @@ Coordinator<Context>& Coordinator<Context>::RemoveComponent(
 template <typename Context>
 template <typename T>
 T& Coordinator<Context>::GetComponent(typename Context::Entity entity) {
-  return component_manager_->GetComponent<T>(entity);
+  return component_manager_->template GetComponent<T>(entity);
 }
 
 template <typename Context>
 template <typename T>
-Coordinator<Context>::ComponentType Coordinator<Context>::GetComponentType() {
-  return component_manager_->GetComponentType<T>();
+Coordinator<Context>::ComponentTypeId Coordinator<Context>::GetComponentTypeId() {
+  return component_manager_->template GetComponentTypeId<T>();
 }
 
 // #####   System methods   #####
 template <typename Context>
 template <typename T>
 std::shared_ptr<T> Coordinator<Context>::RegisterSystem() {
-  return system_manager_->RegisterSystem<T>();
+  return system_manager_->template RegisterSystem<T>();
 }
 
 template <typename Context>
 template <typename T>
 Coordinator<Context>& Coordinator<Context>::SetSystemSignature(
     typename Context::Signature signature) {
-  system_manager_->SetSignature<T>(Context::signature);
+  system_manager_->template SetSignature<T>(signature);
 
   return *this;
 }
@@ -129,7 +131,7 @@ void Coordinator<Context>::debug_warning() {
       << std::endl
       << "The \033[34mComponentType\033[0m datatype alias is represented by "
          "\033[36m("
-      << sizeof(ComponentType) * 8 << " bit) " << typeid(ComponentType).name()
+      << sizeof(ComponentTypeId) * 8 << " bit) " << typeid(ComponentTypeId).name()
       << "\033[0m" << std::endl
       << "The \033[34mSignature\033[0m datatype alias is represented by "
          "\033[36m"

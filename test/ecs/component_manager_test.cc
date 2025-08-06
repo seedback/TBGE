@@ -74,18 +74,18 @@ TEST_F(ComponentManagerTest, RegisterComponentTypeMoreThanOnce) {
                            "\". Operation ignored.");
 }
 
-TEST_F(ComponentManagerTest, GetComponentType) {
+TEST_F(ComponentManagerTest, GetComponentTypeId) {
   test_component_manager.RegisterComponentType<ComponentTypeInt>();
   test_component_manager.RegisterComponentType<ComponentTypeFloat>();
   test_component_manager.RegisterComponentType<ComponentTypeString>();
 
-  EXPECT_EQ(test_component_manager.GetComponentType<ComponentTypeInt>(), 0);
-  EXPECT_EQ(test_component_manager.GetComponentType<ComponentTypeFloat>(), 1);
-  EXPECT_EQ(test_component_manager.GetComponentType<ComponentTypeString>(), 2);
+  EXPECT_EQ(test_component_manager.GetComponentTypeId<ComponentTypeInt>(), 0);
+  EXPECT_EQ(test_component_manager.GetComponentTypeId<ComponentTypeFloat>(), 1);
+  EXPECT_EQ(test_component_manager.GetComponentTypeId<ComponentTypeString>(), 2);
 }
 
 TEST_F(ComponentManagerTest, GetComponentTypeOfNotRegisteredType) {
-  EXPECT_DEATH(test_component_manager.GetComponentType<ComponentTypeInt>(),
+  EXPECT_DEATH(test_component_manager.GetComponentTypeId<ComponentTypeInt>(),
                "Component of type " +
                    std::string(component_type_int_type_name) +
                    " not registered before use.");
@@ -181,20 +181,21 @@ TEST_F(ComponentManagerTest, HasComponent) {
 }
 
 TEST_F(ComponentManagerTest, AddComponentWithoutRegistration) {
-  // Should crash if adding a component type that is not registered
-  EXPECT_DEATH(
-      test_component_manager.AddComponent<ComponentTypeInt>(entity1, {1}),
-      "Component with typename \".*\" not registered before use.");
+  test_sink_->Clear();
+  test_component_manager.AddComponent<ComponentTypeInt>(entity1, {1});
+  test_sink_->TestLogs(
+      absl::LogSeverity::kWarning,
+      "Component with typename \".*\" not registered before access.");
 }
 
-// TEST_F(ComponentManagerTest, GetComponentForDifferentEntities) {
-//   test_component_manager.RegisterComponentType<ComponentTypeInt>();
-//   typename TestContext::Entity entity2 = 2;
-//   test_component_manager.AddComponent<ComponentTypeInt>(entity1, {10});
-//   test_component_manager.AddComponent<ComponentTypeInt>(entity2, {20});
+TEST_F(ComponentManagerTest, GetComponentForDifferentEntities) {
+  test_component_manager.RegisterComponentType<ComponentTypeInt>();
+  typename TestContext::Entity entity2 = 2;
+  test_component_manager.AddComponent<ComponentTypeInt>(entity1, {10});
+  test_component_manager.AddComponent<ComponentTypeInt>(entity2, {20});
 
-//   EXPECT_EQ(test_component_manager.GetComponent<ComponentTypeInt>(entity1).value,
-//   10);
-//   EXPECT_EQ(test_component_manager.GetComponent<ComponentTypeInt>(entity2).value,
-//   20);
-// }
+  EXPECT_EQ(test_component_manager.GetComponent<ComponentTypeInt>(entity1).value,
+  10);
+  EXPECT_EQ(test_component_manager.GetComponent<ComponentTypeInt>(entity2).value,
+  20);
+}

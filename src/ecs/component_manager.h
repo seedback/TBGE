@@ -44,7 +44,7 @@ class ComponentManager {
    * @return Reference to the current ECS::ComponentManager for method chaining.
    */
   template <typename T>
-  Context::ComponentType GetComponentType();
+  Context::ComponentTypeId GetComponentTypeId();
 
   /**
    * @brief Adds a component to the correct ComponentArray based on the type.
@@ -102,14 +102,19 @@ class ComponentManager {
    * @return An unordered map where the key is a C-string representing the component type name,
    *         and the value is the associated component type as defined in the Context.
    */
-  std::unordered_map<const char*, typename Context::ComponentType>
+  std::unordered_map<const char*, typename Context::ComponentTypeId>
   get_component_types() {
     return component_types_;
   }
 
+  /// @brief Convenience function to get the statically casted pointer to the
+  /// ComponentArray of type T.
+  template <typename T>
+  std::shared_ptr<ComponentArray<Context, T>> get_component_array();
+
  private:
   /// @brief Map from type string pointer to a component type
-  std::unordered_map<const char*, typename Context::ComponentType>
+  std::unordered_map<const char*, typename Context::ComponentTypeId>
       component_types_{};
 
   /// @brief Map from type string pointer to a component array
@@ -119,12 +124,9 @@ class ComponentManager {
 
   /// @brief The component type to be assigned to the next registered component
   /// - starting at 0
-  Context::ComponentType next_component_type_{};
+  Context::ComponentTypeId next_component_type_{};
 
-  /// @brief Convenience function to get the statically casted pointer to the
-  /// ComponentArray of type T.
-  template <typename T>
-  std::shared_ptr<ComponentArray<Context, T>> GetComponentArray();
+  
 };
 
 }  // namespace ECS
