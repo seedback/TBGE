@@ -20,9 +20,13 @@ class EntityManagerTest : public ::testing::Test {
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
     test_entity_manager = ECS::EntityManager<TestContext>();
+    test_sink_->Clear();
   }
 
-  void TearDown() override { absl::RemoveLogSink(test_sink_.get()); }
+  void TearDown() override {
+    absl::RemoveLogSink(test_sink_.get());
+    test_sink_->TestNoLogs();
+  }
 
   std::unique_ptr<TestLogSink> test_sink_;
   ECS::EntityManager<TestContext> test_entity_manager;
@@ -77,7 +81,6 @@ TEST_F(EntityManagerTest, SetAndGetSignature) {
 }
 
 TEST_F(EntityManagerTest, SetSignatureOfNonExistentEntity) {
-  test_sink_->Clear();
   test_entity_manager.SetSignature(invalid_entity, TestContext::Signature(256));
   test_sink_->TestLogs(
       absl::LogSeverity::kError,
@@ -116,7 +119,6 @@ TEST_F(EntityManagerTest, DestroyEntity) {
 }
 
 TEST_F(EntityManagerTest, DestroyEntityOutOfRange) {
-  test_sink_->Clear();
   test_entity_manager.DestroyEntity(invalid_entity);
   test_sink_->TestLogs(
       absl::LogSeverity::kError,
@@ -193,7 +195,6 @@ TEST_F(EntityManagerTest, SetGetSignatureDoesNotAffectOtherEntities) {
 
 TEST_F(EntityManagerTest, SetSignatureOnEntityOutOfRange) {
   TestContext::Signature signature1(1);
-  test_sink_->Clear();
   test_entity_manager.SetSignature(invalid_entity, signature1);
   test_sink_->TestLogs(
       absl::LogSeverity::kError,

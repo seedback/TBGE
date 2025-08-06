@@ -39,9 +39,6 @@ class System {
   }
 
   System& remove_entity(typename Context::Entity entity) {
-    if (!has_entity(entity)) {
-      LOG(WARNING) << "Attempted to remove Entity not in set.";
-    }
     entities_.erase(entity);
     return *this;
   }

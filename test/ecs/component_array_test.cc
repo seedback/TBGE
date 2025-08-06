@@ -20,9 +20,13 @@ class ComponentArrayTest : public ::testing::Test {
   void SetUp() override {
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
+    test_sink_->Clear();
   }
 
-  void TearDown() override { absl::RemoveLogSink(test_sink_.get()); }
+  void TearDown() override {
+    absl::RemoveLogSink(test_sink_.get());
+    test_sink_->TestNoLogs();
+  }
 
   std::unique_ptr<TestLogSink> test_sink_;
   ECS::ComponentArray<TestContext, TestComponent> test_component_array;
@@ -66,7 +70,6 @@ TEST_F(ComponentArrayTest, InsertComponent) {
 TEST_F(ComponentArrayTest, OverwriteComponent) {
   test_component_array.InsertData(entity1, component1);
 
-  test_sink_->Clear();
   test_component_array.InsertData(entity1, component2);
 
   test_sink_->TestLogs(
@@ -103,8 +106,6 @@ TEST_F(ComponentArrayTest, RemoveComponent) {
  * attempted removal of a non-existent component.
  */
 TEST_F(ComponentArrayTest, RemoveNonExistentComponent) {
-  test_sink_->Clear();
-
   test_component_array.RemoveData(255);
 
   test_sink_->TestLogs(absl::LogSeverity::kWarning,

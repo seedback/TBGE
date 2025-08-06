@@ -15,9 +15,13 @@ class SystemManagerTest : public ::testing::Test {
   void SetUp() override {
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
+    test_sink_->Clear();
   }
 
-  void TearDown() override { absl::RemoveLogSink(test_sink_.get()); }
+  void TearDown() override {
+    absl::RemoveLogSink(test_sink_.get());
+    test_sink_->TestNoLogs();
+  }
 
   std::unique_ptr<TestLogSink> test_sink_;
   ECS::SystemManager<TestContext> test_system_manager;
@@ -46,7 +50,6 @@ TEST_F(SystemManagerTest, RegisterSystemMoreThanOnce) {
   test_system_manager.RegisterSystem<DummySystem>();
   EXPECT_EQ(test_system_manager.get_systems().size(), 1);
 
-  test_sink_->Clear();
   test_system_manager.RegisterSystem<DummySystem>();
   test_sink_->TestLogs(absl::LogSeverity::kWarning,
                        "Registering system of typename .* more than once, "
@@ -68,7 +71,6 @@ TEST_F(SystemManagerTest, SetSignature) {
 }
 
 TEST_F(SystemManagerTest, SetSignatureOnUnregisteredSystem) {
-  test_sink_->Clear();
   test_system_manager.SetSignature<DummySystem>(TestContext::Signature(2));
   test_sink_->TestLogs(
       absl::LogSeverity::kError,
@@ -99,7 +101,6 @@ TEST_F(SystemManagerTest, EntityDestroyed) {
 }
 
 TEST_F(SystemManagerTest, EntityDestroyedOnEntityNotInSet) {
-  test_sink_->Clear();
   test_system_manager.EntityDestroyed(1);
 
   EXPECT_TRUE(test_sink_->GetCapturedLogs().empty())
@@ -111,8 +112,6 @@ TEST_F(SystemManagerTest, EntityDestroyedOnEntityNotInSet) {
 }
 
 TEST_F(SystemManagerTest, EntityDestroyedWithNoSystemsRegistered) {
-  // Should not crash or log errors
-  test_sink_->Clear();
   test_system_manager.EntityDestroyed(42);
   // No logs expected
   EXPECT_TRUE(test_sink_->GetCapturedLogs().empty())
@@ -229,8 +228,6 @@ TEST_F(SystemManagerTest, EntitySignatureChangedNonMatchingSignature) {
 }
 
 TEST_F(SystemManagerTest, EntitySignatureNoSystemsRegistered) {
-  // Should not crash or log errors
-  test_sink_->Clear();
   test_system_manager.EntitySignatureChanged(1, TestContext::Signature(1));
   // No logs expected
   EXPECT_TRUE(test_sink_->GetCapturedLogs().empty())

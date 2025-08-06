@@ -19,9 +19,13 @@ class SystemTest : public ::testing::Test {
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
     test_system = ECS::System<TestContext>();
+    test_sink_->Clear();
   }
 
-  void TearDown() override { absl::RemoveLogSink(test_sink_.get()); }
+  void TearDown() override {
+    absl::RemoveLogSink(test_sink_.get());
+    test_sink_->TestNoLogs();
+  }
 
   std::unique_ptr<TestLogSink> test_sink_;
   ECS::System<TestContext> test_system;

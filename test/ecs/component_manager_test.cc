@@ -36,9 +36,13 @@ class ComponentManagerTest : public ::testing::Test {
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
     test_component_manager = ECS::ComponentManager<TestContext>();
+    test_sink_->Clear();
   }
 
-  void TearDown() override { absl::RemoveLogSink(test_sink_.get()); }
+  void TearDown() override {
+    absl::RemoveLogSink(test_sink_.get());
+    test_sink_->TestNoLogs();
+  }
 
   std::unique_ptr<TestLogSink> test_sink_;
   ECS::ComponentManager<TestContext> test_component_manager;
@@ -65,7 +69,6 @@ TEST_F(ComponentManagerTest, RegisterComponentType) {
 
 TEST_F(ComponentManagerTest, RegisterComponentTypeMoreThanOnce) {
   test_component_manager.RegisterComponentType<ComponentTypeInt>();
-  test_sink_->Clear();
   test_component_manager.RegisterComponentType<ComponentTypeInt>();
   test_sink_->TestLogs(absl::LogSeverity::kWarning,
                        "Registering component type more than once. Component "
@@ -134,7 +137,6 @@ TEST_F(ComponentManagerTest, AddDuplicateComponent) {
 
   // Add duplicate component (should overwrite or warn, depending on
   // implementation)
-  test_sink_->Clear();
   test_component_manager.AddComponent<ComponentTypeInt>(entity1,
                                                         int_component2);
   test_sink_->TestLogs(
@@ -161,7 +163,6 @@ TEST_F(ComponentManagerTest, RemoveComponent) {
 
 TEST_F(ComponentManagerTest, RemoveComponentNotPresent) {
   test_component_manager.RegisterComponentType<ComponentTypeInt>();
-  test_sink_->Clear();
   EXPECT_NO_THROW(
       test_component_manager.RemoveComponent<ComponentTypeInt>(entity1));
   test_sink_->TestLogs(absl::LogSeverity::kWarning,
@@ -181,7 +182,6 @@ TEST_F(ComponentManagerTest, HasComponent) {
 }
 
 TEST_F(ComponentManagerTest, AddComponentWithoutRegistration) {
-  test_sink_->Clear();
   test_component_manager.AddComponent<ComponentTypeInt>(entity1, {1});
   test_sink_->TestLogs(
       absl::LogSeverity::kWarning,

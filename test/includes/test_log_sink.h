@@ -77,10 +77,12 @@ class TestLogSink : public absl::LogSink {
 
     EXPECT_TRUE(local_severities.empty())
         << "Called from line: " << line
-        << " (unexpected severity: " << local_severities.at(0) << ") " << message;
+        << " (unexpected severity: " << local_severities.at(0) << ") "
+        << message;
     EXPECT_TRUE(logs.empty())
         << "Called from line: " << line
-        << " (unexpected log: " << (logs.empty() ? "" : logs.at(0)) << ") " << message;
+        << " (unexpected log: " << (logs.empty() ? "" : logs.at(0)) << ") "
+        << message;
   }
 
   void PrintLogs() {
