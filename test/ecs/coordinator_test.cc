@@ -25,6 +25,7 @@ class CoordinatorTest : public ::testing::Test {
 
  protected:
   void SetUp() override {
+    absl::SetStderrThreshold(absl::LogSeverityAtLeast::kFatal);
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
 
@@ -381,7 +382,7 @@ TEST_F(CoordinatorTest, SetSystemSignature) {
 
   test_coordinator->SetSystemSignature<DummySystem>(
       TestContext::Signature(0b10));
-  
+
   EXPECT_EQ(system_manager->get_signatures().size(), 1);
 }
 
@@ -392,5 +393,9 @@ TEST_F(CoordinatorTest, SetSystemSignatureOfUnregisteredSystem) {
   test_coordinator->SetSystemSignature<DummySystem>(
       TestContext::Signature(0b10));
 
-  test_sink_->TestLogs(absl::LogSeverity::kError, "Attempted to set signature on system of typename \".*\" before it was registered. No signature will be registered, this may lead to bugs and errors down the line.");
+  test_sink_->TestLogs(
+      absl::LogSeverity::kError,
+      "Attempted to set signature on system of typename \".*\" before it was "
+      "registered. No signature will be registered, this may lead to bugs and "
+      "errors down the line.");
 }
