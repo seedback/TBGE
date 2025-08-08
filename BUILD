@@ -12,6 +12,16 @@ cc_binary(
     ],
 )
 
+cc_binary(
+    name = "tbge_init",
+    srcs = ["src/main.cc"],
+    deps = [
+        ":tbge_lib",
+        ":abseil_log",
+        "tbge_test_includes",
+    ],
+)
+
 cc_test(
     name = "tbge_test",
     size = "small",

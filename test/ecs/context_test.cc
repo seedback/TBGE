@@ -25,20 +25,20 @@ TEST(Context, ContextDefault) {
 
 TEST(Context, ContextCustomTypes) {
   // Setting custom types
-  using TestContext = ECS::Context<std::uint32_t, std::uint8_t>;
+  using TestContext = ECS::Context< 2000, 100>;
 
-  EXPECT_EQ(typeid(TestContext::Entity), typeid(std::uint32_t));
-  EXPECT_EQ(typeid(TestContext::ComponentTypeId), typeid(std::uint8_t));
-  EXPECT_EQ(typeid(TestContext::Signature), typeid(std::bitset<255>));
-  EXPECT_EQ(typeid(TestContext::kMaxEntities), typeid(std::uint32_t));
-  EXPECT_EQ(typeid(TestContext::kMaxComponentTypes), typeid(std::uint8_t));
-  EXPECT_EQ(TestContext::kMaxEntities, 4294967295);
-  EXPECT_EQ(TestContext::kMaxComponentTypes, 255);
+  EXPECT_EQ(typeid(TestContext::Entity), typeid(std::uint16_t));
+  EXPECT_EQ(typeid(TestContext::ComponentTypeId), typeid(std::uint16_t));
+  EXPECT_EQ(typeid(TestContext::Signature), typeid(std::bitset<100>));
+  EXPECT_EQ(typeid(TestContext::kMaxEntities), typeid(std::uint16_t));
+  EXPECT_EQ(typeid(TestContext::kMaxComponentTypes), typeid(std::uint16_t));
+  EXPECT_EQ(TestContext::kMaxEntities, 2000);
+  EXPECT_EQ(TestContext::kMaxComponentTypes, 100);
 }
 
 TEST(Context, ContextCustomALL) {
   // Setting custom types and values
-  using TestContext = ECS::Context<std::uint32_t, std::uint8_t, 500, 50>;
+  using TestContext = ECS::Context<500, 50, std::uint32_t, std::uint8_t>;
 
   EXPECT_EQ(typeid(TestContext::Entity), typeid(std::uint32_t));
   EXPECT_EQ(typeid(TestContext::ComponentTypeId), typeid(std::uint8_t));

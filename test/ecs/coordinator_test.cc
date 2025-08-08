@@ -21,7 +21,7 @@ class DummyComponent2 {
 
 class CoordinatorTest : public ::testing::Test {
  public:
-  using TestContext = ECS::Context<uint8_t, uint8_t, 10, 5>;
+  using TestContext = ECS::Context<10, 5, uint8_t, uint8_t>;;
 
  protected:
   void SetUp() override {
@@ -62,11 +62,8 @@ TEST_F(CoordinatorTest, Constructor) {
   testing::internal::CaptureStdout();
   ECS::Coordinator();
   std::string captured_stdout = testing::internal::GetCapturedStdout();
-
-  EXPECT_THAT(
-      captured_stdout.c_str(),
-      testing::ContainsRegex(
-          "The .*_DEBUG.* preprocessor definition has been detected.*"));
+  
+  test_sink_->TestLogs(absl::LogSeverity::kInfo, "The .*_DEBUG.* preprocessor definition has been detected.*");
 }
 
 TEST_F(CoordinatorTest, CreateEntity) {

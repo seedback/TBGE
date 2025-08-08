@@ -26,10 +26,6 @@ namespace ECS {
 template <typename Context = Context<>>
 class Coordinator {
  public:
-  using Entity = typename Context::Entity;
-  using ComponentTypeId = typename Context::ComponentTypeId;
-  using Signature = typename Context::Signature;
-
   /**
    * @brief Constructs a Coordinator object and initializes its internal state.
    *
@@ -45,7 +41,7 @@ class Coordinator {
    *
    * @return The newly created entity identifier.
    */
-  Entity CreateEntity();
+  Context::Entity CreateEntity();
 
   /**
    * @brief Destroys the specified entity and removes all associated components.
@@ -59,7 +55,7 @@ class Coordinator {
    * @param entity The entity to be destroyed.
    * @return Reference to the Coordinator for method chaining.
    */
-  Coordinator<Context>& DestroyEntity(Entity entity);
+  Coordinator<Context>& DestroyEntity(Context::Entity entity);
 
   // #####   Component methods   #####
   /**
@@ -88,7 +84,7 @@ class Coordinator {
    * @return Reference to the Coordinator for method chaining.
    */
   template <typename T>
-  Coordinator<Context>& AddComponent(Entity entity, T component);
+  Coordinator<Context>& AddComponent(Context::Entity entity, T component);
 
   /**
    * @brief Removes a component of type T from the specified entity.
@@ -101,7 +97,7 @@ class Coordinator {
    * @return Reference to the Coordinator for method chaining.
    */
   template <typename T>
-  Coordinator<Context>& RemoveComponent(Entity entity);
+  Coordinator<Context>& RemoveComponent(Context::Entity entity);
 
   /**
    * @brief Retrieves a reference to the component of type T associated with the
@@ -115,7 +111,7 @@ class Coordinator {
    * T.
    */
   template <typename T>
-  T& GetComponent(Entity entity);
+  T& GetComponent(Context::Entity entity);
 
   /**
    * @brief Retrieves the unique ComponentTypeId identifier for the specified
@@ -127,7 +123,7 @@ class Coordinator {
    * type T.
    */
   template <typename T>
-  ComponentTypeId GetComponentTypeId();
+  Context::ComponentTypeId GetComponentTypeId();
 
   // #####   System methods   #####
   /**
@@ -162,7 +158,7 @@ class Coordinator {
    * @return Reference to the Coordinator to allow method chaining.
    */
   template <typename T>
-  Coordinator<Context>& SetSystemSignature(Signature signature);
+  Coordinator<Context>& SetSystemSignature(Context::Signature signature);
 
   Context getContext() { return context_; }
   ComponentManager<Context>* get_component_manager() {

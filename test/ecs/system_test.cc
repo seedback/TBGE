@@ -13,7 +13,7 @@
 
 class SystemTest : public ::testing::Test {
  protected:
-  using TestContext = ECS::Context<uint8_t, uint8_t, 10, 5>;
+  using TestContext = ECS::Context<10, 5, uint8_t, uint8_t>;
   void SetUp() override {
     absl::SetStderrThreshold(absl::LogSeverityAtLeast::kFatal);
     test_sink_ = std::make_unique<TestLogSink>();

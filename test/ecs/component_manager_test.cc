@@ -27,7 +27,7 @@ struct ComponentTypeString {
 
 class ComponentManagerTest : public ::testing::Test {
  protected:
-  using TestContext = ECS::Context<uint8_t, uint8_t, 10, 5>;
+  using TestContext = ECS::Context<10, 5, uint8_t, uint8_t>;
   ComponentManagerTest() {}
 
   static void SetUpTestSuite() {}

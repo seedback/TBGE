@@ -16,7 +16,7 @@ struct TestComponent {
 
 class ComponentArrayTest : public ::testing::Test {
  protected:
-  using TestContext = ECS::Context<uint8_t, uint8_t, 10, 5>;
+  using TestContext = ECS::Context<10, 5, uint8_t, uint8_t>;
   void SetUp() override {
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());

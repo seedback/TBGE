@@ -9,7 +9,7 @@
 
 class SystemManagerTest : public ::testing::Test {
  public:
-  using TestContext = ECS::Context<uint8_t, uint8_t, 10, 5>;
+  using TestContext = ECS::Context<10, 5, uint8_t, uint8_t>;;
 
  protected:
   void SetUp() override {

@@ -18,12 +18,13 @@ Coordinator<Context>::Coordinator() {
 
 // #####   Entity methods   #####
 template <typename Context>
-Coordinator<Context>::Entity Coordinator<Context>::CreateEntity() {
+typename Context::Entity Coordinator<Context>::CreateEntity() {
   return entity_manager_->CreateEntity();
 }
 
 template <typename Context>
-Coordinator<Context>& Coordinator<Context>::DestroyEntity(Entity entity) {
+Coordinator<Context>& Coordinator<Context>::DestroyEntity(
+    typename Context::Entity entity) {
   entity_manager_->DestroyEntity(entity);
   component_manager_->EntityDestroyed(entity);
   system_manager_->EntityDestroyed(entity);
@@ -42,11 +43,11 @@ Coordinator<Context>& Coordinator<Context>::RegisterComponentType() {
 
 template <typename Context>
 template <typename T>
-Coordinator<Context>& Coordinator<Context>::AddComponent(Entity entity,
-                                                         T component) {
+Coordinator<Context>& Coordinator<Context>::AddComponent(
+    typename Context::Entity entity, T component) {
   component_manager_->template AddComponent<T>(entity, component);
 
-  Signature signature = entity_manager_->GetSignature(entity);
+  typename Context::Signature signature = entity_manager_->GetSignature(entity);
   signature.set(component_manager_->template GetComponentTypeId<T>(), true);
   entity_manager_->SetSignature(entity, signature);
 
@@ -58,12 +59,12 @@ Coordinator<Context>& Coordinator<Context>::AddComponent(Entity entity,
 template <typename Context>
 template <typename T>
 Coordinator<Context>& Coordinator<Context>::RemoveComponent(
-    typename Context::Entity entity) {
+    typename typename Context::Entity entity) {
   component_manager_->template RemoveComponent<T>(entity);
 
   // Grabbing the signature of the entity, resetting the bit corresponding to
   // the component, and setting the signature of the entity to the new one.
-  Signature signature = entity_manager_->GetSignature(entity);
+  typename Context::Signature signature = entity_manager_->GetSignature(entity);
   signature.set(component_manager_->template GetComponentTypeId<T>(), false);
   entity_manager_->SetSignature(entity, signature);
 
@@ -74,13 +75,15 @@ Coordinator<Context>& Coordinator<Context>::RemoveComponent(
 
 template <typename Context>
 template <typename T>
-T& Coordinator<Context>::GetComponent(typename Context::Entity entity) {
+T& Coordinator<Context>::GetComponent(typename
+                                      typename Context::Entity entity) {
   return component_manager_->template GetComponent<T>(entity);
 }
 
 template <typename Context>
 template <typename T>
-Coordinator<Context>::ComponentTypeId Coordinator<Context>::GetComponentTypeId() {
+typename typename Context::ComponentTypeId
+Coordinator<Context>::GetComponentTypeId() {
   return component_manager_->template GetComponentTypeId<T>();
 }
 
@@ -119,50 +122,32 @@ Coordinator<Context>& Coordinator<Context>::Init() {
 #ifdef _DEBUG
 template <typename Context>
 void Coordinator<Context>::debug_warning() {
-  std::cout
-      << "The \033[31m_DEBUG\033[0m preprocessor definition has been detected"
-      << std::endl
-      << "\033[33m######################## ECS ########################\033[0m"
-      << std::endl
-      << "ECS (Entity Component System) is curently configured like this:"
-      << std::endl
-      << "The \033[34mEntity\033[0m datatype alias is represented by \033[36m("
-      << sizeof(Entity) * 8 << " bit) " << typeid(Entity).name() << "\033[0m"
-      << std::endl
-      << "The \033[34mComponentType\033[0m datatype alias is represented by "
-         "\033[36m("
-      << sizeof(ComponentTypeId) * 8 << " bit) " << typeid(ComponentTypeId).name()
-      << "\033[0m" << std::endl
-      << "The \033[34mSignature\033[0m datatype alias is represented by "
-         "\033[36m"
-      << typeid(Signature).name() << "\033[0m" << std::endl
-      << "The maximum number of \033[34mentities\033[0m is \033[36m"
-      << Context::kMaxEntities << "\033[0m" << std::endl
-      << "The maximum number of \033[34mcomponent\033[0m types is \033[36m"
-      << Context::kMaxComponentTypes << "\033[0m" << std::endl
-      << std::endl
-      << "NOTE: The datatypes used for the \033[34mEntity\033[0m and "
-         "\033[34mComponentType\033[0m aliases "
-      << std::endl
-      << "can be changed in the \033[90mecs/Context\033[0m by setting the "
-      << std::endl
-      << "\033[90mECS_ENTITY_DATATYPE\033[0m and "
-         "\033[90mECS_COMPONENT_TYPE_DATATYPE\033[0m "
-      << std::endl
-      << "preprocessor definitions to the desired datatype." << std::endl
-      << std::endl
-      << "NOTE: Likewise the size of the \033[34mSignature\033[0m bitset, as "
-         "well as the "
-      << std::endl
-      << "maximum number of \033[34mEntity\033[0m and "
-         "\033[34mComponentType\033[0m objects can be "
-      << std::endl
-      << "adjusted by setting the \033[90mECS_MAX_ENTITIES\033[0m and "
-      << std::endl
-      << "\033[90mECS_MAX_COMPONENT_TYPES\033[0m preprocessor definitions."
-      << std::endl
-      << "\033[33m#####################################################\033[0m"
-      << std::endl
+  LOG(INFO)
+      << "The _DEBUG preprocessor definition has been detected\n"
+      << "######################## ECS ########################\n"
+      << "ECS (Entity Component System) is currently configured like this:\n"
+      << "The Entity datatype alias is represented by ("
+      << sizeof(typename Context::Entity) * 8 << " bit) "
+      << typeid(typename Context::Entity).name() << "\n"
+      << "The ComponentType datatype alias is represented by ("
+      << sizeof(typename Context::ComponentTypeId) * 8 << " bit) "
+      << typeid(typename Context::ComponentTypeId).name() << "\n"
+      << "The Signature datatype alias is represented by "
+      << typeid(typename Context::Signature).name() << "\n"
+      << "The maximum number of entities is " << Context::kMaxEntities << "\n"
+      << "The maximum number of component types is "
+      << Context::kMaxComponentTypes << "\n"
+      << "\n"
+      << "NOTE: The datatypes used for the Entity and ComponentType aliases\n"
+      << "can be changed in the ecs/Context by setting the\n"
+      << "ECS_ENTITY_DATATYPE and ECS_COMPONENT_TYPE_DATATYPE\n"
+      << "preprocessor definitions to the desired datatype.\n"
+      << "\n"
+      << "NOTE: Likewise the size of the Signature bitset, as well as the\n"
+      << "maximum number of Entity and ComponentType objects can be\n"
+      << "adjusted by setting the ECS_MAX_ENTITIES and\n"
+      << "ECS_MAX_COMPONENT_TYPES preprocessor definitions.\n"
+      << "#####################################################\n"
       << std::endl;
 }
 #endif

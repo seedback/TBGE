@@ -3,6 +3,7 @@
 CLEAN=0
 TEST=0
 RUN=0
+INIT=0
 HELP=0
 DEBUG=0
 DOC=0
@@ -21,6 +22,9 @@ for arg in "$@"; do
       ;;
     -r|--run)
       RUN=1
+      ;;
+    -i|--init)
+      INIT=1
       ;;
     -h|-\?|--help)
       HELP=1
@@ -54,6 +58,7 @@ fi
 echo "CLEAN=$CLEAN"
 echo "TEST=$TEST"
 echo "RUN=$RUN"
+echo "INIT=$INIT"
 echo "HELP=$HELP"
 echo "DEBUG=$DEBUG"
 echo "RELEASE=$RELEASE"
@@ -92,6 +97,11 @@ fi
 
 if [[ $DOC -eq 1 ]]; then
   ./docs.sh
+fi
+
+if [[ $INIT -eq 1 ]]; then
+  TESTTARGET="tbge_init"
+  TARGET="tbge_init"
 fi
 
 if [[ $TEST -eq 1 ]]; then
