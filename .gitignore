@@ -344,3 +344,4 @@ graph.png
 # Documentation files, comment out when updating comments
 docs/**/*
 !docs/Doxyfile
+MODULE.bazel.lock
