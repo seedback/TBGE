@@ -39,9 +39,8 @@ struct Context {
  private:
   void SetupConsoleForUnicode() {
 #ifdef _WIN32
-    // Use wide character mode
-    _setmode(_fileno(stdout), _O_U16TEXT);
-    _setmode(_fileno(stdin), _O_U16TEXT);
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
 #else
     // On Linux/macOS, UTF-8 is usually the default
     // Set locale to ensure proper UTF-8 handling

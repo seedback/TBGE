@@ -30,7 +30,7 @@ class System {
 
   std::set<typename Context::Entity> get_entities() { return entities_; }
 
-  System& add_entity(typename Context::Entity entity) {
+  virtual System& add_entity(typename Context::Entity entity) {
     // Do I need safety on this? Checking wether all entities are valid?
     // TODO: Contemplate the question above and action it.
     entities_.insert(entity);
@@ -38,7 +38,7 @@ class System {
     return *this;
   }
 
-  System& remove_entity(typename Context::Entity entity) {
+  virtual System& remove_entity(typename Context::Entity entity) {
     entities_.erase(entity);
     return *this;
   }

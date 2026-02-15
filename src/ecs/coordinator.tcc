@@ -59,7 +59,7 @@ Coordinator<Context>& Coordinator<Context>::AddComponent(
 template <typename Context>
 template <typename T>
 Coordinator<Context>& Coordinator<Context>::RemoveComponent(
-    typename typename Context::Entity entity) {
+    typename Context::Entity entity) {
   component_manager_->template RemoveComponent<T>(entity);
 
   // Grabbing the signature of the entity, resetting the bit corresponding to
@@ -75,15 +75,13 @@ Coordinator<Context>& Coordinator<Context>::RemoveComponent(
 
 template <typename Context>
 template <typename T>
-T& Coordinator<Context>::GetComponent(typename
-                                      typename Context::Entity entity) {
+T& Coordinator<Context>::GetComponent(typename Context::Entity entity) {
   return component_manager_->template GetComponent<T>(entity);
 }
 
 template <typename Context>
 template <typename T>
-typename typename Context::ComponentTypeId
-Coordinator<Context>::GetComponentTypeId() {
+typename Context::ComponentTypeId Coordinator<Context>::GetComponentTypeId() {
   return component_manager_->template GetComponentTypeId<T>();
 }
 

@@ -1,0 +1,4 @@
+---
+Checks: 'clang-diagnostic-*,clang-analyzer-*,-clang-diagnostic-shadow-field,-clang-diagnostic-character-conversion'
+HeaderFilterRegex: 'src/.*'
+ExcludeHeaderFilterRegex: '.*bazel-.*/.*'

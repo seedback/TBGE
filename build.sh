@@ -8,6 +8,8 @@ HELP=0
 DEBUG=0
 DOC=0
 RELEASE=0
+CLS=0
+CLS_AFTER=0
 TARGET=""
 TESTTARGET=""
 OPTION_COUNT=0
@@ -38,6 +40,12 @@ for arg in "$@"; do
     --release)
       RELEASE=1
       ;;
+    --cls)
+      CLS=1
+      ;;
+    --cls-after)
+      CLS_AFTER=1
+      ;;
     --target=*)
       TARGET="${arg#*=}"
       ;;
@@ -61,6 +69,7 @@ echo "RUN=$RUN"
 echo "INIT=$INIT"
 echo "HELP=$HELP"
 echo "DEBUG=$DEBUG"
+echo "CLS=$CLS"
 echo "RELEASE=$RELEASE"
 echo "TARGET=$TARGET"
 
@@ -71,6 +80,10 @@ elif [[ $TEST -eq 1 ]]; then
   BAZEL_FLAGS+=" --config=test"
 elif [[ $RELEASE -eq 1 ]]; then
   BAZEL_FLAGS+=" --config=release"
+fi
+
+if [[ $CLS -eq 1 ]]; then
+  clear
 fi
 
 if [[ $CLEAN -eq 1 ]]; then
@@ -110,13 +123,25 @@ if [[ $TEST -eq 1 ]]; then
 fi
 
 if [[ $RUN -eq 1 ]]; then
-  [[ -z "$TARGET" ]] && TARGET="tbge_main"
+  if [[ $RELEASE -eq 1 ]]; then
+    [[ -z "$TARGET" ]] && TARGET="tbge_release"
+  else
+    [[ -z "$TARGET" ]] && TARGET="tbge_main"
+  fi
   bazel run $BAZEL_FLAGS //:"$TARGET"
 fi
 
 if [[ $RUN -eq 0 && $TEST -eq 0 ]]; then
-  [[ -z "$TARGET" ]] && TARGET="tbge_main"
+  if [[ $RELEASE -eq 1 ]]; then
+    [[ -z "$TARGET" ]] && TARGET="tbge_release"
+  else
+    [[ -z "$TARGET" ]] && TARGET="tbge_main"
+  fi
   bazel build $BAZEL_FLAGS //:"$TARGET"
+fi
+
+if [[ $CLS_AFTER -eq 1 ]]; then
+  clear
 fi
 
 exit $?
