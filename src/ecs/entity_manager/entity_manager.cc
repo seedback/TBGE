@@ -1,6 +1,3 @@
-#ifndef TBGE_SRC_ECS_ENTITY_MANAGER_TCC_
-#define TBGE_SRC_ECS_ENTITY_MANAGER_TCC_
-
 #include <absl/log/check.h>
 #include <absl/log/log.h>
 
@@ -8,44 +5,39 @@
 #include <queue>
 #include <vector>
 
-#include "src/ecs/context.h"
-#include "src/ecs/entity_manager.h"
+#include "src/ecs/context/context.h"
+#include "src/ecs/entity_manager/entity_manager.h"
 
 namespace ECS {
 
-template <typename Context>
-typename Context::Entity EntityManager<Context>::CreateEntity() {
+Entity EntityManager::CreateEntity() {
   // If there are no available entities, create one
   if (available_entities_.empty()) {
 #ifndef _DEBUG
-    CHECK(entity_id_counter_ < Context::kMaxEntities)
+    CHECK(entity_id_counter_ < std::numeric_limits<Entity>::max())
         << "Too many Entities were created.";
 #else
-    // TODO: Update message to reflect that the config has been made
-    // programatic, when this change is made.
-    CHECK(entity_id_counter_ < Context::kMaxEntities)
+    CHECK(entity_id_counter_ < std::numeric_limits<Entity>::max())
         << "Too many Entities were created. The maximum amount of Entities is "
-        << std::to_string(Context::kMaxEntities)
-        << " and has been reached. This maximum can be adjusted in the "
-           "Context.";
+        << std::to_string(std::numeric_limits<Entity>::max())
+        << " and has been reached.";
 #endif
 
     available_entities_.push(entity_id_counter_);
-    signatures_.push_back(typename Context::Signature());
+    signatures_.push_back(Signature());
     ++entity_id_counter_;
   }
 
   // Take an ID from the front of the queue
-  typename Context::Entity id = available_entities_.front();
+  Entity id = available_entities_.front();
   available_entities_.pop();
   ++current_entity_count_;
 
   return id;
 }
 
-template <typename Context>
-EntityManager<Context>& EntityManager<Context>::DestroyEntity(
-    typename Context::Entity entity) {
+EntityManager& EntityManager::DestroyEntity(
+    Entity entity) {
   if (entity >= entity_id_counter_) {
 #ifndef _DEBUG
     LOG(ERROR) << "Attempted to destroy Entity out of range.";
@@ -55,7 +47,7 @@ EntityManager<Context>& EntityManager<Context>::DestroyEntity(
                << std::to_string(entity_id_counter_)
                << ". ID that was attempted to be removed is "
                << std::to_string(entity)
-               << ". This maximum can be adjusted in the Context.";
+               << ".";
 #endif
     return *this;
   }
@@ -70,8 +62,7 @@ EntityManager<Context>& EntityManager<Context>::DestroyEntity(
   return *this;
 }
 
-template <typename Context>
-bool EntityManager<Context>::HasEntity(typename Context::Entity entity) {
+bool EntityManager::HasEntity(Entity entity) {
   if (entity > entity_id_counter_) {
     return false;
   }
@@ -90,9 +81,8 @@ bool EntityManager<Context>::HasEntity(typename Context::Entity entity) {
   return has_entity;
 }
 
-template <typename Context>
-EntityManager<Context>& EntityManager<Context>::SetSignature(
-    typename Context::Entity entity, typename Context::Signature signature) {
+EntityManager& EntityManager::SetSignature(
+    Entity entity, Signature signature) {
   if (entity >= entity_id_counter_) {
 #ifndef _DEBUG
     LOG(ERROR) << "Attempted to set signature of Entity out of range.";
@@ -113,9 +103,8 @@ EntityManager<Context>& EntityManager<Context>::SetSignature(
   return *this;
 }
 
-template <typename Context>
-Context::Signature EntityManager<Context>::GetSignature(
-    typename Context::Entity entity) {
+Signature EntityManager::GetSignature(
+    Entity entity) {
 #ifndef _DEBUG
   CHECK(entity < entity_id_counter_)
       << "Attempted to get signature of Entity out of range.";
@@ -131,6 +120,5 @@ Context::Signature EntityManager<Context>::GetSignature(
   // Get this entity's signature from the array
   return signatures_.at(entity);
 }
-};  // namespace ECS
 
-#endif  // TBGE_SRC_ECS_ENTITY_MANAGER_TCC_
+}  // namespace ECS

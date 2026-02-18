@@ -3,10 +3,9 @@
 
 #include <memory>
 
-#include "src/ecs/component_manager.h"
-#include "src/ecs/context.h"
-#include "src/ecs/entity_manager.h"
-#include "src/ecs/system_manager.h"
+#include "src/ecs/component_manager/component_manager.h"
+#include "src/ecs/entity_manager/entity_manager.h"
+#include "src/ecs/system_manager/system_manager.h"
 
 namespace ECS {
 
@@ -15,15 +14,12 @@ namespace ECS {
  * @brief Central class for managing entities, components, and systems in
  * this ECS (Entity Component System) architecture.
  *
- * @tparam Context The Context that holds configuration data and data types.
- *
  * @details
  * The Coordinator class provides a unified interface for creating and
  * destroying entities, registering and managing components, and handling
  * systems and their signatures. It acts as the main entry point for
  * interacting with the ECS framework.
  */
-template <typename Context = Context<>>
 class Coordinator {
  public:
   /**
@@ -41,7 +37,7 @@ class Coordinator {
    *
    * @return The newly created entity identifier.
    */
-  Context::Entity CreateEntity();
+  Entity CreateEntity();
 
   /**
    * @brief Destroys the specified entity and removes all associated components.
@@ -55,7 +51,7 @@ class Coordinator {
    * @param entity The entity to be destroyed.
    * @return Reference to the Coordinator for method chaining.
    */
-  Coordinator<Context>& DestroyEntity(Context::Entity entity);
+  Coordinator& DestroyEntity(Entity entity);
 
   // #####   Component methods   #####
   /**
@@ -70,7 +66,7 @@ class Coordinator {
    * @return Reference to the Coordinator instance for method chaining.
    */
   template <typename T>
-  Coordinator<Context>& RegisterComponentType();
+  Coordinator& RegisterComponentType();
 
   /**
    * @brief Adds a component of type T to the specified entity.
@@ -84,7 +80,7 @@ class Coordinator {
    * @return Reference to the Coordinator for method chaining.
    */
   template <typename T>
-  Coordinator<Context>& AddComponent(Context::Entity entity, T component);
+  Coordinator& AddComponent(Entity entity, T component);
 
   /**
    * @brief Removes a component of type T from the specified entity.
@@ -97,7 +93,7 @@ class Coordinator {
    * @return Reference to the Coordinator for method chaining.
    */
   template <typename T>
-  Coordinator<Context>& RemoveComponent(Context::Entity entity);
+  Coordinator& RemoveComponent(Entity entity);
 
   /**
    * @brief Retrieves a reference to the component of type T associated with the
@@ -111,7 +107,7 @@ class Coordinator {
    * T.
    */
   template <typename T>
-  T& GetComponent(Context::Entity entity);
+  T& GetComponent(Entity entity);
 
   /**
    * @brief Retrieves the unique ComponentTypeId identifier for the specified
@@ -123,7 +119,7 @@ class Coordinator {
    * type T.
    */
   template <typename T>
-  Context::ComponentTypeId GetComponentTypeId();
+  ComponentTypeId GetComponentTypeId();
 
   // #####   System methods   #####
   /**
@@ -144,6 +140,9 @@ class Coordinator {
   template <typename T>
   std::shared_ptr<T> RegisterSystem();
 
+  template <typename T>
+  std::shared_ptr<T> GetSystem();
+
   /**
    * @brief Sets the signature for a system of type T.
    *
@@ -158,24 +157,26 @@ class Coordinator {
    * @return Reference to the Coordinator to allow method chaining.
    */
   template <typename T>
-  Coordinator<Context>& SetSystemSignature(Context::Signature signature);
+  Coordinator& SetSystemSignature(Signature signature);
 
-  Context getContext() { return context_; }
-  ComponentManager<Context>* get_component_manager() {
+  template <typename T>
+  Signature GetSystemSignature();
+
+  Signature GetEntitySignature(Entity);
+
+  template <typename T>
+  bool EntityIsValidForSystem(Entity);
+
+  ComponentManager* get_component_manager() {
     return component_manager_.get();
   }
-  EntityManager<Context>* get_entity_manager() {
-    return entity_manager_.get();
-  }
-  SystemManager<Context>* get_system_manager() {
-    return system_manager_.get();
-  }
+  EntityManager* get_entity_manager() { return entity_manager_.get(); }
+  SystemManager* get_system_manager() { return system_manager_.get(); }
 
  private:
-  Context context_;
-  std::unique_ptr<ComponentManager<Context>> component_manager_;
-  std::unique_ptr<EntityManager<Context>> entity_manager_;
-  std::unique_ptr<SystemManager<Context>> system_manager_;
+  std::unique_ptr<ComponentManager> component_manager_;
+  std::unique_ptr<EntityManager> entity_manager_;
+  std::unique_ptr<SystemManager> system_manager_;
 
   /**
    * @brief Initializes the Coordinator instance.
@@ -189,7 +190,7 @@ class Coordinator {
    *
    * @return Reference to the initialized Coordinator instance.
    */
-  Coordinator<Context>& Init();
+  Coordinator& Init();
 
 #ifdef _DEBUG
   void debug_warning();
@@ -197,6 +198,6 @@ class Coordinator {
 };
 
 }  // namespace ECS
-
-#include "src/ecs/coordinator.tcc"
 #endif  // TBGE_SRC_ECS_COORDINATOR_H_
+
+#include "src/ecs/coordinator/coordinator.tcc"

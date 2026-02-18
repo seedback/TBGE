@@ -9,87 +9,44 @@
 
 namespace panel {
 
-template <typename Context = ECS::Context<>>
-class Panel {
+class Panel : public ECS::Component {
  public:
-  Panel(tbge::tui::vec2i position, tbge::tui::vec2i size, int z,
+  Panel(tbge::tui::vec2i position, tbge::tui::vec2i size, int initial_z,
         tbge::tui::Color color = tbge::tui::Color::kDefault,
-        tbge::tui::Color border_color = tbge::tui::Color::kDefault) {
-    position_ = position;
-    size_ = size;
-    z_ = z;
-    color_ = color;
+        tbge::tui::Color border_color = tbge::tui::Color::kDefault);
+
+  void Draw();
+
+  void set_position(tbge::tui::vec2i position) { position_ = position; }
+  void set_position(int x, int y) { position_ = {x, y}; }
+  tbge::tui::vec2i get_position() { return position_; }
+
+  void set_size(tbge::tui::vec2i size) { size_ = size; }
+  void set_size(int x, int y) { size_ = {x, y}; }
+  tbge::tui::vec2i get_size() { return size_; }
+
+  void set_color(tbge::tui::Color color) { color_ = color; }
+  tbge::tui::Color get_color() { return color_; }
+
+  void set_border_color(tbge::tui::Color border_color) {
     border_color_ = border_color;
   }
+  tbge::tui::Color get_border_color() { return border_color_; }
 
-  void Draw() { 
-    DrawRectangle(position_, size_, color_, border_color_); }
-
-  void set_z(int z) {
-    z_ = z;
-  }
-
-  int get_z() {
-    return z_;
-  }
+  void set_z_index(int z);
+  int get_z_index();
 
  private:
   tbge::tui::vec2i position_;
   tbge::tui::vec2i size_;
   tbge::tui::Color color_;
   tbge::tui::Color border_color_;
-  int z_;
+  int z_index_;
 
   static void DrawRectangle(
       tbge::tui::vec2i position, tbge::tui::vec2i size, tbge::tui::Color color,
-      tbge::tui::Color borderColor = tbge::tui::Color::kDefault) {
-    tbge::tui::SetBgColor(color);
-    tbge::tui::SetFgColor(borderColor);
-
-    for (int x = 0; x < size.x; x++) {
-      for (int y = 0; y < size.y; y++) {
-        tbge::tui::SetCursorPosition(position + tbge::tui::vec2i(x, y));
-        if (x == 0 && y == 0) {
-          tbge::tui::unicode_print(
-              tbge::tui::box_drawing(tbge::tui::Line::kDDDownRight));
-          continue;
-        }
-        if (x == size.x - 1 && y == 0) {
-          tbge::tui::unicode_print(
-              tbge::tui::box_drawing(tbge::tui::Line::kDDDownLeft));
-          continue;
-        }
-        if (x == 0 && y == size.y - 1) {
-          tbge::tui::unicode_print(
-              tbge::tui::box_drawing(tbge::tui::Line::kDDUpRight));
-          continue;
-        }
-        if (x == size.x - 1 && y == size.y - 1) {
-          tbge::tui::unicode_print(
-              tbge::tui::box_drawing(tbge::tui::Line::kDDUpLeft));
-          continue;
-        }
-        if (x != 0 && x != size.x - 1) {
-          if (y == 0 || y == size.y - 1) {
-            tbge::tui::unicode_print(
-                tbge::tui::box_drawing(tbge::tui::Line::kDDLeftRight));
-            continue;
-          }
-        }
-        if (x == 0 || x == size.x - 1) {
-          if (y != 0 && y != size.y - 1) {
-            tbge::tui::unicode_print(
-                tbge::tui::box_drawing(tbge::tui::Line::kDDUpDown));
-            continue;
-          }
-        }
-        tbge::tui::unicode_print(U" ");
-      }
-    }
-
-    tbge::tui::SetBgColor(tbge::tui::Color::kDefault);
-    tbge::tui::SetFgColor(tbge::tui::Color::kDefault);
-  }
+      tbge::tui::Color borderColor = tbge::tui::Color::kDefault);
 };
 }  // namespace panel
+
 #endif  // TBGE_SRC_WINDOWS_PANEL_H_

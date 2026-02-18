@@ -35,7 +35,7 @@ inline bool is_wide_character(char32_t codepoint) {
 
 // Prints out UTF-8 formatted strings from Unicode codepoints
 // Automatically adjusts cursor for wide characters
-void unicode_print(const std::u32string& text = U"") {
+inline void unicode_print(const std::u32string& text = U"") {
   std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
   std::cout << converter.to_bytes(text);
 
@@ -47,38 +47,38 @@ void unicode_print(const std::u32string& text = U"") {
   }
 }
 
-std::u8string int_to_u8(int i) {
+inline std::u8string int_to_u8(int i) {
   std::string s = std::to_string(i);
   return std::u8string(s.begin(), s.end());
 }
 
-std::u8string AnsiPositionCursor(int x, int y) {
+inline std::u8string AnsiPositionCursor(int x, int y) {
   return kAnsiCsi + int_to_u8(y) + u8";" + int_to_u8(x) + u8"H";
 }
 
-std::u8string AnsiSetConsoleTitle(const std::string& title) {
+inline std::u8string AnsiSetConsoleTitle(const std::string& title) {
   std::u8string u8title(title.begin(), title.end());
   return kAnsiConsoleTitleStart + u8title + kAnsiConsoleTitleEnd;
 }
 
-std::u8string AnsiCuu(int n = 1) {
+inline std::u8string AnsiCuu(int n = 1) {
   return kAnsiCsi + int_to_u8(n) + kAnsiCuuSuffix;
 }
-std::u8string AnsiCud(int n = 1) {
+inline std::u8string AnsiCud(int n = 1) {
   return kAnsiCsi + int_to_u8(n) + kAnsiCudSuffix;
 }
-std::u8string AnsiCuf(int n = 1) {
+inline std::u8string AnsiCuf(int n = 1) {
   return kAnsiCsi + int_to_u8(n) + kAnsiCufSuffix;
 }
-std::u8string AnsiCub(int n = 1) {
+inline std::u8string AnsiCub(int n = 1) {
   return kAnsiCsi + int_to_u8(n) + kAnsiCubSuffix;
 }
-std::u8string AnsiCup(int x, int y) {
+inline std::u8string AnsiCup(int x, int y) {
   return kAnsiCsi + int_to_u8(y) + u8";" + int_to_u8(x) + kAnsiCupSuffix;
 }
 
 template <typename... Args>
-std::u8string AnsiSgr(Args... args) {
+inline std::u8string AnsiSgr(Args... args) {
   static_assert(
       (std::conjunction_v<std::disjunction<std::is_same<Args, int>,
                                            std::is_same<Args, SgrParam>>...>),
@@ -91,23 +91,23 @@ std::u8string AnsiSgr(Args... args) {
   return result;
 }
 
-std::u8string AnsiClearScreen() { return kAnsiClearScreen; }
+inline std::u8string AnsiClearScreen() { return kAnsiClearScreen; }
 
-void ClearScreen() {
+inline void ClearScreen() {
   std::cout << reinterpret_cast<const char*>(AnsiClearScreen().data());
 }
 
-void Cls() { ClearScreen(); }
+inline void Cls() { ClearScreen(); }
 
-std::u8string AnsiClearScreenAndReset() { return kAnsiEsc + u8"c"; }
+inline std::u8string AnsiClearScreenAndReset() { return kAnsiEsc + u8"c"; }
 
-void ClearScreenAndReset() {
+inline void ClearScreenAndReset() {
   std::cout << reinterpret_cast<const char*>(AnsiClearScreenAndReset().data());
 }
 
-void Clsr() { ClearScreenAndReset(); }
+inline void Clsr() { ClearScreenAndReset(); }
 
-void SetColor(int color) {
+inline void SetColor(int color) {
   std::cout << reinterpret_cast<const char*>(
       (kAnsiCsi + int_to_u8(color) + u8"m").data());
 }
@@ -120,7 +120,7 @@ void SetColor(int color) {
  * For more details, see:
  * - https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
  */
-void SetFgColor8Bit(int n) {
+inline void SetFgColor8Bit(int n) {
   if (n < 0) n = 0;
   if (n > 255) n = 255;
   std::cout << reinterpret_cast<const char*>(
@@ -139,7 +139,7 @@ void SetFgColor8Bit(int n) {
  * For more details, see:
  * - https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit
  */
-void SetFgColorRgb(int r, int g, int b) {
+inline void SetFgColorRgb(int r, int g, int b) {
   if (r < 0) r = 0;
   if (r > 255) r = 255;
   if (g < 0) g = 0;
@@ -159,12 +159,12 @@ void SetFgColorRgb(int r, int g, int b) {
  * @param color The color to set, using a predefined Color enum value
  * @return An ANSI escape sequence string that sets the foreground color
  */
-void SetFgColor(Color color) {
+inline void SetFgColor(Color color) {
   std::cout << reinterpret_cast<const char*>(
       (kAnsiCsi + int_to_u8(int(color)) + u8"m").data());
 }
 
-void SetFgColor(int color) {
+inline void SetFgColor(int color) {
   std::cout << reinterpret_cast<const char*>(
       (kAnsiCsi + int_to_u8(color) + u8"m").data());
 }
@@ -177,7 +177,7 @@ void SetFgColor(int color) {
  * For more details, see:
  * - https://en.wikipedia.org/wiki/ANSI_escape_code#8_bit
  */
-void SetBgColor8Bit(int color) {
+inline void SetBgColor8Bit(int color) {
   if (color < 0) color = 0;
   if (color > 255) color = 255;
   std::cout << reinterpret_cast<const char*>(
@@ -186,7 +186,7 @@ void SetBgColor8Bit(int color) {
           .data());
 }
 
-void SetBgColorRgb(int r, int g, int b) {
+inline void SetBgColorRgb(int r, int g, int b) {
   if (r < 0) r = 0;
   if (r > 255) r = 255;
   if (g < 0) g = 0;
@@ -199,13 +199,13 @@ void SetBgColorRgb(int r, int g, int b) {
           .data());
 }
 
-void SetBgColor(Color color) {
+inline void SetBgColor(Color color) {
   std::cout << reinterpret_cast<const char*>(
       (kAnsiCsi + int_to_u8(int(color) + kBackgroundColorOffset) + u8"m")
           .data());
 }
 
-void SetBgColor(int color) {
+inline void SetBgColor(int color) {
   std::cout << reinterpret_cast<const char*>(
       (kAnsiCsi + int_to_u8(color + kBackgroundColorOffset) + u8"m").data());
 }
@@ -218,7 +218,7 @@ void SetBgColor(int color) {
  * @param x The horizontal position (column)
  * @param y The vertical position (row)
  */
-void SetCursorPosition(long x, long y) {
+inline void SetCursorPosition(long x, long y) {
   auto cmd = AnsiCup(static_cast<int>(x), static_cast<int>(y));
   std::cout << reinterpret_cast<const char*>(cmd.data());
 }
@@ -228,9 +228,9 @@ void SetCursorPosition(long x, long y) {
  *
  * @param pos A 2D vector containing x (column) and y (row) coordinates
  */
-void SetCursorPosition(vec2i pos) { SetCursorPosition(pos.x, pos.y); }
+inline void SetCursorPosition(vec2i pos) { SetCursorPosition(pos.x, pos.y); }
 
-vec2i GetCursorPosition() {
+inline vec2i GetCursorPosition() {
   vec2i pos = {-1, -1};
 
 #ifdef _WIN32
@@ -301,7 +301,7 @@ vec2i GetCursorPosition() {
   return pos;
 }
 
-vec2i GetConsoleSize() {
+inline vec2i GetConsoleSize() {
   vec2i position = GetCursorPosition();
   AnsiCup(999, 999);
   vec2i size = GetCursorPosition();

@@ -16,7 +16,8 @@
 #ifndef TBGE_SRC_ECS_ECS_H_
 #define TBGE_SRC_ECS_ECS_H_
 
-#include "./context.h"
-#include "./coordinator.h"
+#include "src/ecs/component/component.h"
+#include "src/ecs/context/context.h"
+#include "src/ecs/coordinator/coordinator.h"
 
 #endif  // TBGE_SRC_ECS_ECS_H_

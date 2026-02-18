@@ -1,4 +1,4 @@
-#include "src/ecs/entity_manager.h"
+#include "src/ecs/entity_manager/entity_manager.h"
 
 #include <absl/log/initialize.h>
 #include <absl/log/log_sink.h>
@@ -9,7 +9,7 @@
 #include <iostream>
 #include <memory>
 
-#include "src/ecs/context.h"
+#include "src/ecs/context/context.h"
 #include "test/includes/test_log_sink.h"
 
 class EntityManagerTest : public ::testing::Test {

@@ -1,4 +1,4 @@
-#include "src/ecs/coordinator.h"
+#include "src/ecs/coordinator/coordinator.h"
 
 #include <absl/log/initialize.h>
 #include <absl/log/log_sink.h>

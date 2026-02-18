@@ -8,10 +8,10 @@
 
 namespace tbge {
 namespace tui {
-std::u32string box_drawing(Line line) {
+inline std::u32string box_drawing(Line line) {
   return std::u32string(1, char32_t(0x2500 + line));
 }
-std::u32string box_drawing(Box box) {
+inline std::u32string box_drawing(Box box) {
   return std::u32string(1, char32_t(0x2580 + box));
 }
 }  // namespace tui

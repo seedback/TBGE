@@ -41,21 +41,29 @@ cc_library(
     srcs = glob(
         [
             "src/**/*.cc",
-            "src/**/*.tcc",
         ],
         allow_empty = True,
-        exclude = ["src/main.cc"],
+        exclude = [
+            "src/main.cc",
+            "src/ecs/**/*.cc",
+        ],
     ),
     hdrs = glob(
         [
             "src/**/*.h",
             "src/**/*.hh",
+            "src/**/*.tcc",
         ],
         allow_empty = True,
+        exclude = [
+            "src/ecs/**/*.h",
+            "src/ecs/**/*.tcc",
+        ],
     ),
     visibility = ["//visibility:public"],
     deps = [
         ":abseil_log",
+        "//src/ecs:ecs",
     ],
 )
 

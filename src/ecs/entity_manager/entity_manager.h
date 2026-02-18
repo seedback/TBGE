@@ -4,7 +4,7 @@
 #include <queue>
 #include <vector>
 
-#include "src/ecs/context.h"
+#include "src/ecs/context/context.h"
 
 namespace ECS {
 /**
@@ -24,17 +24,10 @@ namespace ECS {
  * - Use DestroyEntity() to remove an entity and recycle its ID.
  * - Use SetSignature() and GetSignature() to manage the component signature of
  * an entity.
- * 
- * @tparam Context The Context that holds configuration data and data types.
- *
- * @tparam Context The Context that holds configuration data and data types.
  *
  * @note The maximum number of entities is limited by kMaxEntities.
  * @note Entity IDs are recycled after destruction.
- *
- * @see kMaxEntities
  */
-template <typename Context = Context<>>
 class EntityManager {
  public:
   EntityManager() {
@@ -56,7 +49,7 @@ class EntityManager {
    *
    * @note Asserts that the maximum number of entities has not been exceeded.
    */
-  Context::Entity CreateEntity();
+  Entity CreateEntity();
 
   /**
    * @brief Destroys the specified entity and recycles its ID.
@@ -73,7 +66,7 @@ class EntityManager {
    *
    * @note Asserts that the entity is within the valid range.
    */
-  EntityManager<Context>& DestroyEntity(Context::Entity entity);
+  EntityManager& DestroyEntity(Entity entity);
 
   /**
    * @brief Checks if the specified entity exists in the manager.
@@ -87,7 +80,7 @@ class EntityManager {
    * @param entity The entity to check for existence.
    * @return true if the entity exists, false otherwise.
    */
-  bool HasEntity(Context::Entity entity);
+  bool HasEntity(Entity entity);
 
   /**
    * @brief Sets the signature for a given entity.
@@ -103,8 +96,7 @@ class EntityManager {
    *
    * @note Asserts that the entity is within the valid range.
    */
-  EntityManager<Context>& SetSignature(Context::Entity entity,
-                                       Context::Signature signature);
+  EntityManager& SetSignature(Entity entity, Signature signature);
 
   /**
    * @brief Retrieves the signature associated with a given entity.
@@ -118,26 +110,24 @@ class EntityManager {
    *
    * @note Asserts that the entity identifier is within the valid range.
    */
-  Context::Signature GetSignature(Context::Entity entity);
+  Signature GetSignature(Entity entity);
 
-  Context::Entity get_current_entity_count() { return current_entity_count_; }
-  Context::Entity get_entity_id_counter() { return entity_id_counter_; }
+  Entity get_current_entity_count() { return current_entity_count_; }
+  Entity get_entity_id_counter() { return entity_id_counter_; }
 
  private:
   /// Queue of unused entity IDs
-  std::queue<typename Context::Entity> available_entities_{};
+  std::queue<Entity> available_entities_{};
 
   /// Array of signatures where the index corresponds to the entity ID
-  std::vector<typename Context::Signature> signatures_{};
+  std::vector<Signature> signatures_{};
 
   /// Total living entities - used to keep limits on how many exist
-  Context::Entity current_entity_count_ = 0;
+  Entity current_entity_count_ = 0;
 
   /// Keeps track of the next Entity ID to be used when creating a new one.
-  Context::Entity entity_id_counter_ = 0;
+  Entity entity_id_counter_ = 0;
 };
 }  // namespace ECS
-
-#include "src/ecs/entity_manager.tcc"
 
 #endif  // TBGE_SRC_ECS_ENTITY_MANAGER_H_

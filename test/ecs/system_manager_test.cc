@@ -1,4 +1,4 @@
-#include "src/ecs/system_manager.h"
+#include "src/ecs/system_manager/system_manager.h"
 
 #include <absl/log/initialize.h>
 #include <absl/log/log_sink.h>
@@ -85,9 +85,9 @@ TEST_F(SystemManagerTest, EntityDestroyed) {
   test_system_manager.SetSignature<DummySystem>(TestContext::Signature(2));
 
   // Add some entities to the system's entity set
-  system->add_entity(1);
-  system->add_entity(2);
-  system->add_entity(3);
+  system->add_entity_(1);
+  system->add_entity_(2);
+  system->add_entity_(3);
 
   // Destroy entity 2
   test_system_manager.EntityDestroyed(2);
@@ -130,11 +130,11 @@ TEST_F(SystemManagerTest, EntityDestroyedWithMultipleSystems) {
   test_system_manager.SetSignature<DummySystem>(TestContext::Signature(0b01));
   test_system_manager.SetSignature<DummySystem2>(TestContext::Signature(0b10));
 
-  system1->add_entity(1);
-  system1->add_entity(2);
-  system1->add_entity(3);
-  system2->add_entity(4);
-  system2->add_entity(5);
+  system1->add_entity_(1);
+  system1->add_entity_(2);
+  system1->add_entity_(3);
+  system2->add_entity_(4);
+  system2->add_entity_(5);
 
   test_system_manager.EntityDestroyed(5);
 

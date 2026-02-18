@@ -5,7 +5,7 @@
 
 #include <set>
 
-#include "src/ecs/context.h"
+#include "src/ecs/context/context.h"
 
 namespace ECS {
 
@@ -17,10 +17,16 @@ namespace ECS {
  * Each system typically processes entities that have a specific set of
  * components.
  */
-template <typename Context = ECS::Context<>>
 class System {
  public:
-  System& set_entities(std::set<typename Context::Entity> entities) {
+  std::set<Entity> get_entities() { return entities_; }
+
+  bool has_entity(Entity entity) {
+    return entities_.count(entity) > 0;
+  }
+
+ protected:
+  virtual System& set_entities(std::set<Entity> entities) {
     // Do I need safety on this? Checking wether all entities are valid?
     // TODO: Contemplate the question above and action it.
     entities_ = entities;
@@ -28,28 +34,33 @@ class System {
     return *this;
   }
 
-  std::set<typename Context::Entity> get_entities() { return entities_; }
+  virtual System& add_entity(Entity entity) {return *this;}
 
-  virtual System& add_entity(typename Context::Entity entity) {
-    // Do I need safety on this? Checking wether all entities are valid?
-    // TODO: Contemplate the question above and action it.
-    entities_.insert(entity);
-
-    return *this;
-  }
-
-  virtual System& remove_entity(typename Context::Entity entity) {
-    entities_.erase(entity);
-    return *this;
-  }
-
-  bool has_entity(typename Context::Entity entity) {
-    return entities_.count(entity) > 0;
-  }
+  virtual System& remove_entity(Entity entity) {return *this;}
 
  private:
-  // TODO: make this private with set/get functions
-  std::set<typename Context::Entity> entities_;
+  friend class SystemManager;
+
+  std::set<Entity> entities_;
+
+  System& add_entity_(Entity entity) {
+    // Do I need safety on this? Checking wether all entities are valid?
+    // TODO: Contemplate the question above and action it.
+    if (!entities_.contains(entity)) {
+      entities_.insert(entity);
+      add_entity(entity);
+    }
+
+    return *this;
+  }
+
+  System& remove_entity_(Entity entity) {
+    if (!entities_.contains(entity)) {
+      entities_.erase(entity);
+      remove_entity(entity);
+    }
+    return *this;
+  }
 };
 
 }  // namespace ECS

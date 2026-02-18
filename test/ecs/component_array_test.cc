@@ -1,4 +1,4 @@
-#include "src/ecs/component_array.h"
+#include "src/ecs/component_array/component_array.h"
 
 #include <absl/log/initialize.h>
 #include <absl/log/log_sink.h>

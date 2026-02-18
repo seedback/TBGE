@@ -1,4 +1,4 @@
-#include "src/ecs/component_manager.h"
+#include "src/ecs/component_manager/component_manager.h"
 
 #include <absl/log/initialize.h>
 #include <absl/log/log_sink.h>
@@ -10,7 +10,7 @@
 #include <string>
 #include <typeinfo>
 
-#include "src/ecs/context.h"
+#include "src/ecs/context/context.h"
 #include "test/includes/test_log_sink.h"
 
 struct ComponentTypeInt {

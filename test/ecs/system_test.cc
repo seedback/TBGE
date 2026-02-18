@@ -1,4 +1,4 @@
-#include "src/ecs/system.h"
+#include "src/ecs/system/system.h"
 
 #include <absl/log/initialize.h>
 #include <absl/log/log_sink.h>
@@ -8,7 +8,7 @@
 #include <iostream>
 #include <set>
 
-#include "src/ecs/context.h"
+#include "src/ecs/context/context.h"
 #include "test/includes/test_log_sink.h"
 
 class SystemTest : public ::testing::Test {
@@ -64,7 +64,7 @@ TEST_F(SystemTest, AddEntity) {
   std::set<TestContext::Entity> entities2 = {1, 2, 3, 4};
   test_system.set_entities(entities);
   EXPECT_EQ(test_system.get_entities(), entities);
-  test_system.add_entity(4);
+  test_system.add_entity_(4);
   EXPECT_EQ(test_system.get_entities(), entities2);
 }
 
@@ -81,6 +81,6 @@ TEST_F(SystemTest, RemoveEntity) {
   std::set<TestContext::Entity> entities2 = {1, 3};
   test_system.set_entities(entities);
   EXPECT_EQ(test_system.get_entities(), entities);
-  test_system.remove_entity(2);
+  test_system.remove_entity_(2);
   EXPECT_EQ(test_system.get_entities(), entities2);
 }

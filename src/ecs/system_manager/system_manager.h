@@ -4,8 +4,8 @@
 #include <memory>
 #include <unordered_map>
 
-#include "src/ecs/context.h"
-#include "src/ecs/system.h"
+#include "src/ecs/context/context.h"
+#include "src/ecs/system/system.h"
 
 namespace ECS {
 
@@ -22,12 +22,9 @@ namespace ECS {
  * - Notifying systems when entities are destroyed or when their signatures
  * change, allowing systems to update their internal entity lists accordingly.
  *
- * @tparam Context The Context that holds configuration data and data types.
- *
  * @note This class is a core part of this Entity-Component-System (ECS)
  * architecture.
  */
-template <typename Context = ECS::Context<>>
 class SystemManager {
  public:
   /**
@@ -61,7 +58,10 @@ class SystemManager {
    * Asserts that the system has been registered before being given a signature.
    */
   template <typename T>
-  SystemManager& SetSignature(Context::Signature signature);
+  SystemManager& SetSignature(Signature signature);
+
+  template <typename T>
+  Signature GetSignature();
 
   /**
    * @brief Notifies all Systems that an entity has been destroyed.
@@ -74,7 +74,7 @@ class SystemManager {
    * @return Reference to the current SystemManager instance for method
    * chaining.
    */
-  SystemManager& EntityDestroyed(Context::Entity entity);
+  SystemManager& EntityDestroyed(Entity entity);
 
   /**
    * @brief Notifies the SystemManager that an entity's signature has changed.
@@ -89,29 +89,32 @@ class SystemManager {
    * @return Reference to the current SystemManager instance for method
    * chaining.
    */
-  SystemManager& EntitySignatureChanged(Context::Entity entity,
-                                        Context::Signature entitySignature);
+  SystemManager& EntitySignatureChanged(Entity entity,
+                                        Signature entitySignature);
 
-  std::unordered_map<const char*, typename Context::Signature>
+  template <typename T>
+  std::shared_ptr<T> GetSystem();
+
+  std::unordered_map<const char*, Signature>
   get_signatures() {
     return signatures_;
   }
 
-  std::unordered_map<const char*, std::shared_ptr<System<Context>>>
+  std::unordered_map<const char*, std::shared_ptr<System>>
   get_systems() {
     return systems_;
   }
 
  private:
   /// @brief Map from system type string pointer to a signature
-  std::unordered_map<const char*, typename Context::Signature> signatures_{};
+  std::unordered_map<const char*, Signature> signatures_{};
 
   /// @brief Map from system type string pointer to a system pointer
-  std::unordered_map<const char*, std::shared_ptr<System<Context>>> systems_{};
+  std::unordered_map<const char*, std::shared_ptr<System>> systems_{};
 };
 
 }  // namespace ECS
 
-#include "src/ecs/system_manager.tcc"
-
 #endif  // TBGE_SRC_ECS_SYSTEM_MANAGER_H_
+
+#include "src/ecs/system_manager/system_manager.tcc"

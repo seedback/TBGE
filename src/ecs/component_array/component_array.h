@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "src/ecs/context.h"
+#include "src/ecs/context/context.h"
 
 namespace ECS {
 
@@ -15,10 +15,7 @@ namespace ECS {
  * @details
  * Provides an interface for component arrays, allowing for polymorphic
  * storage and destruction notification when entities are destroyed.
- *
- * @tparam Context The Context that holds configuration data and data types.
  */
-template <typename Context = ECS::Context<>>
 class GenericComponentArray {
  public:
   /**
@@ -36,8 +33,7 @@ class GenericComponentArray {
    * @param entity The entity that has been destroyed.
    * @return Reference to the current GenericComponentArray for method chaining.
    */
-  virtual GenericComponentArray& EntityDestroyed(
-      typename Context::Entity entity) = 0;
+  virtual GenericComponentArray& EntityDestroyed(Entity entity) = 0;
 };
 
 /**
@@ -49,13 +45,12 @@ class GenericComponentArray {
  * between entities and their corresponding indices in the array.
  *
  * @tparam T The type of component stored in the array.
- * @tparam Context The Context that holds configuration data and data types.
  *
  * @note Inherits from GenericComponentArray to allow for storage of all
  * ComponentArrays in a single list.
  */
-template <typename Context, typename T>
-class ComponentArray : public GenericComponentArray<Context> {
+template <typename T>
+class ComponentArray : public GenericComponentArray {
  public:
   /**
    * @brief Inserts a component into the component_array_.
@@ -68,7 +63,7 @@ class ComponentArray : public GenericComponentArray<Context> {
    * @param component The component instance to insert.
    * @return Reference to the current ComponentArray for method chaining.
    */
-  ComponentArray& InsertData(typename Context::Entity entity, T component);
+  ComponentArray& InsertData(Entity entity, T component);
 
   /**
    * @brief Removes a component from the component_array_.
@@ -81,7 +76,7 @@ class ComponentArray : public GenericComponentArray<Context> {
    * @param entity The entity ID to remove from the component_array_.
    * @return Reference to the current ComponentArray for method chaining.
    */
-  ComponentArray& RemoveData(typename Context::Entity entity);
+  ComponentArray& RemoveData(Entity entity);
 
   /**
    * @brief Checks whether the specified entity has associated component data.
@@ -89,7 +84,7 @@ class ComponentArray : public GenericComponentArray<Context> {
    * @param entity The entity to check for associated component data.
    * @return true if the entity has component data; false otherwise.
    */
-  bool HasData(typename Context::Entity entity);
+  bool HasData(Entity entity);
 
   /**
    * @brief Returns the component associated with the entity ID.
@@ -98,7 +93,7 @@ class ComponentArray : public GenericComponentArray<Context> {
    * @return An optional containing the component if found, otherwise
    * std::nullopt.
    */
-  T& GetData(typename Context::Entity entity);
+  T& GetData(Entity entity);
 
   /**
    * @brief Called when an entity has been destroyed and its data needs to be
@@ -107,7 +102,7 @@ class ComponentArray : public GenericComponentArray<Context> {
    * @param entity The entity ID that has been destroyed.
    * @return Reference to the current ComponentArray for method chaining.
    */
-  ComponentArray& EntityDestroyed(typename Context::Entity entity) override;
+  ComponentArray& EntityDestroyed(Entity entity) override;
 
   /**
    * @brief Returns the number of valid entries in the array.
@@ -121,10 +116,10 @@ class ComponentArray : public GenericComponentArray<Context> {
   std::vector<T> component_array_;
 
   /// @brief Map from an entity ID to an array index.
-  std::unordered_map<typename Context::Entity, size_t> entity_to_index_map_;
+  std::unordered_map<Entity, size_t> entity_to_index_map_;
 
   /// @brief Map from an array index to an entity ID.
-  std::unordered_map<size_t, typename Context::Entity> index_to_entity_map_;
+  std::unordered_map<size_t, Entity> index_to_entity_map_;
 
   /// @brief Total size of valid entries in the array.
   size_t size_ = 0;
@@ -132,5 +127,6 @@ class ComponentArray : public GenericComponentArray<Context> {
 
 }  // namespace ECS
 
-#include "src/ecs/component_array.tcc"
 #endif  // TBGE_SRC_ECS_COMPONENT_ARRAY_H_
+
+#include "src/ecs/component_array/component_array.tcc"
