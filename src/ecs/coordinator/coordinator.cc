@@ -8,7 +8,7 @@
 #include "src/ecs/entity_manager/entity_manager.h"
 #include "src/ecs/system_manager/system_manager.h"
 
-namespace ECS {
+namespace ecs {
 
 // #####   Constructors   #####
 Coordinator::Coordinator() { Init(); }
@@ -48,7 +48,7 @@ void Coordinator::debug_warning() {
   LOG(INFO)
       << "The _DEBUG preprocessor definition has been detected\n"
       << "######################## ECS ########################\n"
-      << "ECS (Entity Component System) is currently configured like this:\n"
+      << "ecs (Entity Component System) is currently configured like this:\n"
       << "The Entity datatype alias is represented by (" << sizeof(Entity) * 8
       << " bit) " << typeid(Entity).name() << "\n"
       << "The ComponentType datatype alias is represented by ("
@@ -70,4 +70,4 @@ void Coordinator::debug_warning() {
 }
 #endif
 
-}  // namespace ECS
+}  // namespace ecs

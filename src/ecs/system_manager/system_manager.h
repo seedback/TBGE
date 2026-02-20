@@ -17,7 +17,7 @@
 #include "src/ecs/context/context.h"
 #include "src/ecs/system/system.h"
 
-namespace ECS {
+namespace ecs {
 
 /**
  * @class SystemManager

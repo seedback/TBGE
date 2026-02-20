@@ -10,7 +10,7 @@
 #include "src/ecs/context/context.h"
 #include "src/ecs/system_manager/system_manager.h"
 
-namespace ECS {
+namespace ecs {
 
 template <typename T>
 std::shared_ptr<T> SystemManager::RegisterSystem() {

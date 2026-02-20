@@ -17,7 +17,7 @@
 #include "src/ecs/entity_manager/entity_manager.h"
 #include "src/ecs/system_manager/system_manager.h"
 
-namespace ECS {
+namespace ecs {
 
 /**
  * @class Coordinator

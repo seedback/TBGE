@@ -15,7 +15,7 @@
 
 #include "src/ecs/context/context.h"
 
-namespace ECS {
+namespace ecs {
 
 /**
  * @class System

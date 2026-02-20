@@ -10,7 +10,7 @@
 #include "src/ecs/entity_manager/entity_manager.h"
 #include "src/ecs/system_manager/system_manager.h"
 
-namespace ECS {
+namespace ecs {
 // #####   Component methods   #####
 template <typename T>
 Coordinator& Coordinator::RegisterComponentType() {

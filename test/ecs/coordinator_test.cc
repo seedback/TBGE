@@ -27,7 +27,7 @@ class CoordinatorTest : public ::testing::Test {
     absl::AddLogSink(test_sink_.get());
 
     testing::internal::CaptureStdout();
-    test_coordinator = std::make_unique<ECS::Coordinator>();
+    test_coordinator = std::make_unique<ecs::Coordinator>();
     testing::internal::GetCapturedStdout();
     test_sink_->Clear();
   }
@@ -38,17 +38,17 @@ class CoordinatorTest : public ::testing::Test {
   }
 
   std::unique_ptr<TestLogSink> test_sink_;
-  std::unique_ptr<ECS::Coordinator> test_coordinator;
+  std::unique_ptr<ecs::Coordinator> test_coordinator;
 };
 
-class DummySystem : public ECS::System {
+class DummySystem : public ecs::System {
  public:
   void Update() {
     // Dummy update logic
   }
 };
 
-class DummySystem2 : public ECS::System {
+class DummySystem2 : public ecs::System {
  public:
   void Update() {
     // Dummy update logic
@@ -57,16 +57,16 @@ class DummySystem2 : public ECS::System {
 
 TEST_F(CoordinatorTest, Constructor) {
   testing::internal::CaptureStdout();
-  ECS::Coordinator();
+  ecs::Coordinator();
   std::string captured_stdout = testing::internal::GetCapturedStdout();
   
   test_sink_->TestLogs(absl::LogSeverity::kInfo, "The .*_DEBUG.* preprocessor definition has been detected.*");
 }
 
 TEST_F(CoordinatorTest, CreateEntity) {
-  ECS::Entity entity1 = test_coordinator->CreateEntity();
-  ECS::Entity entity2 = test_coordinator->CreateEntity();
-  ECS::Entity entity3 = test_coordinator->CreateEntity();
+  ecs::Entity entity1 = test_coordinator->CreateEntity();
+  ecs::Entity entity2 = test_coordinator->CreateEntity();
+  ecs::Entity entity3 = test_coordinator->CreateEntity();
 
   EXPECT_EQ(entity1, 0);
   EXPECT_EQ(entity2, 1);
@@ -74,7 +74,7 @@ TEST_F(CoordinatorTest, CreateEntity) {
 }
 
 TEST_F(CoordinatorTest, RegisterComponentType) {
-  ECS::ComponentManager* component_manager =
+  ecs::ComponentManager* component_manager =
       test_coordinator->get_component_manager();
 
   EXPECT_EQ(component_manager->get_component_types().size(), 0)
@@ -93,7 +93,7 @@ TEST_F(CoordinatorTest, RegisterComponentType) {
 }
 
 TEST_F(CoordinatorTest, RegisterSameComponentTypeMulipleTimes) {
-  ECS::ComponentManager* component_manager =
+  ecs::ComponentManager* component_manager =
       test_coordinator->get_component_manager();
 
   EXPECT_EQ(component_manager->get_component_types().size(), 0)
@@ -119,10 +119,10 @@ TEST_F(CoordinatorTest, RegisterSameComponentTypeMulipleTimes) {
 TEST_F(CoordinatorTest, AddComponent) {
   DummyComponent component;
   test_coordinator->RegisterComponentType<DummyComponent>();
-  ECS::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
 
-  ECS::Signature expected_signature;
-  ECS::Signature signature =
+  ecs::Signature expected_signature;
+  ecs::Signature signature =
       test_coordinator->get_entity_manager()->GetSignature(entity);
   EXPECT_EQ(signature, expected_signature)
       << "Signature is expected to not be set yet.";
@@ -132,7 +132,7 @@ TEST_F(CoordinatorTest, AddComponent) {
   EXPECT_EQ(&returned, test_coordinator.get())
       << "A reference to the Coordinator should be returned";
 
-  expected_signature = ECS::Signature(0b1);
+  expected_signature = ecs::Signature(0b1);
   signature = test_coordinator->get_entity_manager()->GetSignature(entity);
   EXPECT_EQ(signature, expected_signature)
       << "The signature is expected to be 0b1 at this point. Representing the "
@@ -148,10 +148,10 @@ TEST_F(CoordinatorTest, AddComponentsOfSameTypeMultipleTimes) {
   DummyComponent component;
   DummyComponent component2;
   test_coordinator->RegisterComponentType<DummyComponent>();
-  ECS::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
 
-  ECS::Signature expected_signature;
-  ECS::Signature signature =
+  ecs::Signature expected_signature;
+  ecs::Signature signature =
       test_coordinator->get_entity_manager()->GetSignature(entity);
   EXPECT_EQ(signature, expected_signature)
       << "Signature is expected to not be set yet.";
@@ -159,7 +159,7 @@ TEST_F(CoordinatorTest, AddComponentsOfSameTypeMultipleTimes) {
   test_coordinator->AddComponent<DummyComponent>(entity, component);
   test_coordinator->AddComponent<DummyComponent>(entity, component2);
 
-  expected_signature = ECS::Signature(0b1);
+  expected_signature = ecs::Signature(0b1);
   signature = test_coordinator->get_entity_manager()->GetSignature(entity);
   EXPECT_EQ(signature, expected_signature)
       << "The signature is expected to be 0b1 at this point. Representing the "
@@ -180,10 +180,10 @@ TEST_F(CoordinatorTest, AddComponentsOfDifferentTypes) {
   DummyComponent2 component2;
   test_coordinator->RegisterComponentType<DummyComponent>();
   test_coordinator->RegisterComponentType<DummyComponent2>();
-  ECS::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
 
-  ECS::Signature expected_signature;
-  ECS::Signature signature =
+  ecs::Signature expected_signature;
+  ecs::Signature signature =
       test_coordinator->get_entity_manager()->GetSignature(entity);
   EXPECT_EQ(signature, expected_signature)
       << "Signature is expected to not be set yet.";
@@ -192,7 +192,7 @@ TEST_F(CoordinatorTest, AddComponentsOfDifferentTypes) {
   test_coordinator->AddComponent<DummyComponent2>(entity, component2);
 
   signature = test_coordinator->get_entity_manager()->GetSignature(entity);
-  expected_signature = ECS::Signature(0b11);
+  expected_signature = ecs::Signature(0b11);
   EXPECT_EQ(signature, expected_signature)
       << "The signature is expected to be 0b11 at this point. Representing the "
          "first twoComponent ID";
@@ -208,14 +208,14 @@ TEST_F(CoordinatorTest, AddComponentsOfDifferentTypes) {
 }
 
 TEST_F(CoordinatorTest, RemoveComponent) {
-  ECS::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
   DummyComponent component;
   DummyComponent2 component2;
   test_coordinator->RegisterComponentType<DummyComponent>();
   test_coordinator->RegisterComponentType<DummyComponent2>();
 
-  ECS::Signature expected_signature;
-  ECS::Signature signature =
+  ecs::Signature expected_signature;
+  ecs::Signature signature =
       test_coordinator->get_entity_manager()->GetSignature(entity);
   EXPECT_EQ(signature, expected_signature)
       << "Signature is expected to not be set yet.";
@@ -233,18 +233,18 @@ TEST_F(CoordinatorTest, RemoveComponent) {
   EXPECT_EQ(component_array->get_size(), 0);
   EXPECT_EQ(component_array2->get_size(), 1);
 
-  expected_signature = ECS::Signature(0b10);
+  expected_signature = ecs::Signature(0b10);
   signature = test_coordinator->get_entity_manager()->GetSignature(entity);
   EXPECT_EQ(signature, expected_signature);
 }
 
 TEST_F(CoordinatorTest, RemoveSameComponentTwice) {
-  ECS::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
   DummyComponent component;
   test_coordinator->RegisterComponentType<DummyComponent>();
 
-  ECS::Signature expected_signature;
-  ECS::Signature signature =
+  ecs::Signature expected_signature;
+  ecs::Signature signature =
       test_coordinator->get_entity_manager()->GetSignature(entity);
   EXPECT_EQ(signature, expected_signature)
       << "Signature is expected to not be set yet.";
@@ -259,7 +259,7 @@ TEST_F(CoordinatorTest, RemoveSameComponentTwice) {
 }
 
 TEST_F(CoordinatorTest, RemoveUnregisteredComponent) {
-  ECS::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
   DummyComponent component;
   test_coordinator->RemoveComponent<DummyComponent>(entity);
   test_sink_->TestLogs(absl::LogSeverity::kWarning,
@@ -270,7 +270,7 @@ TEST_F(CoordinatorTest, RemoveUnregisteredComponent) {
 }
 
 TEST_F(CoordinatorTest, GetComponent) {
-  ECS::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
   test_coordinator->RegisterComponentType<DummyComponent>();
   DummyComponent component(15);
 
@@ -281,7 +281,7 @@ TEST_F(CoordinatorTest, GetComponent) {
 }
 
 TEST_F(CoordinatorTest, GetMultipleComponentsFromOneEntity) {
-  ECS::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
   test_coordinator->RegisterComponentType<DummyComponent>();
   test_coordinator->RegisterComponentType<DummyComponent2>();
   DummyComponent component(15);
@@ -297,8 +297,8 @@ TEST_F(CoordinatorTest, GetMultipleComponentsFromOneEntity) {
 }
 
 TEST_F(CoordinatorTest, GetSameComponentFromMultipleEntities) {
-  ECS::Entity entity = test_coordinator->CreateEntity();
-  ECS::Entity entity2 = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity2 = test_coordinator->CreateEntity();
   test_coordinator->RegisterComponentType<DummyComponent>();
   DummyComponent component(15);
 
@@ -312,7 +312,7 @@ TEST_F(CoordinatorTest, GetSameComponentFromMultipleEntities) {
 }
 
 TEST_F(CoordinatorTest, GetNonExistentComponent) {
-  ECS::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
   test_coordinator->RegisterComponentType<DummyComponent>();
   DummyComponent component(15);
 
@@ -321,7 +321,7 @@ TEST_F(CoordinatorTest, GetNonExistentComponent) {
 }
 
 TEST_F(CoordinatorTest, GetComponentOfUnregisteredClass) {
-  ECS::Entity entity = test_coordinator->CreateEntity();
+  ecs::Entity entity = test_coordinator->CreateEntity();
   DummyComponent component(15);
 
   test_coordinator->AddComponent<DummyComponent>(entity, component);
@@ -375,7 +375,7 @@ TEST_F(CoordinatorTest, SetSystemSignature) {
   test_coordinator->RegisterComponentType<DummyComponent2>();
 
   test_coordinator->SetSystemSignature<DummySystem>(
-      ECS::Signature(0b10));
+      ecs::Signature(0b10));
 
   EXPECT_EQ(system_manager->get_signatures().size(), 1);
 }
@@ -385,7 +385,7 @@ TEST_F(CoordinatorTest, SetSystemSignatureOfUnregisteredSystem) {
   test_coordinator->RegisterComponentType<DummyComponent2>();
 
   test_coordinator->SetSystemSignature<DummySystem>(
-      ECS::Signature(0b10));
+      ecs::Signature(0b10));
 
   test_sink_->TestLogs(
       absl::LogSeverity::kError,

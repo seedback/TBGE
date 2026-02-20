@@ -22,15 +22,15 @@ class SystemManagerTest : public ::testing::Test {
   }
 
   std::unique_ptr<TestLogSink> test_sink_;
-  ECS::SystemManager test_system_manager;
+  ecs::SystemManager test_system_manager;
 };
 
-class DummySystem : public ECS::System {
+class DummySystem : public ecs::System {
  public:
   DummySystem() = default;
 };
 
-class DummySystem2 : public ECS::System {
+class DummySystem2 : public ecs::System {
  public:
   DummySystem2() = default;
 };
@@ -55,19 +55,19 @@ TEST_F(SystemManagerTest, RegisterSystemMoreThanOnce) {
 
 TEST_F(SystemManagerTest, SetSignature) {
   test_system_manager.RegisterSystem<DummySystem>();
-  test_system_manager.SetSignature<DummySystem>(ECS::Signature(2));
+  test_system_manager.SetSignature<DummySystem>(ecs::Signature(2));
 
   EXPECT_EQ(test_system_manager.get_signatures().size(), 1);
   EXPECT_EQ(test_system_manager.get_signatures().begin()->second.to_ulong(), 2);
 
-  test_system_manager.SetSignature<DummySystem>(ECS::Signature(4));
+  test_system_manager.SetSignature<DummySystem>(ecs::Signature(4));
 
   EXPECT_EQ(test_system_manager.get_signatures().size(), 1);
   EXPECT_EQ(test_system_manager.get_signatures().begin()->second.to_ulong(), 4);
 }
 
 TEST_F(SystemManagerTest, SetSignatureOnUnregisteredSystem) {
-  test_system_manager.SetSignature<DummySystem>(ECS::Signature(2));
+  test_system_manager.SetSignature<DummySystem>(ecs::Signature(2));
   test_sink_->TestLogs(
       absl::LogSeverity::kError,
       "Attempted to set signature on system of typename .* before it was "
@@ -78,12 +78,12 @@ TEST_F(SystemManagerTest, EntityDestroyed) {
   // Register a dummy system and set a signature
   std::shared_ptr<DummySystem> system =
       test_system_manager.RegisterSystem<DummySystem>();
-  test_system_manager.SetSignature<DummySystem>(ECS::Signature(2));
+  test_system_manager.SetSignature<DummySystem>(ecs::Signature(2));
 
   // Add entities to the system by changing their signatures to match
-  test_system_manager.EntitySignatureChanged(1, ECS::Signature(2));
-  test_system_manager.EntitySignatureChanged(2, ECS::Signature(2));
-  test_system_manager.EntitySignatureChanged(3, ECS::Signature(2));
+  test_system_manager.EntitySignatureChanged(1, ecs::Signature(2));
+  test_system_manager.EntitySignatureChanged(2, ecs::Signature(2));
+  test_system_manager.EntitySignatureChanged(3, ecs::Signature(2));
 
   EXPECT_TRUE(system->has_entity(1)) << "Entity 1 should be in the system";
   EXPECT_TRUE(system->has_entity(2)) << "Entity 2 should be in the system";
@@ -129,15 +129,15 @@ TEST_F(SystemManagerTest, EntityDestroyedWithMultipleSystems) {
       test_system_manager.RegisterSystem<DummySystem>();
   std::shared_ptr<DummySystem2> system2 =
       test_system_manager.RegisterSystem<DummySystem2>();
-  test_system_manager.SetSignature<DummySystem>(ECS::Signature(0b01));
-  test_system_manager.SetSignature<DummySystem2>(ECS::Signature(0b10));
+  test_system_manager.SetSignature<DummySystem>(ecs::Signature(0b01));
+  test_system_manager.SetSignature<DummySystem2>(ecs::Signature(0b10));
 
   // Add entities to systems by changing their signatures
-  test_system_manager.EntitySignatureChanged(1, ECS::Signature(0b01));
-  test_system_manager.EntitySignatureChanged(2, ECS::Signature(0b01));
-  test_system_manager.EntitySignatureChanged(3, ECS::Signature(0b01));
-  test_system_manager.EntitySignatureChanged(4, ECS::Signature(0b10));
-  test_system_manager.EntitySignatureChanged(5, ECS::Signature(0b10));
+  test_system_manager.EntitySignatureChanged(1, ecs::Signature(0b01));
+  test_system_manager.EntitySignatureChanged(2, ecs::Signature(0b01));
+  test_system_manager.EntitySignatureChanged(3, ecs::Signature(0b01));
+  test_system_manager.EntitySignatureChanged(4, ecs::Signature(0b10));
+  test_system_manager.EntitySignatureChanged(5, ecs::Signature(0b10));
 
   EXPECT_EQ(system1->get_entities().size(), 3)
       << "system1 should have 3 entities";
@@ -167,7 +167,7 @@ TEST_F(SystemManagerTest, EntitySignatureChangedAddAndRemoveEntity) {
   // Register a dummy system and set a signature
   std::shared_ptr<DummySystem> system =
       test_system_manager.RegisterSystem<DummySystem>();
-  test_system_manager.SetSignature<DummySystem>(ECS::Signature(1));
+  test_system_manager.SetSignature<DummySystem>(ecs::Signature(1));
 
   EXPECT_FALSE(system->has_entity(1))
       << "Entity 1 should not exist in the system initially.";
@@ -175,7 +175,7 @@ TEST_F(SystemManagerTest, EntitySignatureChangedAddAndRemoveEntity) {
       << "Entity 2 should not exist in the system initially.";
 
   // Change signature of Entity 1 to match system's signature
-  test_system_manager.EntitySignatureChanged(1, ECS::Signature(1));
+  test_system_manager.EntitySignatureChanged(1, ecs::Signature(1));
 
   EXPECT_TRUE(system->has_entity(1))
       << "Entity 1 should exist in the system after the EntitySignatureChanged "
@@ -185,7 +185,7 @@ TEST_F(SystemManagerTest, EntitySignatureChangedAddAndRemoveEntity) {
          "EntitySignatureChanged call.";
 
   // Change signature of Entity 2 to match system's signature
-  test_system_manager.EntitySignatureChanged(2, ECS::Signature(1));
+  test_system_manager.EntitySignatureChanged(2, ecs::Signature(1));
 
   EXPECT_TRUE(system->has_entity(1))
       << "Entity 1 should still exist in the system.";
@@ -194,7 +194,7 @@ TEST_F(SystemManagerTest, EntitySignatureChangedAddAndRemoveEntity) {
          "call.";
 
   // Change signature of Entity 2 to no longer match system's signature
-  test_system_manager.EntitySignatureChanged(2, ECS::Signature(0));
+  test_system_manager.EntitySignatureChanged(2, ecs::Signature(0));
 
   EXPECT_TRUE(system->has_entity(1))
       << "Entity 1 should still exist in the system.";
@@ -203,7 +203,7 @@ TEST_F(SystemManagerTest, EntitySignatureChangedAddAndRemoveEntity) {
          "EntitySignatureChanged call.";
 
   // Change signature of Entity 2 to no longer match system's signature
-  test_system_manager.EntitySignatureChanged(1, ECS::Signature(0));
+  test_system_manager.EntitySignatureChanged(1, ecs::Signature(0));
 
   EXPECT_FALSE(system->has_entity(1))
       << "Entity 1 should no longer exist in the system after the "
@@ -216,7 +216,7 @@ TEST_F(SystemManagerTest, EntitySignatureChangedNonMatchingSignature) {
   // Register a dummy system and set a signature
   std::shared_ptr<DummySystem> system =
       test_system_manager.RegisterSystem<DummySystem>();
-  test_system_manager.SetSignature<DummySystem>(ECS::Signature(1));
+  test_system_manager.SetSignature<DummySystem>(ecs::Signature(1));
 
   EXPECT_FALSE(system->has_entity(1))
       << "Entity 1 should not exist in the system initially.";
@@ -225,7 +225,7 @@ TEST_F(SystemManagerTest, EntitySignatureChangedNonMatchingSignature) {
 
   // Change signature of Entity 1 to another signature that doesn't match the
   // system's signature.
-  test_system_manager.EntitySignatureChanged(1, ECS::Signature(2));
+  test_system_manager.EntitySignatureChanged(1, ecs::Signature(2));
 
   EXPECT_FALSE(system->has_entity(1))
       << "Entity 2 should still not exist in the even after the "
@@ -236,7 +236,7 @@ TEST_F(SystemManagerTest, EntitySignatureChangedNonMatchingSignature) {
 }
 
 TEST_F(SystemManagerTest, EntitySignatureNoSystemsRegistered) {
-  test_system_manager.EntitySignatureChanged(1, ECS::Signature(1));
+  test_system_manager.EntitySignatureChanged(1, ecs::Signature(1));
   // No logs expected
   EXPECT_TRUE(test_sink_->GetCapturedLogs().empty())
       << "No logs should be generated";

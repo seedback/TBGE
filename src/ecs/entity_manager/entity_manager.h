@@ -15,7 +15,7 @@
 
 #include "src/ecs/context/context.h"
 
-namespace ECS {
+namespace ecs {
 /**
  * @class EntityManager
  * @brief Manages creation, destruction, and signature assignment of entities in

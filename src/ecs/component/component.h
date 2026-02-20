@@ -13,7 +13,7 @@
 
 #include "src/ecs/context/context.h"
 
-namespace ECS {
+namespace ecs {
 
 // Forward declaration
 class Coordinator;
@@ -68,6 +68,6 @@ class Component {
   Entity entity_id_ = static_cast<Entity>(-1);
 };
 
-}  // namespace ECS
+}  // namespace ecs
 
 #endif  // TBGE_ECS_COMPONENT_H_

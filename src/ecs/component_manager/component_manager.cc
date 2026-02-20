@@ -1,6 +1,6 @@
 #include "src/ecs/component_manager/component_manager.h"
 
-namespace ECS {
+namespace ecs {
 
 ComponentManager& ComponentManager::EntityDestroyed(Entity entity) {
   // Notify each component array that an entity has been destroyed

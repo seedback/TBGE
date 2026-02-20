@@ -28,7 +28,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace ECS {
+namespace ecs {
 
 /**
  * @defgroup ECS_Config Type Configuration

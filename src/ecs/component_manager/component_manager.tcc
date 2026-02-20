@@ -12,7 +12,7 @@
 #include "src/ecs/component_manager/component_manager.h"
 #include "src/ecs/context/context.h"
 
-namespace ECS {
+namespace ecs {
 
 template <typename T>
 ComponentManager& ComponentManager::RegisterComponentType() {

@@ -12,7 +12,7 @@
 #include "src/ecs/component_array/component_array.h"
 #include "src/ecs/context/context.h"
 
-namespace ECS {
+namespace ecs {
 
 template <typename T>
 ComponentArray<T>& ComponentArray<T>::InsertData(Entity entity, T component) {

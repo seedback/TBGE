@@ -17,7 +17,7 @@
 
 #include "src/ecs/context/context.h"
 
-namespace ECS {
+namespace ecs {
 
 /**
  * @brief Abstract base class for component arrays in an ECS.
@@ -134,7 +134,7 @@ class ComponentArray : public GenericComponentArray {
   size_t size_ = 0;
 };
 
-}  // namespace ECS
+}  // namespace ecs
 
 #endif  // TBGE_ECS_COMPONENT_ARRAY_H_
 

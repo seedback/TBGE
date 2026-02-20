@@ -19,7 +19,7 @@
 #include <windows.h>
 #endif
 
-namespace ECS::Utils {
+namespace ecs::Utils {
 
 /**
  * @brief Sets up console for UTF-8 output on Windows, or configures the global
