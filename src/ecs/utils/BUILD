@@ -5,9 +5,9 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "setup_console",
-    hdrs = ["setup_console.h"],
+    hdrs = glob(["*.h"], allow_empty = True),
     deps = [
-        "//src/ecs/context",
+        "//src/ecs/context:context",
     ],
 )
 

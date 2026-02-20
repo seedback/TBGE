@@ -5,5 +5,5 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "context",
-    hdrs = ["context.h"],
+    hdrs = glob(["*.h"], allow_empty = True),
 )

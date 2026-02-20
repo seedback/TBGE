@@ -1,5 +1,5 @@
-#ifndef TBGE_SRC_WINDOWS_PANEL_H_
-#define TBGE_SRC_WINDOWS_PANEL_H_
+#ifndef TBGE_WINDOWS_PANEL_H_
+#define TBGE_WINDOWS_PANEL_H_
 
 #include <iostream>
 #include <utility>
@@ -49,4 +49,4 @@ class Panel : public ECS::Component {
 };
 }  // namespace panel
 
-#endif  // TBGE_SRC_WINDOWS_PANEL_H_
+#endif  // TBGE_WINDOWS_PANEL_H_

@@ -1,5 +1,5 @@
-#ifndef TBGE_SRC_PANEL_CONTENT_CONTENT_H_
-#define TBGE_SRC_PANEL_CONTENT_CONTENT_H_
+#ifndef TBGE_PANEL_CONTENT_CONTENT_H_
+#define TBGE_PANEL_CONTENT_CONTENT_H_
 
 #include <string>
 #include <vector>
@@ -43,4 +43,4 @@ class Content {
 
 }  // namespace panel
 
-#endif  // TBGE_SRC_PANEL_CONTENT_CONTENT_H_
+#endif  // TBGE_PANEL_CONTENT_CONTENT_H_

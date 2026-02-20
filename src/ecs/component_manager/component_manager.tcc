@@ -1,5 +1,5 @@
-#ifndef TBGE_SRC_ECS_COMPONENT_MANAGER_TCC_
-#define TBGE_SRC_ECS_COMPONENT_MANAGER_TCC_
+#ifndef TBGE_ECS_COMPONENT_MANAGER_TCC_
+#define TBGE_ECS_COMPONENT_MANAGER_TCC_
 
 #include <absl/log/check.h>
 #include <absl/log/log.h>
@@ -29,8 +29,7 @@ ComponentManager& ComponentManager::RegisterComponentType() {
   component_types_.insert({type_name, next_component_type_});
 
   // Create a ComponentArray pointer and add it to the component arrays map
-  component_arrays_.insert(
-      {type_name, std::make_shared<ComponentArray<T>>()});
+  component_arrays_.insert({type_name, std::make_shared<ComponentArray<T>>()});
 
   // Increment the value so that the next component registered will be different
   ++next_component_type_;
@@ -39,8 +38,7 @@ ComponentManager& ComponentManager::RegisterComponentType() {
 }
 
 template <typename T>
-ComponentTypeId
-ComponentManager::GetComponentTypeId() {
+ComponentTypeId ComponentManager::GetComponentTypeId() {
   const char* type_name = typeid(T).name();
 
   CHECK(component_types_.find(type_name) != component_types_.end())
@@ -51,8 +49,7 @@ ComponentManager::GetComponentTypeId() {
 }
 
 template <typename T>
-ComponentManager& ComponentManager::AddComponent(
-    Entity entity, T component) {
+ComponentManager& ComponentManager::AddComponent(Entity entity, T component) {
   // Add a component to the array for an entity
   get_component_array<T>()->InsertData(entity, component);
 
@@ -60,8 +57,7 @@ ComponentManager& ComponentManager::AddComponent(
 }
 
 template <typename T>
-ComponentManager& ComponentManager::RemoveComponent(
-    Entity entity) {
+ComponentManager& ComponentManager::RemoveComponent(Entity entity) {
   // Remove a component from the array for an entity
   get_component_array<T>()->RemoveData(entity);
 
@@ -79,14 +75,11 @@ T& ComponentManager::GetComponent(Entity entity) {
   return get_component_array<T>()->GetData(entity);
 }
 
-// EntityDestroyed is implemented in component_manager.cc
-
 // #########################
 // #        PRIVATE        #
 // #########################
 template <typename T>
-std::shared_ptr<ComponentArray<T>>
-ComponentManager::get_component_array() {
+std::shared_ptr<ComponentArray<T>> ComponentManager::get_component_array() {
   const char* type_name = typeid(T).name();
 
   if (component_types_.find(type_name) == component_types_.end()) {
@@ -101,4 +94,4 @@ ComponentManager::get_component_array() {
 
 }  // namespace ECS
 
-#endif  // TBGE_SRC_ECS_COMPONENT_MANAGER_TCC_
+#endif  // TBGE_ECS_COMPONENT_MANAGER_TCC_

@@ -7,7 +7,7 @@ cc_library(
     name = "ecs",
     hdrs = ["ecs.h"],
     deps = [
-        "//src/ecs/coordinator",
-        "//src/ecs/utils",
+        "//src/ecs/coordinator:coordinator",
+        "//src/ecs/utils:utils",
     ],
 )

@@ -5,8 +5,8 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "system",
-    hdrs = ["system.h"],
+    hdrs = glob(["*.h"], allow_empty = True),
     deps = [
-        "//src/ecs/context",
+        "//src/ecs/context:context",
     ],
 )

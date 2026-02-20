@@ -1,5 +1,5 @@
-#ifndef TBGE_SRC_TUI_TUI_FUNCTIONS_H_
-#define TBGE_SRC_TUI_TUI_FUNCTIONS_H_
+#ifndef TBGE_TUI_TUI_FUNCTIONS_H_
+#define TBGE_TUI_TUI_FUNCTIONS_H_
 
 #include <codecvt>
 #include <iostream>
@@ -316,4 +316,4 @@ inline vec2i GetConsoleSize() {
 }  // namespace tui
 }  // namespace tbge
 
-#endif  // TBGE_SRC_PANEL_PANEL_FUNCTIONS_H_
+#endif  // TBGE_PANEL_PANEL_FUNCTIONS_H_

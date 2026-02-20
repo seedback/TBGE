@@ -5,11 +5,8 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "component_array",
-    hdrs = [
-        "component_array.h",
-        "component_array.tcc",
-    ],
+    hdrs = glob(["*.h", "*.tcc"], allow_empty = True),
     deps = [
-        "//src/ecs/context",
+        "//src/ecs/context:context",
     ],
 )

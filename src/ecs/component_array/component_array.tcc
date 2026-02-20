@@ -1,10 +1,9 @@
-#ifndef TBGE_SRC_ECS_COMPONENT_ARRAY_TCC_
-#define TBGE_SRC_ECS_COMPONENT_ARRAY_TCC_
+#ifndef TBGE_ECS_COMPONENT_ARRAY_TCC_
+#define TBGE_ECS_COMPONENT_ARRAY_TCC_
 
 #include <absl/log/check.h>
 #include <absl/log/log.h>
 
-#include <iostream>
 #include <optional>
 #include <typeinfo>
 #include <unordered_map>
@@ -16,13 +15,13 @@
 namespace ECS {
 
 template <typename T>
-ComponentArray<T>& ComponentArray<T>::InsertData(
-    Entity entity, T component) {
+ComponentArray<T>& ComponentArray<T>::InsertData(Entity entity, T component) {
   if (entity_to_index_map_.find(entity) != entity_to_index_map_.end()) {
-    LOG(WARNING) << "Component of type \"" << std::string(typeid(T).name())
-                 << "\" added to the same entity more than once.";
+    LOG(WARNING) << "Component of type '" << typeid(T).name()
+                 << "' added to the same entity more than once.";
     return *this;
   }
+
   // Put new entry at end and update the maps
   size_t new_index = size_;
 
@@ -39,11 +38,10 @@ ComponentArray<T>& ComponentArray<T>::InsertData(
 }
 
 template <typename T>
-ComponentArray<T>& ComponentArray<T>::RemoveData(
-    Entity entity) {
+ComponentArray<T>& ComponentArray<T>::RemoveData(Entity entity) {
   if (entity_to_index_map_.find(entity) == entity_to_index_map_.end()) {
-    LOG(WARNING) << "Removing non-existent component of type \""
-                 << std::string(typeid(T).name()) << "\".";
+    LOG(WARNING) << "Removing non-existent component of type '"
+                 << typeid(T).name() << "'.";
     return *this;
   }
 
@@ -54,8 +52,7 @@ ComponentArray<T>& ComponentArray<T>::RemoveData(
       component_array_.at(index_of_last_element);
 
   // Update map to point to moved spot
-  Entity entity_of_last_element =
-      index_to_entity_map_[index_of_last_element];
+  Entity entity_of_last_element = index_to_entity_map_[index_of_last_element];
   entity_to_index_map_[entity_of_last_element] = index_of_removed_entity;
   index_to_entity_map_[index_of_removed_entity] = entity_of_last_element;
 
@@ -68,23 +65,22 @@ ComponentArray<T>& ComponentArray<T>::RemoveData(
 }
 
 template <typename T>
-bool ComponentArray<T>::HasData(Entity entity) {
+bool ComponentArray<T>::HasData(Entity entity) const {
   return entity_to_index_map_.find(entity) != entity_to_index_map_.end();
 }
 
 template <typename T>
 T& ComponentArray<T>::GetData(Entity entity) {
   CHECK(entity_to_index_map_.find(entity) != entity_to_index_map_.end())
-      << "Retrieving non-existent component of type \""
-      << std::string(typeid(T).name()) << "\".";
+      << "Retrieving non-existent component of type '" << typeid(T).name()
+      << "'.";
 
   // Return a reference to the entity's component
   return component_array_.at(entity_to_index_map_[entity]);
 }
 
 template <typename T>
-ComponentArray<T>& ComponentArray<T>::EntityDestroyed(
-    Entity entity) {
+ComponentArray<T>& ComponentArray<T>::EntityDestroyed(Entity entity) {
   if (entity_to_index_map_.find(entity) != entity_to_index_map_.end()) {
     // Remove the entity's component if it existed
     RemoveData(entity);
@@ -93,4 +89,4 @@ ComponentArray<T>& ComponentArray<T>::EntityDestroyed(
 }
 }  // namespace ECS
 
-#endif  // TBGE_SRC_ECS_COMPONENT_ARRAY_TCC_
+#endif  // TBGE_ECS_COMPONENT_ARRAY_TCC_

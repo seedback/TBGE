@@ -1,5 +1,14 @@
-#ifndef TBGE_SRC_ECS_COMPONENT_MANAGER_H_
-#define TBGE_SRC_ECS_COMPONENT_MANAGER_H_
+/**
+ * @file component_manager.h
+ * @brief Manages component types and component data for entities.
+ *
+ * @details
+ * Handles registration of component types, addition/removal of components
+ * from entities, and component lifecycle management.
+ */
+
+#ifndef TBGE_ECS_COMPONENT_MANAGER_H_
+#define TBGE_ECS_COMPONENT_MANAGER_H_
 
 #include <memory>
 #include <unordered_map>
@@ -35,10 +44,10 @@ class ComponentManager {
   ComponentManager& RegisterComponentType();
 
   /**
-   * @brief Returns the component's type. This is used for creating signatures.
+   * @brief Returns the component type ID for the given component type.
    *
    * @tparam T The datatype of the component type
-   * @return Reference to the current ECS::ComponentManager for method chaining.
+   * @return The component type ID assigned to this component type.
    */
   template <typename T>
   ComponentTypeId GetComponentTypeId();
@@ -67,7 +76,13 @@ class ComponentManager {
   template <typename T>
   ComponentManager& RemoveComponent(Entity entity);
 
-
+  /**
+   * @brief Checks if an entity has a component of the given type.
+   *
+   * @tparam T The type of the component to check for
+   * @param entity The Entity ID to check
+   * @return true if the entity has a component of type T; false otherwise.
+   */
   template <typename T>
   bool HasComponent(Entity entity);
 
@@ -81,6 +96,13 @@ class ComponentManager {
   template <typename T>
   T& GetComponent(Entity entity);
 
+  /**
+   * @brief Retrieves the entity associated with a component instance.
+   *
+   * @tparam T The type of the component.
+   * @param component The component instance to search for.
+   * @return The Entity ID associated with the component.
+   */
   template <typename T>
   Entity GetEntity(T component);
 
@@ -97,13 +119,15 @@ class ComponentManager {
   ComponentManager& EntityDestroyed(Entity entity);
 
   /**
-   * @brief Retrieves the mapping of component type names to their corresponding component types.
+   * @brief Retrieves the mapping of component type names to their corresponding
+   * component types.
    *
-   * @return An unordered map where the key is a C-string representing the component type name,
-   *         and the value is the associated component type as defined in the Context.
+   * @return An unordered map where the key is a C-string representing the
+   * component type name, and the value is the associated component type as
+   * defined in the Context.
    */
-  std::unordered_map<const char*, ComponentTypeId>
-  get_component_types() {
+  const std::unordered_map<const char*, ComponentTypeId>& get_component_types()
+      const {
     return component_types_;
   }
 
@@ -114,22 +138,18 @@ class ComponentManager {
 
  private:
   /// @brief Map from typename to a component type
-  std::unordered_map<const char*, ComponentTypeId>
-      component_types_{};
+  std::unordered_map<const char*, ComponentTypeId> component_types_{};
 
   /// @brief Map from typename to a component array
-  std::unordered_map<const char*,
-                     std::shared_ptr<GenericComponentArray>>
+  std::unordered_map<const char*, std::shared_ptr<GenericComponentArray>>
       component_arrays_{};
 
   /// @brief The component type to be assigned to the next registered component
   /// - starting at 0
   ComponentTypeId next_component_type_{};
-
-  
 };
 
 }  // namespace ECS
-#endif  // TBGE_SRC_ECS_COMPONENT_MANAGER_H_
+#endif  // TBGE_ECS_COMPONENT_MANAGER_H_
 
 #include "src/ecs/component_manager/component_manager.tcc"

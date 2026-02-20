@@ -1,5 +1,15 @@
-#ifndef TBGE_SRC_ECS_COORDINATOR_H_
-#define TBGE_SRC_ECS_COORDINATOR_H_
+/**
+ * @file coordinator.h
+ * @brief Central interface for the Entity Component System.
+ *
+ * @details
+ * The Coordinator serves as the primary API for users of the ECS, providing
+ * unified access to entity, component, and system management. It delegates
+ * work to specialized managers while maintaining a clean, cohesive interface.
+ */
+
+#ifndef TBGE_ECS_COORDINATOR_H_
+#define TBGE_ECS_COORDINATOR_H_
 
 #include <memory>
 
@@ -96,6 +106,16 @@ class Coordinator {
   Coordinator& RemoveComponent(Entity entity);
 
   /**
+   * @brief Checks if an entity has a component of type T.
+   *
+   * @tparam T The type of the component to check for.
+   * @param entity The entity to check.
+   * @return true if the entity has a component of type T; false otherwise.
+   */
+  template <typename T>
+  bool HasComponent(Entity entity);
+
+  /**
    * @brief Retrieves a reference to the component of type T associated with the
    * given entity.
    *
@@ -103,8 +123,8 @@ class Coordinator {
    * @param entity The entity whose component is to be retrieved.
    * @return Reference to the component of type T associated with the specified
    * entity.
-   * @throws std::out_of_range If the entity does not have a component of type
-   * T.
+   *
+   * @note Will abort if the entity does not have a component of type T.
    */
   template <typename T>
   T& GetComponent(Entity entity);
@@ -131,8 +151,7 @@ class Coordinator {
    *
    * @tparam T The type of the system to register. Must inherit from the base
    * System class.
-   * @return std::shared_ptr<T> A shared pointer to the registered system
-   * instance.
+   * @return A shared pointer to the registered system instance.
    *
    * @note If a system of type T is already registered, this function may return
    * the existing instance or create a new one, depending on the implementation.
@@ -140,6 +159,12 @@ class Coordinator {
   template <typename T>
   std::shared_ptr<T> RegisterSystem();
 
+  /**
+   * @brief Retrieves a shared pointer to the system of type T.
+   *
+   * @tparam T The type of the system to retrieve.
+   * @return A shared pointer to the registered system instance.
+   */
   template <typename T>
   std::shared_ptr<T> GetSystem();
 
@@ -159,18 +184,54 @@ class Coordinator {
   template <typename T>
   Coordinator& SetSystemSignature(Signature signature);
 
+  /**
+   * @brief Retrieves the signature of the system of type T.
+   *
+   * @details
+   * Returns the signature associated with the system of type T, which
+   * represents the set of components required by that system.
+   *
+   * @tparam T The type of the system.
+   * @return The signature representing the components required by the system.
+   */
   template <typename T>
   Signature GetSystemSignature();
 
-  Signature GetEntitySignature(Entity);
+  /**
+   * @brief Retrieves the component signature of an entity.
+   *
+   * @details
+   * Returns the signature associated with the specified entity, which
+   * represents the set of components attached to that entity.
+   *
+   * @param entity The entity whose signature is to be retrieved.
+   * @return The signature representing the components attached to the entity.
+   */
+  Signature GetEntitySignature(Entity entity);
 
+  /**
+   * @brief Determines if an entity is valid for a system of type T.
+   *
+   * @details
+   * Checks whether the entity's signature matches the signature required by
+   * the system of type T. Returns true if the entity has all the components
+   * the system requires.
+   *
+   * @tparam T The type of the system to check compatibility with.
+   * @param entity The entity to validate.
+   * @return true if the entity's components satisfy the system's requirements;
+   * false otherwise.
+   */
   template <typename T>
-  bool EntityIsValidForSystem(Entity);
+  bool EntityIsValidForSystem(Entity entity);
 
-  ComponentManager* get_component_manager() {
-    return component_manager_.get();
-  }
+  /// @brief Returns a pointer to the component manager instance.
+  ComponentManager* get_component_manager() { return component_manager_.get(); }
+
+  /// @brief Returns a pointer to the entity manager instance.
   EntityManager* get_entity_manager() { return entity_manager_.get(); }
+
+  /// @brief Returns a pointer to the system manager instance.
   SystemManager* get_system_manager() { return system_manager_.get(); }
 
  private:
@@ -192,12 +253,12 @@ class Coordinator {
    */
   Coordinator& Init();
 
-#ifdef _DEBUG
+#ifndef NDEBUG
   void debug_warning();
 #endif
 };
 
 }  // namespace ECS
-#endif  // TBGE_SRC_ECS_COORDINATOR_H_
+#endif  // TBGE_ECS_COORDINATOR_H_
 
 #include "src/ecs/coordinator/coordinator.tcc"

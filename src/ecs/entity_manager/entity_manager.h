@@ -1,5 +1,14 @@
-#ifndef TBGE_SRC_ECS_ENTITY_MANAGER_H_
-#define TBGE_SRC_ECS_ENTITY_MANAGER_H_
+/**
+ * @file entity_manager.h
+ * @brief Manages entity creation, destruction, and component signatures.
+ *
+ * @details
+ * Responsible for allocating and deallocating entity IDs, tracking entity
+ * component signatures, and managing the lifecycle of entities within the ECS.
+ */
+
+#ifndef TBGE_ECS_ENTITY_MANAGER_H_
+#define TBGE_ECS_ENTITY_MANAGER_H_
 
 #include <queue>
 #include <vector>
@@ -30,13 +39,7 @@ namespace ECS {
  */
 class EntityManager {
  public:
-  EntityManager() {
-    current_entity_count_ = 0;
-    signatures_.clear();
-    while (!available_entities_.empty()) {
-      available_entities_.pop();
-    }
-  }
+  EntityManager() = default;
   /**
    * @brief Creates a new entity and returns its unique identifier.
    *
@@ -112,7 +115,18 @@ class EntityManager {
    */
   Signature GetSignature(Entity entity);
 
+  /**
+   * @brief Returns the total number of active entities.
+   *
+   * @return The count of currently living entities.
+   */
   Entity get_current_entity_count() { return current_entity_count_; }
+
+  /**
+   * @brief Returns the next entity ID to be allocated.
+   *
+   * @return The counter for the next entity ID.
+   */
   Entity get_entity_id_counter() { return entity_id_counter_; }
 
  private:
@@ -130,4 +144,4 @@ class EntityManager {
 };
 }  // namespace ECS
 
-#endif  // TBGE_SRC_ECS_ENTITY_MANAGER_H_
+#endif  // TBGE_ECS_ENTITY_MANAGER_H_

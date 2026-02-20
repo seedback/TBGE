@@ -16,7 +16,6 @@ struct TestComponent {
 
 class ComponentArrayTest : public ::testing::Test {
  protected:
-  using TestContext = ECS::Context<10, 5, uint8_t, uint8_t>;
   void SetUp() override {
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
@@ -29,9 +28,9 @@ class ComponentArrayTest : public ::testing::Test {
   }
 
   std::unique_ptr<TestLogSink> test_sink_;
-  ECS::ComponentArray<TestContext, TestComponent> test_component_array;
-  typename TestContext::Entity entity1 = 1;
-  typename TestContext::Entity entity2 = 2;
+  ECS::ComponentArray<TestComponent> test_component_array;
+  ECS::Entity entity1 = 1;
+  ECS::Entity entity2 = 2;
   TestComponent component1{10};
   TestComponent component2{20};
 };
@@ -74,7 +73,7 @@ TEST_F(ComponentArrayTest, OverwriteComponent) {
 
   test_sink_->TestLogs(
       absl::LogSeverity::kWarning,
-      "Component of type \".*\" added to the same entity more than once.");
+      "Component of type '.*' added to the same entity more than once.");
 
   TestComponent retrieved = test_component_array.GetData(entity1);
   EXPECT_EQ(retrieved, component1);
@@ -109,7 +108,7 @@ TEST_F(ComponentArrayTest, RemoveNonExistentComponent) {
   test_component_array.RemoveData(255);
 
   test_sink_->TestLogs(absl::LogSeverity::kWarning,
-                       "Removing non-existent component of type \".*\".");
+                       "Removing non-existent component of type '.*'.");
 }
 
 /**
@@ -141,5 +140,5 @@ TEST_F(ComponentArrayTest, GetComponent) {
  */
 TEST_F(ComponentArrayTest, GettingNonexistentComponent) {
   EXPECT_DEATH(test_component_array.GetData(255),
-               "Retrieving non-existent component of type \".*\".");
+               "Retrieving non-existent component of type '.*'.");
 }

@@ -1,5 +1,5 @@
-#ifndef TBGE_SRC_PANEL_PANEL_SYSTEM_H_
-#define TBGE_SRC_PANEL_PANEL_SYSTEM_H_
+#ifndef TBGE_PANEL_PANEL_SYSTEM_H_
+#define TBGE_PANEL_PANEL_SYSTEM_H_
 
 
 #include <vector>
@@ -28,4 +28,4 @@ class PanelSystem : public ECS::System {
 };
 }  // namespace panel
 
-#endif  // TBGE_SRC_PANEL_PANEL_SYSTEM_H_
+#endif  // TBGE_PANEL_PANEL_SYSTEM_H_

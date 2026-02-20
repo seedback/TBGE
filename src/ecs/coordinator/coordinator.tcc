@@ -1,7 +1,6 @@
-#ifndef TBGE_SRC_ECS_COORDINATOR_TCC_
-#define TBGE_SRC_ECS_COORDINATOR_TCC_
+#ifndef TBGE_ECS_COORDINATOR_TCC_
+#define TBGE_ECS_COORDINATOR_TCC_
 
-#include <iostream>
 #include <type_traits>
 
 #include "src/ecs/component/component.h"
@@ -21,11 +20,10 @@ Coordinator& Coordinator::RegisterComponentType() {
 }
 
 template <typename T>
-Coordinator& Coordinator::AddComponent(
-    Entity entity, T component) {
-  // If the component inherits from Component, set its entity ID
+Coordinator& Coordinator::AddComponent(Entity entity, T component) {
+  // If the component inherits from Component, automatically set its entity ID
   if constexpr (std::is_base_of_v<Component, T>) {
-    component.SetEntityId(entity);
+    component.set_entity_id(entity);
   }
 
   component_manager_->template AddComponent<T>(entity, component);
@@ -40,8 +38,7 @@ Coordinator& Coordinator::AddComponent(
 }
 
 template <typename T>
-Coordinator& Coordinator::RemoveComponent(
-    Entity entity) {
+Coordinator& Coordinator::RemoveComponent(Entity entity) {
   component_manager_->template RemoveComponent<T>(entity);
 
   // Grabbing the signature of the entity, resetting the bit corresponding to
@@ -72,13 +69,17 @@ std::shared_ptr<T> Coordinator::RegisterSystem() {
 }
 
 template <typename T>
+bool Coordinator::HasComponent(Entity entity) {
+  return component_manager_->HasComponent<T>(entity);
+}
+
+template <typename T>
 std::shared_ptr<T> Coordinator::GetSystem() {
   return system_manager_->template GetSystem<T>();
 }
 
 template <typename T>
-Coordinator& Coordinator::SetSystemSignature(
-    Signature signature) {
+Coordinator& Coordinator::SetSystemSignature(Signature signature) {
   system_manager_->template SetSignature<T>(signature);
   return *this;
 }
@@ -96,4 +97,4 @@ bool Coordinator::EntityIsValidForSystem(Entity entity) {
 }
 
 }  // namespace ECS
-#endif  // TBGE_SRC_ECS_COORDINATOR_TCC_
+#endif  // TBGE_ECS_COORDINATOR_TCC_

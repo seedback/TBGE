@@ -1,5 +1,15 @@
-#ifndef TBGE_SRC_ECS_COMPONENT_ARRAY_H_
-#define TBGE_SRC_ECS_COMPONENT_ARRAY_H_
+/**
+ * @file component_array.h
+ * @brief Component storage containers for the ECS.
+ *
+ * @details
+ * Provides generic and template-based containers for efficiently storing and
+ * managing components associated with entities. Uses a packed array layout for
+ * cache efficiency.
+ */
+
+#ifndef TBGE_ECS_COMPONENT_ARRAY_H_
+#define TBGE_ECS_COMPONENT_ARRAY_H_
 
 #include <optional>
 #include <unordered_map>
@@ -21,7 +31,7 @@ class GenericComponentArray {
   /**
    * @brief Virtual destructor.
    */
-  virtual ~GenericComponentArray() = default;
+  virtual ~GenericComponentArray() {};
 
   /**
    * @brief Notifies the array that an entity has been destroyed.
@@ -84,14 +94,13 @@ class ComponentArray : public GenericComponentArray {
    * @param entity The entity to check for associated component data.
    * @return true if the entity has component data; false otherwise.
    */
-  bool HasData(Entity entity);
+  bool HasData(Entity entity) const;
 
   /**
    * @brief Returns the component associated with the entity ID.
    *
    * @param entity The entity ID to which the component is associated.
-   * @return An optional containing the component if found, otherwise
-   * std::nullopt.
+   * @return A reference to the component if found.
    */
   T& GetData(Entity entity);
 
@@ -109,7 +118,7 @@ class ComponentArray : public GenericComponentArray {
    *
    * @return The size of the component array.
    */
-  size_t get_size() { return size_; }
+  size_t get_size() const { return size_; }
 
  private:
   /// @brief The packed array of components (of generic type T).
@@ -127,6 +136,6 @@ class ComponentArray : public GenericComponentArray {
 
 }  // namespace ECS
 
-#endif  // TBGE_SRC_ECS_COMPONENT_ARRAY_H_
+#endif  // TBGE_ECS_COMPONENT_ARRAY_H_
 
 #include "src/ecs/component_array/component_array.tcc"

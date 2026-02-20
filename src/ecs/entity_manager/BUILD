@@ -5,15 +5,11 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "entity_manager",
-    srcs = [
-        "entity_manager.cc",
-    ],
-    hdrs = [
-        "entity_manager.h",
-    ],
+    srcs = glob(["*.cc"], allow_empty = True),
+    hdrs = glob(["*.h", "*.tcc"], allow_empty = True),
     deps = [
         ":entity_manager_hdrs",
-        "//src/ecs/context",
+        "//src/ecs/context:context",
         "@abseil-cpp//absl/log",
         "@abseil-cpp//absl/log:check",
     ],
@@ -21,11 +17,9 @@ cc_library(
 
 cc_library(
     name = "entity_manager_hdrs",
-    hdrs = [
-        "entity_manager.h",
-    ],
+    hdrs = glob(["*.h", "*.tcc"], allow_empty = True),
     visibility = ["//visibility:private"],
     deps = [
-        "//src/ecs/context",
+        "//src/ecs/context:context",
     ],
 )

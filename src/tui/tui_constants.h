@@ -1,5 +1,5 @@
-#ifndef TBGE_SRC_TUI_TUI_CONSTANTS_H_
-#define TBGE_SRC_TUI_TUI_CONSTANTS_H_
+#ifndef TBGE_TUI_TUI_CONSTANTS_H_
+#define TBGE_TUI_TUI_CONSTANTS_H_
 
 #include <iostream>
 
@@ -318,4 +318,4 @@ const std::u8string kAnsiCursorHome = kAnsiCsi + u8"H";
 }  // namespace tui
 }  // namespace tbge
 
-#endif  // TBGE_SRC_PANEL_PANEL_CONSTANTS_H_
+#endif  // TBGE_PANEL_PANEL_CONSTANTS_H_
