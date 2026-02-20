@@ -7,8 +7,18 @@ cc_binary(
     name = "tbge_main",
     srcs = ["src/main.cc"],
     deps = [
-        ":tbge_lib",
         ":abseil_log",
+        ":tbge_lib",
+        ":tbge_test_includes",
+    ],
+)
+
+cc_binary(
+    name = "tbge_release",
+    srcs = ["src/main.cc"],
+    deps = [
+        ":abseil_log",
+        ":tbge_lib",
     ],
 )
 
@@ -21,8 +31,6 @@ cc_test(
         ],
     ),
     deps = [
-        "@googletest//:gtest",
-        "@googletest//:gtest_main",
         ":tbge_lib",
         ":tbge_test_includes",
     ],
@@ -33,22 +41,30 @@ cc_library(
     srcs = glob(
         [
             "src/**/*.cc",
-            "src/**/*.tcc",
         ],
         allow_empty = True,
-        exclude = ["src/main.cc"],
+        exclude = [
+            "src/main.cc",
+            "src/ecs/**/*.cc",
+        ],
     ),
     hdrs = glob(
         [
             "src/**/*.h",
             "src/**/*.hh",
+            "src/**/*.tcc",
         ],
         allow_empty = True,
+        exclude = [
+            "src/ecs/**/*.h",
+            "src/ecs/**/*.tcc",
+        ],
     ),
-    deps = [
-      ":abseil_log",
-    ],
     visibility = ["//visibility:public"],
+    deps = [
+        ":abseil_log",
+        "//src/ecs:ecs",
+    ],
 )
 
 cc_library(
@@ -60,15 +76,19 @@ cc_library(
         ],
         allow_empty = True,
     ),
+    deps = [
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
     visibility = ["//visibility:public"],
 )
 
 cc_library(
-  name = "abseil_log",
-  deps = [
-    "@abseil-cpp//absl/log",
-    "@abseil-cpp//absl/log:check",
-    "@abseil-cpp//absl/log:initialize",
-  ],
-  visibility = ["//visibility:public"],
+    name = "abseil_log",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@abseil-cpp//absl/log",
+        "@abseil-cpp//absl/log:check",
+        "@abseil-cpp//absl/log:initialize",
+    ],
 )

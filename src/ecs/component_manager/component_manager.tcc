@@ -1,5 +1,5 @@
-#ifndef TBGE_SRC_ECS_COMPONENT_MANAGER_TCC_
-#define TBGE_SRC_ECS_COMPONENT_MANAGER_TCC_
+#ifndef TBGE_ECS_COMPONENT_MANAGER_TCC_
+#define TBGE_ECS_COMPONENT_MANAGER_TCC_
 
 #include <absl/log/check.h>
 #include <absl/log/log.h>
@@ -8,15 +8,14 @@
 #include <typeinfo>
 #include <unordered_map>
 
-#include "src/ecs/component_array.h"
-#include "src/ecs/component_manager.h"
-#include "src/ecs/context.h"
+#include "src/ecs/component_array/component_array.h"
+#include "src/ecs/component_manager/component_manager.h"
+#include "src/ecs/context/context.h"
 
 namespace ECS {
 
-template <typename Context>
 template <typename T>
-ComponentManager<Context>& ComponentManager<Context>::RegisterComponentType() {
+ComponentManager& ComponentManager::RegisterComponentType() {
   const char* type_name = typeid(T).name();
 
   if (component_types_.find(type_name) != component_types_.end()) {
@@ -30,8 +29,7 @@ ComponentManager<Context>& ComponentManager<Context>::RegisterComponentType() {
   component_types_.insert({type_name, next_component_type_});
 
   // Create a ComponentArray pointer and add it to the component arrays map
-  component_arrays_.insert(
-      {type_name, std::make_shared<ComponentArray<Context, T>>()});
+  component_arrays_.insert({type_name, std::make_shared<ComponentArray<T>>()});
 
   // Increment the value so that the next component registered will be different
   ++next_component_type_;
@@ -39,9 +37,8 @@ ComponentManager<Context>& ComponentManager<Context>::RegisterComponentType() {
   return *this;
 }
 
-template <typename Context>
 template <typename T>
-typename Context::ComponentTypeId ComponentManager<Context>::GetComponentTypeId() {
+ComponentTypeId ComponentManager::GetComponentTypeId() {
   const char* type_name = typeid(T).name();
 
   CHECK(component_types_.find(type_name) != component_types_.end())
@@ -51,58 +48,38 @@ typename Context::ComponentTypeId ComponentManager<Context>::GetComponentTypeId(
   return component_types_[type_name];
 }
 
-template <typename Context>
 template <typename T>
-ComponentManager<Context>& ComponentManager<Context>::AddComponent(
-    Context::Entity entity, T component) {
+ComponentManager& ComponentManager::AddComponent(Entity entity, T component) {
   // Add a component to the array for an entity
   get_component_array<T>()->InsertData(entity, component);
 
   return *this;
 }
 
-template <typename Context>
 template <typename T>
-ComponentManager<Context>& ComponentManager<Context>::RemoveComponent(
-    Context::Entity entity) {
+ComponentManager& ComponentManager::RemoveComponent(Entity entity) {
   // Remove a component from the array for an entity
   get_component_array<T>()->RemoveData(entity);
 
   return *this;
 }
 
-template <typename Context>
 template <typename T>
-bool ComponentManager<Context>::HasComponent(Context::Entity entity) {
+bool ComponentManager::HasComponent(Entity entity) {
   return get_component_array<T>()->HasData(entity);
 }
 
-template <typename Context>
 template <typename T>
-T& ComponentManager<Context>::GetComponent(Context::Entity entity) {
+T& ComponentManager::GetComponent(Entity entity) {
   // Get a reference to a component from the array for an entity
   return get_component_array<T>()->GetData(entity);
-}
-
-template <typename Context>
-ComponentManager<Context>& ComponentManager<Context>::EntityDestroyed(
-    Context::Entity entity) {
-  // Notify each component array that an entity has been destroyed
-  // If it has a component for that entity, it will remove it
-  for (auto const& [type_name, component] : component_arrays_) {
-    component->EntityDestroyed(entity);
-  }
-
-  return *this;
 }
 
 // #########################
 // #        PRIVATE        #
 // #########################
-template <typename Context>
 template <typename T>
-std::shared_ptr<ComponentArray<Context, T>>
-ComponentManager<Context>::get_component_array() {
+std::shared_ptr<ComponentArray<T>> ComponentManager::get_component_array() {
   const char* type_name = typeid(T).name();
 
   if (component_types_.find(type_name) == component_types_.end()) {
@@ -111,10 +88,10 @@ ComponentManager<Context>::get_component_array() {
     RegisterComponentType<T>();
   }
 
-  return std::static_pointer_cast<ComponentArray<Context, T>>(
+  return std::static_pointer_cast<ComponentArray<T>>(
       component_arrays_[type_name]);
 }
 
 }  // namespace ECS
 
-#endif  // TBGE_SRC_ECS_COMPONENT_MANAGER_TCC_
+#endif  // TBGE_ECS_COMPONENT_MANAGER_TCC_

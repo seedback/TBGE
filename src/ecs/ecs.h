@@ -3,20 +3,30 @@
  * @brief Main include file for the Entity Component System (ECS) module.
  *
  * @details
- * This header provides the necessary includes for the ECS system, including
- * type definitions and the coordinator class, which manages entities,
- * components, and systems.
+ * This header provides all necessary includes for the complete ECS system,
+ * including:
+ * - Core types and configuration (context.h)
+ * - Entity, component, and system management
+ * - The main Coordinator interface
+ * - Utility functions for console setup
  *
- * All other files are included via these two.
+ * Include this single header to access the entire ECS API.
  *
- * @see definitions.h
- * @see coordinator.h
+ * @see coordinator.h for the main ECS interface
+ * @see context.h for type definitions and configuration
  */
 
-#ifndef TBGE_SRC_ECS_ECS_H_
-#define TBGE_SRC_ECS_ECS_H_
+#ifndef TBGE_ECS_ECS_H_
+#define TBGE_ECS_ECS_H_
 
-#include "./context.h"
-#include "./coordinator.h"
+#include "src/ecs/component/component.h"
+#include "src/ecs/component_array/component_array.h"
+#include "src/ecs/component_manager/component_manager.h"
+#include "src/ecs/context/context.h"
+#include "src/ecs/coordinator/coordinator.h"
+#include "src/ecs/entity_manager/entity_manager.h"
+#include "src/ecs/system/system.h"
+#include "src/ecs/system_manager/system_manager.h"
+#include "src/ecs/utils/setup_console.h"
 
-#endif  // TBGE_SRC_ECS_ECS_H_
+#endif  // TBGE_ECS_ECS_H_

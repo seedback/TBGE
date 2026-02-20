@@ -1,4 +1,4 @@
-#include "src/ecs/component_manager.h"
+#include "src/ecs/component_manager/component_manager.h"
 
 #include <absl/log/initialize.h>
 #include <absl/log/log_sink.h>
@@ -10,7 +10,7 @@
 #include <string>
 #include <typeinfo>
 
-#include "src/ecs/context.h"
+#include "src/ecs/context/context.h"
 #include "test/includes/test_log_sink.h"
 
 struct ComponentTypeInt {
@@ -27,7 +27,6 @@ struct ComponentTypeString {
 
 class ComponentManagerTest : public ::testing::Test {
  protected:
-  using TestContext = ECS::Context<uint8_t, uint8_t, 10, 5>;
   ComponentManagerTest() {}
 
   static void SetUpTestSuite() {}
@@ -35,7 +34,7 @@ class ComponentManagerTest : public ::testing::Test {
   void SetUp() override {
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
-    test_component_manager = ECS::ComponentManager<TestContext>();
+    test_component_manager = ECS::ComponentManager();
     test_sink_->Clear();
   }
 
@@ -45,8 +44,8 @@ class ComponentManagerTest : public ::testing::Test {
   }
 
   std::unique_ptr<TestLogSink> test_sink_;
-  ECS::ComponentManager<TestContext> test_component_manager;
-  typename TestContext::Entity entity1 = 1;
+  ECS::ComponentManager test_component_manager;
+  ECS::Entity entity1 = 1;
   const char* component_type_int_type_name = typeid(ComponentTypeInt).name();
   const char* component_type_float_type_name =
       typeid(ComponentTypeFloat).name();
@@ -141,7 +140,7 @@ TEST_F(ComponentManagerTest, AddDuplicateComponent) {
                                                         int_component2);
   test_sink_->TestLogs(
       absl::LogSeverity::kWarning,
-      "Component of type \".*\" added to the same entity more than once.");
+      "Component of type '.*' added to the same entity more than once.");
 
   // Check that the component hasn't changed
   ComponentTypeInt retrieved =
@@ -166,7 +165,7 @@ TEST_F(ComponentManagerTest, RemoveComponentNotPresent) {
   EXPECT_NO_THROW(
       test_component_manager.RemoveComponent<ComponentTypeInt>(entity1));
   test_sink_->TestLogs(absl::LogSeverity::kWarning,
-                       "Removing non-existent component of type \".*\".");
+                       "Removing non-existent component of type '.*'.");
 }
 
 TEST_F(ComponentManagerTest, HasComponent) {
@@ -190,7 +189,7 @@ TEST_F(ComponentManagerTest, AddComponentWithoutRegistration) {
 
 TEST_F(ComponentManagerTest, GetComponentForDifferentEntities) {
   test_component_manager.RegisterComponentType<ComponentTypeInt>();
-  typename TestContext::Entity entity2 = 2;
+  ECS::Entity entity2 = 2;
   test_component_manager.AddComponent<ComponentTypeInt>(entity1, {10});
   test_component_manager.AddComponent<ComponentTypeInt>(entity2, {20});
 
