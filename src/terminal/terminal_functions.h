@@ -1,12 +1,12 @@
-#ifndef TBGE_TUI_TUI_FUNCTIONS_H_
-#define TBGE_TUI_TUI_FUNCTIONS_H_
+#ifndef TBGE_TERMINAL_TERMINAL_FUNCTIONS_H_
+#define TBGE_TERMINAL_TERMINAL_FUNCTIONS_H_
 
 #include <codecvt>
 #include <iostream>
 #include <locale>
 #include <string>
 
-#include "src/tui/tui_constants.h"
+#include "src/terminal/terminal_constants.h"
 
 #ifdef _WIN32
 #include <windows.h>  // for WinAPI and Sleep()
@@ -14,7 +14,7 @@
 #include <conio.h>    // for getch() and kbhit()
 #endif                // _WIN32
 
-/// @namespace tbge::tui
+/// @namespace tbge::terminal
 /// @brief Terminal User Interface / Text User Interface utilities.
 ///
 /// Provides low-level abstractions for terminal/console manipulation including
@@ -22,7 +22,7 @@
 /// and other console output operations. Built on ANSI escape sequences to
 /// enable cross-platform terminal control.
 namespace tbge {
-namespace tui {
+namespace terminal {
 // Check if a character is wide (double-width in console)
 inline bool is_wide_character(char32_t codepoint) {
   // Wide character ranges: Hangul, CJK, Emoji, Blocks, etc.
@@ -154,7 +154,7 @@ inline void SetFgColorRgb(int r, int g, int b) {
 
 /**
  * @brief Set the Foreground color using the Color enum
- * @sa tui::Color
+ * @sa terminal::Color
  *
  * @param color The color to set, using a predefined Color enum value
  * @return An ANSI escape sequence string that sets the foreground color
@@ -313,7 +313,7 @@ inline vec2i GetConsoleSize() {
 
 // }
 
-}  // namespace tui
+}  // namespace terminal
 }  // namespace tbge
 
-#endif  // TBGE_PANEL_PANEL_FUNCTIONS_H_
+#endif  // TBGE_TERMINAL_TERMINAL_FUNCTIONS_H_

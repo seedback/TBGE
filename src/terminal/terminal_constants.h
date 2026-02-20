@@ -1,9 +1,9 @@
-#ifndef TBGE_TUI_TUI_CONSTANTS_H_
-#define TBGE_TUI_TUI_CONSTANTS_H_
+#ifndef TBGE_TERMINAL_TERMINAL_CONSTANTS_H_
+#define TBGE_TERMINAL_TERMINAL_CONSTANTS_H_
 
 #include <iostream>
 
-/// @namespace tbge::tui
+/// @namespace tbge::terminal
 /// @brief Terminal User Interface / Text User Interface utilities.
 ///
 /// Provides low-level abstractions for terminal/console manipulation including
@@ -11,7 +11,7 @@
 /// and other console output operations. Built on ANSI escape sequences to
 /// enable cross-platform terminal control.
 namespace tbge {
-namespace tui {
+namespace terminal {
 /**
  * @enum SgrParam
  * @brief Enumerates Select Graphic Rendition (SGR) parameters for ANSI escape
@@ -315,7 +315,7 @@ const std::u8string kAnsiAttributeReset = kAnsiCsi + u8"0m";
 const std::u8string kAnsiCursorHide = kAnsiCsi + u8"?25l";
 const std::u8string kAnsiCursorShow = kAnsiCsi + u8"?25h";
 const std::u8string kAnsiCursorHome = kAnsiCsi + u8"H";
-}  // namespace tui
+}  // namespace terminal
 }  // namespace tbge
 
-#endif  // TBGE_PANEL_PANEL_CONSTANTS_H_
+#endif  // TBGE_TERMINAL_TERMINAL_CONSTANTS_H_

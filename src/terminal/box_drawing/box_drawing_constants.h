@@ -1,11 +1,11 @@
-#ifndef TBGE_TUI_BOX_DRAWING_BOX_DRAWING_CONSTANTS_H_
-#define TBGE_TUI_BOX_DRAWING_BOX_DRAWING_CONSTANTS_H_
+#ifndef TBGE_TERMINAL_BOX_DRAWING_BOX_DRAWING_CONSTANTS_H_
+#define TBGE_TERMINAL_BOX_DRAWING_BOX_DRAWING_CONSTANTS_H_
 
 #include <map>
 #include <string_view>
 
 namespace tbge {
-namespace tui {
+namespace terminal {
 enum Line {
   kLeftRight,
   kBBLeftRight,
@@ -178,7 +178,7 @@ const std::map<Line, std::u8string_view> kLineMap{
     {Line::kUpDown, u8"\u2502"},
     {Line::kUpDown, u8"\u2503"},
 };
-}  // namespace tui
+}  // namespace terminal
 }  // namespace tbge
 
-#endif  // SRC_TUI_BOX_DRAWING_BOX_DRAWING_CONSTANTS_H_
+#endif  // TBGE_TERMINAL_BOX_DRAWING_BOX_DRAWING_CONSTANTS_H_
