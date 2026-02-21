@@ -17,7 +17,7 @@ class SystemTest : public ::testing::Test {
     absl::SetStderrThreshold(absl::LogSeverityAtLeast::kFatal);
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
-    test_system = ecs::System();
+    test_system = tbge::ecs::System();
     test_sink_->Clear();
   }
 
@@ -27,8 +27,8 @@ class SystemTest : public ::testing::Test {
   }
 
   std::unique_ptr<TestLogSink> test_sink_;
-  ecs::System test_system;
-  ecs::Entity invalid_entity = 1000;
+  tbge::ecs::System test_system;
+  tbge::ecs::Entity invalid_entity = 1000;
 };
 
 /**

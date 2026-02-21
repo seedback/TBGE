@@ -8,7 +8,7 @@
 #include "src/ecs/entity_manager/entity_manager.h"
 #include "src/ecs/system_manager/system_manager.h"
 
-namespace ecs {
+namespace tbge::ecs {
 
 // #####   Constructors   #####
 Coordinator::Coordinator() { Init(); }
@@ -70,4 +70,4 @@ void Coordinator::debug_warning() {
 }
 #endif
 
-}  // namespace ecs
+}  // namespace tbge::ecs

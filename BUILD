@@ -37,6 +37,16 @@ cc_test(
 )
 
 cc_library(
+    name = "tbge",
+    hdrs = ["src/tbge.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/ecs:ecs",
+        "//src/terminal:terminal",
+    ],
+)
+
+cc_library(
     name = "tbge_lib",
     srcs = glob(
         [

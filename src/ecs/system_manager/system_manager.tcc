@@ -10,7 +10,7 @@
 #include "src/ecs/context/context.h"
 #include "src/ecs/system_manager/system_manager.h"
 
-namespace ecs {
+namespace tbge::ecs {
 
 template <typename T>
 std::shared_ptr<T> SystemManager::RegisterSystem() {
@@ -84,6 +84,6 @@ std::shared_ptr<T> SystemManager::GetSystem() {
   return std::static_pointer_cast<T>(systems_[type_name]);
 }
 
-}  // namespace ECS
+}  // namespace tbge::ecs
 
 #endif  // TBGE_ECS_SYSTEM_MANAGER_TCC_

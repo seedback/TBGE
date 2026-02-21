@@ -8,7 +8,7 @@
 
 #include "src/ecs/context/context.h"
 
-namespace ecs {
+namespace tbge::ecs {
 
 /**
  * @brief Notifies all systems that an entity has been destroyed.
@@ -70,4 +70,4 @@ SystemManager& SystemManager::EntitySignatureChanged(
   return *this;
 }
 
-}  // namespace ecs
+}  // namespace tbge::ecs

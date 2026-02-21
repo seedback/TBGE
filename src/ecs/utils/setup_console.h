@@ -19,7 +19,7 @@
 #include <windows.h>
 #endif
 
-namespace ecs::Utils {
+namespace tbge::ecs::utils {
 
 /**
  * @brief Sets up console for UTF-8 output on Windows, or configures the global
@@ -40,6 +40,6 @@ inline void SetupConsoleForUnicode() noexcept {
 #endif
 }
 
-}  // namespace ECS::Utils
+}  // namespace ECS::utils
 
 #endif  // TBGE_ECS_UTILS_SETUP_CONSOLE_H_

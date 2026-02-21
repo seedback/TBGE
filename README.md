@@ -14,6 +14,32 @@ which will be printed when the player is in the correct Location or is using an 
 Later on the plan is to allow for some simple logic when using the commands alowing for some item to
 be needed to do a certain action for example, but this is still a ways away.
 
+### Using TBGE in Other Projects
+
+TBGE is designed to be used as a library in other projects. Simply include the main header file to access all functionality:
+
+```cpp
+#include "tbge.h"
+
+// Access ECS system
+auto coordinator = tbge::ecs::Coordinator::GetInstance();
+
+// Access Terminal utilities
+tbge::terminal::SetForegroundColor(tbge::terminal::kColorGreen);
+```
+
+**For Bazel projects:** Add this to your `BUILD` file:
+```python
+deps = [
+    "@TBGE//:tbge",
+]
+```
+
+**Included modules:**
+- **ECS (Entity Component System)**: Game logic framework for entity management
+- **Terminal**: Text UI and terminal control utilities
+- **Future extensions**: Audio, graphics, physics, and more can be added to this single include
+
 ### Doxygen
 This whole project will be documented with the use of the Doxygen tool, and a link to this
 documentation can be found here: Link is coming soon

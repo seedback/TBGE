@@ -28,7 +28,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace ecs {
+namespace tbge::ecs {
 
 /**
  * @defgroup ECS_Config Type Configuration
@@ -121,6 +121,6 @@ static_assert(ECS_MAX_COMPONENT_TYPES <= 65536,
 /// entity.
 using Signature = std::bitset<kMaxComponentTypes>;
 
-}  // namespace ECS
+}  // namespace tbge::ecs
 
 #endif  // TBGE_ECS_CONTEXT_H_

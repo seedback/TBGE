@@ -17,7 +17,7 @@
 #include "src/ecs/entity_manager/entity_manager.h"
 #include "src/ecs/system_manager/system_manager.h"
 
-namespace ecs {
+namespace tbge::ecs {
 
 /**
  * @class Coordinator
@@ -258,7 +258,8 @@ class Coordinator {
 #endif
 };
 
-}  // namespace ECS
+}  // namespace tbge::ecs
+
 #endif  // TBGE_ECS_COORDINATOR_H_
 
 #include "src/ecs/coordinator/coordinator.tcc"

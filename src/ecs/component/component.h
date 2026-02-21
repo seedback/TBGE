@@ -13,7 +13,7 @@
 
 #include "src/ecs/context/context.h"
 
-namespace ecs {
+namespace tbge::ecs {
 
 // Forward declaration
 class Coordinator;

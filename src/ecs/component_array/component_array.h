@@ -17,7 +17,7 @@
 
 #include "src/ecs/context/context.h"
 
-namespace ecs {
+namespace tbge::ecs {
 
 /**
  * @brief Abstract base class for component arrays in an ECS.

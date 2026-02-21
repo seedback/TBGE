@@ -9,7 +9,7 @@
 
 #include "src/ecs/context/context.h"
 
-namespace ecs {
+namespace tbge::ecs {
 
 Entity EntityManager::CreateEntity() {
   // If there are no available entities, create one
@@ -106,4 +106,4 @@ Signature EntityManager::GetSignature(Entity entity) {
   return signatures_.at(entity);
 }
 
-}  // namespace ecs
+}  // namespace tbge::ecs
