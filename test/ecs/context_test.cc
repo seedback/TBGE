@@ -33,17 +33,17 @@
  */
 TEST(Context, EntityTypeConfiguration) {
 #if ECS_ENTITY_CONFIG == 64
-  EXPECT_EQ(sizeof(tbge::ecs::Entity), 8);
-  EXPECT_EQ(typeid(tbge::ecs::Entity), typeid(std::uint64_t));
+  EXPECT_EQ(sizeof(ecs::Entity), 8);
+  EXPECT_EQ(typeid(ecs::Entity), typeid(std::uint64_t));
 #elif ECS_ENTITY_CONFIG == 32
-  EXPECT_EQ(sizeof(tbge::ecs::Entity), 4);
-  EXPECT_EQ(typeid(tbge::ecs::Entity), typeid(std::uint32_t));
+  EXPECT_EQ(sizeof(ecs::Entity), 4);
+  EXPECT_EQ(typeid(ecs::Entity), typeid(std::uint32_t));
 #elif ECS_ENTITY_CONFIG == 16
-  EXPECT_EQ(sizeof(tbge::ecs::Entity), 2);
-  EXPECT_EQ(typeid(tbge::ecs::Entity), typeid(std::uint16_t));
+  EXPECT_EQ(sizeof(ecs::Entity), 2);
+  EXPECT_EQ(typeid(ecs::Entity), typeid(std::uint16_t));
 #elif ECS_ENTITY_CONFIG == 8
-  EXPECT_EQ(sizeof(tbge::ecs::Entity), 1);
-  EXPECT_EQ(typeid(tbge::ecs::Entity), typeid(std::uint8_t));
+  EXPECT_EQ(sizeof(ecs::Entity), 1);
+  EXPECT_EQ(typeid(ecs::Entity), typeid(std::uint8_t));
 #endif
 }
 
@@ -56,14 +56,14 @@ TEST(Context, EntityTypeConfiguration) {
  */
 TEST(Context, ComponentTypeIdConfiguration) {
 #if ECS_COMPONENT_CONFIG == 32
-  EXPECT_EQ(sizeof(tbge::ecs::ComponentTypeId), 4);
-  EXPECT_EQ(typeid(tbge::ecs::ComponentTypeId), typeid(std::uint32_t));
+  EXPECT_EQ(sizeof(ecs::ComponentTypeId), 4);
+  EXPECT_EQ(typeid(ecs::ComponentTypeId), typeid(std::uint32_t));
 #elif ECS_COMPONENT_CONFIG == 16
-  EXPECT_EQ(sizeof(tbge::ecs::ComponentTypeId), 2);
-  EXPECT_EQ(typeid(tbge::ecs::ComponentTypeId), typeid(std::uint16_t));
+  EXPECT_EQ(sizeof(ecs::ComponentTypeId), 2);
+  EXPECT_EQ(typeid(ecs::ComponentTypeId), typeid(std::uint16_t));
 #elif ECS_COMPONENT_CONFIG == 8
-  EXPECT_EQ(sizeof(tbge::ecs::ComponentTypeId), 1);
-  EXPECT_EQ(typeid(tbge::ecs::ComponentTypeId), typeid(std::uint8_t));
+  EXPECT_EQ(sizeof(ecs::ComponentTypeId), 1);
+  EXPECT_EQ(typeid(ecs::ComponentTypeId), typeid(std::uint8_t));
 #endif
 }
 
@@ -74,10 +74,10 @@ TEST(Context, ComponentTypeIdConfiguration) {
  */
 TEST(Context, SignatureConfiguration) {
   // Verify that kMaxComponentTypes matches the macro value
-  EXPECT_EQ(tbge::ecs::kMaxComponentTypes, ECS_MAX_COMPONENT_TYPES);
+  EXPECT_EQ(ecs::kMaxComponentTypes, ECS_MAX_COMPONENT_TYPES);
 
   // Create a Signature and verify its size
-  tbge::ecs::Signature sig;
+  ecs::Signature sig;
   EXPECT_EQ(sig.size(), ECS_MAX_COMPONENT_TYPES);
 }
 
@@ -85,16 +85,16 @@ TEST(Context, SignatureConfiguration) {
  * @brief Test that kMaxComponentTypes constant is correctly set.
  */
 TEST(Context, MaxComponentTypesConstant) {
-  EXPECT_GT(tbge::ecs::kMaxComponentTypes, 0);
-  EXPECT_LE(tbge::ecs::kMaxComponentTypes, 65536);
-  EXPECT_EQ(tbge::ecs::kMaxComponentTypes, ECS_MAX_COMPONENT_TYPES);
+  EXPECT_GT(ecs::kMaxComponentTypes, 0);
+  EXPECT_LE(ecs::kMaxComponentTypes, 65536);
+  EXPECT_EQ(ecs::kMaxComponentTypes, ECS_MAX_COMPONENT_TYPES);
 }
 
 /**
  * @brief Test that Entity type max value is correctly derived from bit width.
  */
 TEST(Context, EntityMaxValue) {
-  tbge::ecs::Entity max_entity = std::numeric_limits<tbge::ecs::Entity>::max();
+  ecs::Entity max_entity = std::numeric_limits<ecs::Entity>::max();
 
   // Verify the max value matches the expected size
 #if ECS_ENTITY_CONFIG == 64
@@ -113,7 +113,7 @@ TEST(Context, EntityMaxValue) {
  * width.
  */
 TEST(Context, ComponentTypeIdMaxValue) {
-  tbge::ecs::ComponentTypeId max_type_id = std::numeric_limits<tbge::ecs::ComponentTypeId>::max();
+  ecs::ComponentTypeId max_type_id = std::numeric_limits<ecs::ComponentTypeId>::max();
 
   // Verify the max value matches the expected size
 #if ECS_COMPONENT_CONFIG == 32
@@ -129,9 +129,9 @@ TEST(Context, ComponentTypeIdMaxValue) {
  * @brief Test that Signature can be constructed and used properly.
  */
 TEST(Context, SignatureUsage) {
-  tbge::ecs::Signature sig1;
-  tbge::ecs::Signature sig2(0b1010);
-  tbge::ecs::Signature sig3(5);
+  ecs::Signature sig1;
+  ecs::Signature sig2(0b1010);
+  ecs::Signature sig3(5);
 
   // Verify default construction creates all zeros
   EXPECT_EQ(sig1.count(), 0);

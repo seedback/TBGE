@@ -16,7 +16,7 @@
 #include "src/ecs/component_array/component_array.h"
 #include "src/ecs/context/context.h"
 
-namespace tbge::ecs {
+namespace ecs {
 
 /**
  * @class ComponentManager
@@ -149,8 +149,7 @@ class ComponentManager {
   ComponentTypeId next_component_type_{};
 };
 
-}  // namespace tbge::ecs
-
+}  // namespace ECS
 #endif  // TBGE_ECS_COMPONENT_MANAGER_H_
 
 #include "src/ecs/component_manager/component_manager.tcc"

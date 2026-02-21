@@ -34,7 +34,7 @@ class ComponentManagerTest : public ::testing::Test {
   void SetUp() override {
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
-    test_component_manager = tbge::ecs::ComponentManager();
+    test_component_manager = ecs::ComponentManager();
     test_sink_->Clear();
   }
 
@@ -44,8 +44,8 @@ class ComponentManagerTest : public ::testing::Test {
   }
 
   std::unique_ptr<TestLogSink> test_sink_;
-  tbge::ecs::ComponentManager test_component_manager;
-  tbge::ecs::Entity entity1 = 1;
+  ecs::ComponentManager test_component_manager;
+  ecs::Entity entity1 = 1;
   const char* component_type_int_type_name = typeid(ComponentTypeInt).name();
   const char* component_type_float_type_name =
       typeid(ComponentTypeFloat).name();
@@ -189,7 +189,7 @@ TEST_F(ComponentManagerTest, AddComponentWithoutRegistration) {
 
 TEST_F(ComponentManagerTest, GetComponentForDifferentEntities) {
   test_component_manager.RegisterComponentType<ComponentTypeInt>();
-  tbge::ecs::Entity entity2 = 2;
+  ecs::Entity entity2 = 2;
   test_component_manager.AddComponent<ComponentTypeInt>(entity1, {10});
   test_component_manager.AddComponent<ComponentTypeInt>(entity2, {20});
 

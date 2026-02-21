@@ -17,7 +17,7 @@
 #include "src/ecs/context/context.h"
 #include "src/ecs/system/system.h"
 
-namespace tbge::ecs {
+namespace ecs {
 
 /**
  * @class SystemManager
@@ -147,7 +147,7 @@ class SystemManager {
   std::unordered_map<const char*, std::shared_ptr<System>> systems_{};
 };
 
-}  // namespace tbge::ecs
+}  // namespace ECS
 
 #endif  // TBGE_ECS_SYSTEM_MANAGER_H_
 

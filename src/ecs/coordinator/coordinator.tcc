@@ -10,7 +10,7 @@
 #include "src/ecs/entity_manager/entity_manager.h"
 #include "src/ecs/system_manager/system_manager.h"
 
-namespace tbge::ecs {
+namespace ecs {
 // #####   Component methods   #####
 template <typename T>
 Coordinator& Coordinator::RegisterComponentType() {
@@ -96,5 +96,5 @@ bool Coordinator::EntityIsValidForSystem(Entity entity) {
   return (system_signature & entity_signature) == system_signature;
 }
 
-}  // namespace tbge::ecs
+}  // namespace ECS
 #endif  // TBGE_ECS_COORDINATOR_TCC_

@@ -15,7 +15,7 @@
  *   #include "tbge.h"
  *
  *   // Access ECS components
- *   auto coordinator = tbge::ecs::Coordinator::GetInstance();
+ *   auto coordinator = ecs::Coordinator::GetInstance();
  *
  *   // Access Terminal utilities
  *   tbge::terminal::SetForegroundColor(tbge::terminal::kColorGreen);

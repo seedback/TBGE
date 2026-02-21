@@ -12,7 +12,7 @@
 #include "src/ecs/component_manager/component_manager.h"
 #include "src/ecs/context/context.h"
 
-namespace tbge::ecs {
+namespace ecs {
 
 template <typename T>
 ComponentManager& ComponentManager::RegisterComponentType() {
@@ -92,6 +92,6 @@ std::shared_ptr<ComponentArray<T>> ComponentManager::get_component_array() {
       component_arrays_[type_name]);
 }
 
-}  // namespace tbge::ecs
+}  // namespace ECS
 
 #endif  // TBGE_ECS_COMPONENT_MANAGER_TCC_

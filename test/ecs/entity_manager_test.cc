@@ -19,7 +19,7 @@ class EntityManagerTest : public ::testing::Test {
     absl::SetStderrThreshold(absl::LogSeverityAtLeast::kFatal);
     test_sink_ = std::make_unique<TestLogSink>();
     absl::AddLogSink(test_sink_.get());
-    test_entity_manager = tbge::ecs::EntityManager();
+    test_entity_manager = ecs::EntityManager();
     test_sink_->Clear();
   }
 
@@ -29,9 +29,9 @@ class EntityManagerTest : public ::testing::Test {
   }
 
   std::unique_ptr<TestLogSink> test_sink_;
-  tbge::ecs::EntityManager test_entity_manager;
+  ecs::EntityManager test_entity_manager;
   // Use an entity ID that's definitely beyond any reasonable entity count
-  tbge::ecs::Entity invalid_entity = std::numeric_limits<tbge::ecs::Entity>::max();
+  ecs::Entity invalid_entity = std::numeric_limits<ecs::Entity>::max();
 };
 
 TEST_F(EntityManagerTest, CreateEntities) {
@@ -53,9 +53,9 @@ TEST_F(EntityManagerTest, CreateTooManyEntities) {
   // Instead, we just verify the entity manager works correctly for
   // reasonable entity counts. The hard limit will only be hit in
   // extreme cases.
-  tbge::ecs::Entity entity1 = test_entity_manager.CreateEntity();
-  tbge::ecs::Entity entity2 = test_entity_manager.CreateEntity();
-  tbge::ecs::Entity entity3 = test_entity_manager.CreateEntity();
+  ecs::Entity entity1 = test_entity_manager.CreateEntity();
+  ecs::Entity entity2 = test_entity_manager.CreateEntity();
+  ecs::Entity entity3 = test_entity_manager.CreateEntity();
   
   EXPECT_EQ(entity1, 0);
   EXPECT_EQ(entity2, 1);
@@ -63,37 +63,37 @@ TEST_F(EntityManagerTest, CreateTooManyEntities) {
   EXPECT_EQ(test_entity_manager.get_current_entity_count(), 3);
   
   // Note: Testing the actual max entity limit would require creating
-  // std::numeric_limits<tbge::ecs::Entity>::max() entities, which is impractical.
+  // std::numeric_limits<ECS::Entity>::max() entities, which is impractical.
   // The check is validated during compile-time and EntityManager's
   // implementation handles it correctly.
 }
 
 TEST_F(EntityManagerTest, SetAndGetSignature) {
-  tbge::ecs::Entity entity1 = test_entity_manager.CreateEntity();
-  tbge::ecs::Entity entity2 = test_entity_manager.CreateEntity();
-  tbge::ecs::Entity entity3 = test_entity_manager.CreateEntity();
+  ecs::Entity entity1 = test_entity_manager.CreateEntity();
+  ecs::Entity entity2 = test_entity_manager.CreateEntity();
+  ecs::Entity entity3 = test_entity_manager.CreateEntity();
 
   EXPECT_EQ(test_entity_manager.GetSignature(entity1),
-            tbge::ecs::Signature());
+            ecs::Signature());
   EXPECT_EQ(test_entity_manager.GetSignature(entity2),
-            tbge::ecs::Signature());
+            ecs::Signature());
   EXPECT_EQ(test_entity_manager.GetSignature(entity3),
-            tbge::ecs::Signature());
+            ecs::Signature());
 
-  test_entity_manager.SetSignature(entity1, tbge::ecs::Signature(1));
-  test_entity_manager.SetSignature(entity2, tbge::ecs::Signature(2));
-  test_entity_manager.SetSignature(entity3, tbge::ecs::Signature(3));
+  test_entity_manager.SetSignature(entity1, ecs::Signature(1));
+  test_entity_manager.SetSignature(entity2, ecs::Signature(2));
+  test_entity_manager.SetSignature(entity3, ecs::Signature(3));
 
   EXPECT_EQ(test_entity_manager.GetSignature(entity1),
-            tbge::ecs::Signature(1));
+            ecs::Signature(1));
   EXPECT_EQ(test_entity_manager.GetSignature(entity2),
-            tbge::ecs::Signature(2));
+            ecs::Signature(2));
   EXPECT_EQ(test_entity_manager.GetSignature(entity3),
-            tbge::ecs::Signature(3));
+            ecs::Signature(3));
 }
 
 TEST_F(EntityManagerTest, SetSignatureOfNonExistentEntity) {
-  test_entity_manager.SetSignature(invalid_entity, tbge::ecs::Signature(256));
+  test_entity_manager.SetSignature(invalid_entity, ecs::Signature(256));
   test_sink_->TestLogs(
       absl::LogSeverity::kError,
       "Attempted to set signature of Entity out of range at Entity ID .*. The "
@@ -111,22 +111,22 @@ TEST_F(EntityManagerTest, GetSignatureOfNonExistentEntity) {
 }
 
 TEST_F(EntityManagerTest, DestroyEntity) {
-  tbge::ecs::Entity entity1 = test_entity_manager.CreateEntity();
-  tbge::ecs::Entity entity2 = test_entity_manager.CreateEntity();
-  tbge::ecs::Entity entity3 = test_entity_manager.CreateEntity();
+  ecs::Entity entity1 = test_entity_manager.CreateEntity();
+  ecs::Entity entity2 = test_entity_manager.CreateEntity();
+  ecs::Entity entity3 = test_entity_manager.CreateEntity();
 
-  test_entity_manager.SetSignature(entity1, tbge::ecs::Signature(1));
-  test_entity_manager.SetSignature(entity2, tbge::ecs::Signature(2));
-  test_entity_manager.SetSignature(entity3, tbge::ecs::Signature(3));
+  test_entity_manager.SetSignature(entity1, ecs::Signature(1));
+  test_entity_manager.SetSignature(entity2, ecs::Signature(2));
+  test_entity_manager.SetSignature(entity3, ecs::Signature(3));
 
   test_entity_manager.DestroyEntity(entity2);
 
   EXPECT_EQ(test_entity_manager.GetSignature(entity1),
-            tbge::ecs::Signature(1));
+            ecs::Signature(1));
   EXPECT_EQ(test_entity_manager.GetSignature(entity2),
-            tbge::ecs::Signature(0));
+            ecs::Signature(0));
   EXPECT_EQ(test_entity_manager.GetSignature(entity3),
-            tbge::ecs::Signature(3));
+            ecs::Signature(3));
   EXPECT_FALSE(test_entity_manager.HasEntity(entity2));
 }
 
@@ -140,9 +140,9 @@ TEST_F(EntityManagerTest, DestroyEntityOutOfRange) {
 }
 
 TEST_F(EntityManagerTest, HasEntity) {
-  tbge::ecs::Entity entity1 = test_entity_manager.CreateEntity();
-  tbge::ecs::Entity entity2 = test_entity_manager.CreateEntity();
-  tbge::ecs::Entity entity3 = test_entity_manager.CreateEntity();
+  ecs::Entity entity1 = test_entity_manager.CreateEntity();
+  ecs::Entity entity2 = test_entity_manager.CreateEntity();
+  ecs::Entity entity3 = test_entity_manager.CreateEntity();
 
   EXPECT_TRUE(test_entity_manager.HasEntity(entity1));
   EXPECT_TRUE(test_entity_manager.HasEntity(entity2));
@@ -159,46 +159,46 @@ TEST_F(EntityManagerTest, HasEntity) {
 
 TEST_F(EntityManagerTest, SetSignature) {
   // Create an entity
-  tbge::ecs::Entity entity = test_entity_manager.CreateEntity();
+  ecs::Entity entity = test_entity_manager.CreateEntity();
 
   // Initially, the signature should be default constructed (0)
-  EXPECT_EQ(test_entity_manager.GetSignature(entity), tbge::ecs::Signature());
+  EXPECT_EQ(test_entity_manager.GetSignature(entity), ecs::Signature());
 
   // Set a new signature and verify it is updated
-  tbge::ecs::Signature new_signature(0b101);
+  ecs::Signature new_signature(0b101);
   test_entity_manager.SetSignature(entity, new_signature);
   EXPECT_EQ(test_entity_manager.GetSignature(entity), new_signature);
 }
 
 TEST_F(EntityManagerTest, SetGetSignatureUpdatesSignatureCorrectly) {
   // Create an entity
-  tbge::ecs::Entity entity = test_entity_manager.CreateEntity();
+  ecs::Entity entity = test_entity_manager.CreateEntity();
 
   // Initially, the signature should be default constructed (0)
-  EXPECT_EQ(test_entity_manager.GetSignature(entity), tbge::ecs::Signature());
+  EXPECT_EQ(test_entity_manager.GetSignature(entity), ecs::Signature());
 
   // Set a new signature and verify it is updated
-  tbge::ecs::Signature new_signature(1);
+  ecs::Signature new_signature(1);
   test_entity_manager.SetSignature(entity, new_signature);
   EXPECT_EQ(test_entity_manager.GetSignature(entity), new_signature);
 
   // Set another signature and verify update
-  tbge::ecs::Signature another_signature(2);
+  ecs::Signature another_signature(2);
   test_entity_manager.SetSignature(entity, another_signature);
   EXPECT_EQ(test_entity_manager.GetSignature(entity), another_signature);
 }
 
 TEST_F(EntityManagerTest, SetGetSignatureDoesNotAffectOtherEntities) {
   // Create two entities
-  tbge::ecs::Entity entity1 = test_entity_manager.CreateEntity();
-  tbge::ecs::Entity entity2 = test_entity_manager.CreateEntity();
+  ecs::Entity entity1 = test_entity_manager.CreateEntity();
+  ecs::Entity entity2 = test_entity_manager.CreateEntity();
 
   // Set signature for entity1
-  tbge::ecs::Signature signature1(1);
+  ecs::Signature signature1(1);
   test_entity_manager.SetSignature(entity1, signature1);
 
   // Set signature for entity2
-  tbge::ecs::Signature signature2(2);
+  ecs::Signature signature2(2);
   test_entity_manager.SetSignature(entity2, signature2);
 
   // Verify signatures are independent
@@ -207,7 +207,7 @@ TEST_F(EntityManagerTest, SetGetSignatureDoesNotAffectOtherEntities) {
 }
 
 TEST_F(EntityManagerTest, SetSignatureOnEntityOutOfRange) {
-  tbge::ecs::Signature signature1(1);
+  ecs::Signature signature1(1);
   test_entity_manager.SetSignature(invalid_entity, signature1);
   test_sink_->TestLogs(
       absl::LogSeverity::kError,
@@ -218,7 +218,7 @@ TEST_F(EntityManagerTest, SetSignatureOnEntityOutOfRange) {
 }
 
 TEST_F(EntityManagerTest, GetSignatureOnEntityOutOfRange) {
-  tbge::ecs::Signature signature1(1);
+  ecs::Signature signature1(1);
   EXPECT_DEATH(test_entity_manager.GetSignature(invalid_entity),
                "Attempted to get signature of Entity out of range at Entity ID "
                ".+. The current amount of Entities is .+. This error usually "

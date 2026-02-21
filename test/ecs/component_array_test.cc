@@ -28,9 +28,9 @@ class ComponentArrayTest : public ::testing::Test {
   }
 
   std::unique_ptr<TestLogSink> test_sink_;
-  tbge::ecs::ComponentArray<TestComponent> test_component_array;
-  tbge::ecs::Entity entity1 = 1;
-  tbge::ecs::Entity entity2 = 2;
+  ecs::ComponentArray<TestComponent> test_component_array;
+  ecs::Entity entity1 = 1;
+  ecs::Entity entity2 = 2;
   TestComponent component1{10};
   TestComponent component2{20};
 };

@@ -15,7 +15,7 @@
 
 #include "src/ecs/context/context.h"
 
-namespace tbge::ecs {
+namespace ecs {
 
 /**
  * @class System
@@ -129,6 +129,6 @@ class System {
   }
 };
 
-}  // namespace tbge::ecs
+}  // namespace ECS
 
 #endif  // TBGE_ECS_SYSTEM_H_

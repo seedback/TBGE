@@ -12,7 +12,7 @@
 #include "src/ecs/component_array/component_array.h"
 #include "src/ecs/context/context.h"
 
-namespace tbge::ecs {
+namespace ecs {
 
 template <typename T>
 ComponentArray<T>& ComponentArray<T>::InsertData(Entity entity, T component) {
@@ -87,6 +87,6 @@ ComponentArray<T>& ComponentArray<T>::EntityDestroyed(Entity entity) {
   }
   return *this;
 }
-}  // namespace tbge::ecs
+}  // namespace ecs
 
 #endif  // TBGE_ECS_COMPONENT_ARRAY_TCC_

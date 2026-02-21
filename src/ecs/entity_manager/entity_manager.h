@@ -15,7 +15,7 @@
 
 #include "src/ecs/context/context.h"
 
-namespace tbge::ecs {
+namespace ecs {
 /**
  * @class EntityManager
  * @brief Manages creation, destruction, and signature assignment of entities in
@@ -142,6 +142,6 @@ class EntityManager {
   /// Keeps track of the next Entity ID to be used when creating a new one.
   Entity entity_id_counter_ = 0;
 };
-}  // namespace tbge::ecs
+}  // namespace ECS
 
 #endif  // TBGE_ECS_ENTITY_MANAGER_H_
