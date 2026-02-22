@@ -3,8 +3,8 @@
  * @brief Main include file for TBGE (Text-Based Game Engine).
  *
  * @details
- * This is the primary entry point for using TBGE in external projects. Include this
- * single header to access all TBGE functionality including:
+ * This is the primary entry point for using TBGE in external projects. Include
+ * this single header to access all TBGE functionality including:
  *
  * - **ECS System**: Complete Entity Component System for game logic
  * - **Terminal**: Text-based user interface and terminal control utilities
@@ -38,5 +38,9 @@
 // #include "src/audio/audio.h"
 // #include "src/graphics/graphics.h"
 // #include "src/physics/physics.h"
+
+namespace tbge {
+ecs::Coordinator g_coordinator;
+}
 
 #endif  // TBGE_TBGE_H_

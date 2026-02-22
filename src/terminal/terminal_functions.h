@@ -35,7 +35,7 @@ inline bool is_wide_character(char32_t codepoint) {
 
 // Prints out UTF-8 formatted strings from Unicode codepoints
 // Automatically adjusts cursor for wide characters
-inline void unicode_print(const std::u32string& text = U"") {
+inline void UnicodePrint(const std::u32string& text = U"") {
   std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
   std::cout << converter.to_bytes(text);
 
@@ -45,6 +45,11 @@ inline void unicode_print(const std::u32string& text = U"") {
       std::cout << "\033[D";  // ANSI: Cursor Left
     }
   }
+}
+inline void UnicodePrint(const std::string& text = "") {
+  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+  std::u32string u32text = converter.from_bytes(text);
+  UnicodePrint(u32text);
 }
 
 inline std::u8string int_to_u8(int i) {

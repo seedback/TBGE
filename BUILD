@@ -7,6 +7,7 @@ cc_binary(
     name = "tbge_main",
     srcs = ["src/main.cc"],
     deps = [
+        ":tbge",
         ":abseil_log",
         ":tbge_lib",
         ":tbge_test_includes",
